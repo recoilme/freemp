@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--absolute values-->
+    <color name="white">#F6FFFF</color>
+    <color name="yellow">#FDC332</color>
+    <color name="orange">#CC681F</color>
+    <color name="lightgray">#B4B4B4</color>
+    <color name="translucent_dk_grey">#88000000</color>
+    <color name="translucent_grey">#50000000</color>
+    <color name="translucent_lght_grey">#30000000</color>
+    <!--logical values-->
+    <color name="text_rowmain">@color/white</color>
+    <color name="text_rowslave">@color/lightgray</color>
+    <color name="text_header">@color/yellow</color>
+    <color name="text_header_highlight">@color/orange</color>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:background="@android:color/transparent"
+              android:orientation="vertical"
+              android:layout_height="fill_parent" >
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/artworkBgr"
+                android:scaleType="fitStart"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"/>
+
+        <com.nhaarman.listviewanimations.widget.DynamicListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:divider="@drawable/player_listview_divider"
+                android:dividerHeight="1dp"
+                android:background="@drawable/player_listview_bgr"
+                android:choiceMode="none"
+                android:id="@+id/listView" />
+
+    </RelativeLayout>
+
+    <include
+            android:id="@+id/includeControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            layout="@layout/control" />
+</LinearLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+    >
+    <TextView
+            android:id="@+id/section"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="2dip"
+            android:paddingBottom="2dip"
+            android:paddingLeft="5dip"
+            android:textColor="@android:color/darker_gray"
+            android:textStyle="bold"
+            android:background="#323232"
+            style="?android:attr/listSeparatorTextViewStyle" android:singleLine="true"/>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/row_bgr"
+                android:padding="10dp">
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" android:id="@+id/relativeLayout"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:focusable="false"
+            android:clickable="true">
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkBox"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:focusable="false"
+                android:clickable="false"
+                />
+    </RelativeLayout>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="1"
+            android:lines="2"
+            android:textColor="#F6FFFF"
+            android:id="@+id/textView" android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" android:layout_toLeftOf="@+id/relativeLayout"
+
+            android:singleLine="false" android:gravity="center_vertical" android:textStyle="bold"/>
+</RelativeLayout>
+</LinearLayout>

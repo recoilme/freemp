@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:background="@drawable/stroke"
+                android:layout_height="90dp">
+
+    <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:id="@+id/album_img"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            />
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_toRightOf="@+id/album_img"
+
+            android:layout_alignTop="@+id/album_img"
+            android:padding="5dp">
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="79dp"
+                android:layout_alignParentTop="true" android:layout_toRightOf="@+id/imageView"
+                android:layout_above="@+id/relativeLayout" android:gravity="center_vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewArttist"
+                    android:textColor="@color/text_header"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewTitle"
+                    android:layout_alignLeft="@+id/textViewArttist"
+                    android:layout_below="@+id/textViewArttist"/>
+        </RelativeLayout>
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true" android:gravity="center_vertical"
+                android:id="@+id/relativeLayout">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewDur"
+                    android:paddingLeft="2dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            <SeekBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/DeafultPlayingSeekBar"
+                    android:id="@+id/seekBar"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignTop="@+id/textViewDur"
+                    android:layout_toLeftOf="@+id/textViewDur"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

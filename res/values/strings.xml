@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FreeAmp</string>
+
+    <!-- Playlist -->
+    <string name="save">Select &amp; Close</string>
+    <string name="select_pls">Select tracks please</string>
+
+    <!-- Player -->
+    <string name="open_ms">Open Media Store</string>
+    <string name="open_fs">Open File System</string>
+    <string name="createNewPlaylist">All your songs must belong to us!\nMay i scan your file system now?</string>
+    <string name="shuffle_is">Shuffle is:</string>
+    <string name="flurry">TT2CP65VTX9TN8S5D7ZV</string>
+    <string name="dlg_choosedir_title">Select folder with music or press OK</string>
+    <string name="setup_scandir">Setup scan directory</string>
+    <string name="open_gm">Open Google Music</string>
+    <string name="info_google_music">Gooogle Play Music - it is service for uploading and listening music anywhere. You must
+        have Active account on google play music for listening tracks via FreeAmp. FreAmp support only playing tracks -  uploaded by You.
+    </string>
+    <string name="error">Error</string>
+    <string name="set_as_ringtone">Track was set as ringtone</string>
+    <string name="contextmenu_setasringtone">Set current track as ringtone?</string>
+    <string name="find_aw">Find Artworks</string>
+
+</resources>
