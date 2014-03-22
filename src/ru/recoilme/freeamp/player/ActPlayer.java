@@ -348,8 +348,8 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
 
     private void shuffleItemsList(){
         synchronized (this) {
-            if(sourceItemsList != null &&
-                    sourceItemsList.size() > 2){
+            if(sourceItemsList != null /*&&
+                    sourceItemsList.size() > 2*/){
                 items = new ArrayList<ClsTrack>(sourceItemsList);
                 if(mBoundService.isShuffle()){
                     Collections.shuffle(items, randomGenerator);
