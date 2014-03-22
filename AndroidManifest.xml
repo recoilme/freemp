@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="ru.recoilme.freeamp"
-        android:versionCode="122"
-        android:versionName="1.2.2">
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
+        android:versionCode="123"
+        android:versionName="1.2.3">
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -41,6 +41,19 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-        <service android:name="ru.recoilme.freeamp.player.ServicePlayer"/>
+        <service android:name="ru.recoilme.freeamp.player.ServicePlayer">
+            <intent-filter>
+                <action android:name="ru.recoilme.freeamp.player.action.TOGGLE_PLAYBACK" />
+                <action android:name="ru.recoilme.freeamp.player.action.PLAY" />
+                <action android:name="ru.recoilme.freeamp.player.action.PAUSE" />
+                <action android:name="ru.recoilme.freeamp.player.action.SKIP" />
+                <action android:name="ru.recoilme.freeamp.player.action.REWIND" />
+                <action android:name="ru.recoilme.freeamp.player.action.STOP" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.android.musicplayer.action.URL" />
+                <data android:scheme="http" />
+            </intent-filter>
+                </service>
     </application>
 </manifest>

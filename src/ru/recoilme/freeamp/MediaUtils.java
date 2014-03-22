@@ -183,7 +183,7 @@ public class MediaUtils {
                 // Set the system setting to make this the current ringtone
                 cursor.moveToFirst();
                 Settings.System.putString(resolver, Settings.System.RINGTONE, ringUri.toString());
-                String message = context.getString(R.string.set_as_ringtone, cursor.getString(2));
+                String message = context.getString(R.string.set_as_ringtone) + cursor.getString(2);
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         } finally {

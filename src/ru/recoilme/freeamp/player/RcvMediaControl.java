@@ -32,6 +32,12 @@ public class RcvMediaControl extends BroadcastReceiver {
             {
                 case KeyEvent.KEYCODE_MEDIA_STOP:
                 case KeyEvent.KEYCODE_HEADSETHOOK:
+                case KeyEvent.KEYCODE_MEDIA_PLAY:
+                    sendMessage(context,"play");
+                    break;
+                case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                    sendMessage(context,"play");
+                    break;
                 case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 
                     sendMessage(context,"play");
@@ -43,7 +49,6 @@ public class RcvMediaControl extends BroadcastReceiver {
                     sendMessage(context,"prev");
                     break;
                 case KeyEvent.KEYCODE_VOLUME_UP:
-                    AQUtility.debug("VOLUMEUP");
                     sendMessage(context,"voup");
                     break;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:

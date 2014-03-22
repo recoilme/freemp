@@ -5,15 +5,18 @@
 
 package ru.recoilme.freeamp.player;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
-import android.os.AsyncTask;
-import android.os.Binder;
-import android.os.Handler;
-import android.os.IBinder;
+import android.media.MediaMetadataRetriever;
+import android.media.RemoteControlClient;
+import android.media.RemoteController;
+import android.os.*;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import com.androidquery.util.AQUtility;
@@ -22,9 +25,7 @@ import com.faceture.google.play.PlayClientBuilder;
 import com.faceture.google.play.PlaySession;
 import com.flurry.android.FlurryAgent;
 import com.un4seen.bass.BASS;
-import ru.recoilme.freeamp.ClsTrack;
-import ru.recoilme.freeamp.FileUtils;
-import ru.recoilme.freeamp.NotificationUtils;
+import ru.recoilme.freeamp.*;
 import ru.recoilme.freeamp.playlist.MakePlaylistFS;
 
 import java.io.File;
@@ -32,7 +33,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ServicePlayer extends Service {
+public class ServicePlayer extends Service implements AudioManager.OnAudioFocusChangeListener {
 
 
 	// Notification
@@ -66,6 +67,11 @@ public class ServicePlayer extends Service {
         this.activityStarted = activityStarted;
     }
 
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        AQUtility.debug("focus change");
+    }
+
     // Bass Service Binder Class
 	public class BassServiceBinder extends Binder {
 		public ServicePlayer getService() {
@@ -78,7 +84,6 @@ public class ServicePlayer extends Service {
     //TrackList
     private ArrayList<ClsTrack> tracks = new ArrayList<ClsTrack>();
 
-    //
     ClsTrack currentTrack = null;
 
     private PlaySession playSession = null;
@@ -91,6 +96,11 @@ public class ServicePlayer extends Service {
 
     // Activity with implemented BassInterface
 	private InterfacePlayer activity;
+    private int width,height;
+
+    // our RemoteControlClient object, which will use remote control APIs available in
+    // SDK level >= 14, if they're available.
+    RemoteControlClient remoteControlClient = null;
 	
 	// Set Activity
 	public void setActivity(InterfacePlayer activity) {
@@ -111,7 +121,7 @@ public class ServicePlayer extends Service {
     public long startVolumeUpFlag;
     private boolean activityStarted;
     private boolean isUnpluggedFlag;
-	
+
 	// Bass Service Binder
 	private final IBinder mBinder = new BassServiceBinder();
 
@@ -144,7 +154,8 @@ public class ServicePlayer extends Service {
         }
     };
 
-	@Override
+
+    @Override
 	public void onCreate() {
 		super.onCreate();
 
@@ -186,11 +197,34 @@ public class ServicePlayer extends Service {
 
 
         mAudioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
+                        AudioManager.AUDIOFOCUS_GAIN);
+        ComponentName rcvMedia = new ComponentName(getPackageName(), RcvMediaControl.class.getName());
+        mAudioManager.registerMediaButtonEventReceiver(rcvMedia);
 
-        mAudioManager.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), RcvMediaControl.class.getName()));
+        // Use the remote control APIs (if available) to set the playback state
+        if (android.os.Build.VERSION.SDK_INT >= 14 && remoteControlClient == null) {
+            registerRemoteControl(rcvMedia);
+        }
 	}
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    void registerRemoteControl(ComponentName rcvMedia) {
+        mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        mediaButtonIntent.setComponent(rcvMedia);
+        PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                0, mediaButtonIntent, 0);
+        remoteControlClient = new RemoteControlClient(mediaPendingIntent);
 
+        remoteControlClient.setTransportControlFlags(
+                RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
+                        RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+                        RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
+        );
+        mAudioManager.registerRemoteControlClient(remoteControlClient);
+    }
 
     public void updateTrackList(){
         String fileName = "tracks";
@@ -269,6 +303,9 @@ public class ServicePlayer extends Service {
         if (mAudioManager != null) {
             mAudioManager.unregisterMediaButtonEventReceiver(new ComponentName(getPackageName(), RcvMediaControl.class.getName()));
         }
+        if (android.os.Build.VERSION.SDK_INT >= 14 && remoteControlClient != null) {
+            unregisterRemoteControl();
+        }
 		// "free" the output device and all plugins
 		BASS.BASS_Free();
 		BASS.BASS_PluginFree(0);
@@ -279,6 +316,11 @@ public class ServicePlayer extends Service {
 
 		super.onDestroy();
 	}
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    void unregisterRemoteControl() {
+        mAudioManager.unregisterRemoteControlClient(remoteControlClient);
+    }
 
     final BASS.SYNCPROC EndSync=new BASS.SYNCPROC() {
         public void SYNCPROC(int handle, int channel, int data, Object user) {
@@ -368,7 +410,41 @@ public class ServicePlayer extends Service {
 		
 		// Start foreground
         fireNotification();
-	}
+
+        //Remote control
+        if (android.os.Build.VERSION.SDK_INT >= 14 && remoteControlClient != null) {
+            updateRemoteControl();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    void updateRemoteControlState(int state) {
+        remoteControlClient.setPlaybackState(state);
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    void updateRemoteControl() {
+        updateRemoteControlState(RemoteControlClient.PLAYSTATE_PLAYING);
+
+        remoteControlClient.setTransportControlFlags(
+                RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
+                        RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
+                        RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
+                        RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+
+        // Update the remote controls
+        remoteControlClient.editMetadata(true)
+                .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentTrack.getArtist())
+                .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, currentTrack.getAlbum())
+                .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, currentTrack.getTitle())
+                .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION,
+                        currentTrack.getDuration())
+                        // TODO: fetch real item artwork
+                .putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK,
+                        MediaUtils.getArtworkQuick(this,currentTrack.getAlbumId(),800,1000))
+
+                .apply();
+    }
 
     private void fireNotification() {
         notification = NotificationUtils.getNotification(this, pendIntent, tracks.get(position), isPlaying());
@@ -479,6 +555,8 @@ public class ServicePlayer extends Service {
             stop();
         }
     }
+
+
 	
 	// Seek to position
 	public void seekTo(int progress) {
@@ -493,6 +571,10 @@ public class ServicePlayer extends Service {
         if(activity != null) {
             activity.onUpdatePlayPause();
         }
+        // Tell any remote controls that our playback state is 'paused'.
+        if (remoteControlClient != null) {
+            updateRemoteControlState(RemoteControlClient.PLAYSTATE_PAUSED);
+        }
     }
 
     public void stop() {
@@ -501,6 +583,11 @@ public class ServicePlayer extends Service {
         if(activity != null) {
             activity.onUpdatePlayPause();
         }
+        if (remoteControlClient != null) {
+            updateRemoteControlState(RemoteControlClient.PLAYSTATE_STOPPED);
+
+        }
+
     }
 
     public void stopUpdateProgress() {
@@ -534,6 +621,7 @@ public class ServicePlayer extends Service {
         if(activity != null) {
             activity.onUpdatePlayPause();
         }
+        updateRemoteControlState(RemoteControlClient.PLAYSTATE_PLAYING);
     }
 
 
