@@ -6,22 +6,30 @@ Based on BASS library.
 
 **FreeMp can:**
 
+- Very good sound quality
 - Smart organization of folders by Artists, Albums, Years & Tracknumbers.
-- Not guzzle battery
+- Custom mediascanner and tags reader
+- Don't guzzle battery
+- No more 100500 settings (it's just work)
 - Play music uploaded on Google Music
 - Smart coverart finder
+- LockScreen Widget (4.2)
+- Play/Pause on headphones unplug
+- Next track on volume up press (work if volume on max)
+- Mediabuttons on headphones (single press on play - play/pause, double - next track)
+- Always free and opensource
 
 **Supported formats:**
 
-- mp3
-- flac
-- ogg, oga
-- aac
-- m4a, m4b ,m4p
-- opus
-- wma, wav
-- mpc
-- ape
+- Ordinal formats (.mp3;.ogg;.oga;.wav;)
+- Free Lossless Audio Codec (.flac;)
+- AAC (.aac;.mp4;.m4a;.m4b;*.m4p;)
+- Monkey's Audio (.ape;)
+- MusePack (.mpc;)
+- Apple Lossless (.mp4;.m4a;.m4b;.m4p;)
+- Speex (*.wav;.oga;.ogg;)
+- Need more formats? Write me
+- May be added (.mp2;.mp1;.aif;.aiff;.aifc;.mo3;.xm;.mod;.s3m;.it;.mtm;.umx;.midi;.mid;.mus;.rmi;.kar;.wv;.wvc;.mpp;.mp+;.spx;)
 
 **Contribute:**
 
