@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.support.v4.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,7 @@ public class AdpArtworks extends BaseAdapter {
         this.data = data;
         this.activity = activity;
 
-        int iDisplayWidth = activity.getResources().getDisplayMetrics().widthPixels ;
+        int iDisplayWidth= PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext()).getInt("screenWidth",800);
         int numColumns = (iDisplayWidth / 310);
         int width = (iDisplayWidth / numColumns);
         layoutParams= new AbsListView.LayoutParams(width,width);
