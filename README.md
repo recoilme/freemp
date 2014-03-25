@@ -1,31 +1,27 @@
-# Free Android Media Player (FreeAmp)
+# Free Media Player (FreeMp)
+(android port)
 
 Free Android Media Player with minimalistic interface.
 Based on BASS library.
 
-**FreeAmp can:**
+**FreeMp can:**
 
 - Smart organization of folders by Artists, Albums, Years & Tracknumbers.
-- Not guzzle battery)
+- Not guzzle battery
 - Play music uploaded on Google Music
-- Smart cover art finder
+- Smart coverart finder
 
 **Supported formats:**
 
 - mp3
 - flac
-- ogg
-- oga
+- ogg, oga
 - aac
-- m4a
-- m4b
-- m4p
+- m4a, m4b ,m4p
 - opus
-- wma
-- wav
+- wma, wav
 - mpc
 - ape
-- your favorite format
 
 **Contribute:**
 
@@ -33,7 +29,7 @@ It is an open source player and you're welcome to contribute.
 
 **Apk file:**
 
-[Latest stable apk file](https://bitbucket.org/recoilme/freeamp/downloads/freeamp.apk)
+[Latest stable apk file](https://github.com/recoilme/freemp/blob/master/freemp.apk)
 
 **Get it on Google Play:**
 
@@ -41,8 +37,8 @@ It is an open source player and you're welcome to contribute.
 
 **Screenshots:**
 
-![Screenshot](https://bitbucket.org/recoilme/freeamp/raw/master/screen1.png)![Screenshot](https://bitbucket.org/recoilme/freeamp/raw/master/screen2.png)
-![Screenshot](https://bitbucket.org/recoilme/freeamp/raw/master/screen3.png)
+![Screenshot](https://github.com/recoilme/freemp/blob/master/screen1.png)![Screenshot](https://github.com/recoilme/freemp/blob/master/screen2.png)
+![Screenshot](https://github.com/recoilme/freemp/blob/master/screen3.png)
 
 **Troubleshooting:**
 
