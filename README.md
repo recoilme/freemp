@@ -14,7 +14,7 @@ Based on BASS library.
 - Play music uploaded on Google Music
 - Smart coverart finder
 - LockScreen Widget (4.2)
-- Play/Pause on headphones unplug
+- Play/Pause on headphones plug/unplug
 - Next track on volume up press (work if volume on max)
 - Mediabuttons on headphones (single press on play - play/pause, double - next track)
 - Always free and opensource
