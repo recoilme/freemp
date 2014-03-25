@@ -7,7 +7,7 @@ Based on BASS library.
 **FreeMp can:**
 
 - Very good sound quality
-- Smart organization of folders by Artists, Albums, Years & Tracknumbers.
+- Smart organization of your library with sort by Artists - Folders & Albums - Years - Tracknumbers.
 - Custom mediascanner and tags reader
 - Don't guzzle battery
 - No more 100500 settings (it's just work)
