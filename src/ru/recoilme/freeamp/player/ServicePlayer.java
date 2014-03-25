@@ -17,6 +17,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
 import android.media.RemoteController;
 import android.os.*;
+import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import com.androidquery.util.AQUtility;
@@ -96,7 +97,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
     // Activity with implemented BassInterface
 	private InterfacePlayer activity;
-    private int width,height;
+    public static int screenHeight, screenWidth;
 
     // our RemoteControlClient object, which will use remote control APIs available in
     // SDK level >= 14, if they're available.
@@ -178,6 +179,10 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 		if(activity != null) {
 			activity.onPluginsLoaded(plugins);
 		}
+
+        //screen
+        screenHeight= PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt("screenHeight",1000);
+        screenWidth= PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt("screenWidth",800);
 		
 		// Pending Intend
 		Intent intent = new Intent(this, ActPlayer.class);
@@ -441,7 +446,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         currentTrack.getDuration())
                         // TODO: fetch real item artwork
                 .putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK,
-                        MediaUtils.getArtworkQuick(this,currentTrack.getAlbumId(),800,1000))
+                        MediaUtils.getArtworkQuick(this,currentTrack.getAlbumId(),screenWidth,screenHeight))
 
                 .apply();
     }

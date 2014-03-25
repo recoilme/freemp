@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,6 +94,9 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         setContentView(R.layout.view_player);
 
         activity = this;
+        Display display = getWindowManager().getDefaultDisplay();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("screenWidth",display.getWidth()).commit();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("screenHeight",display.getHeight()).commit();
         aq = new AQuery(activity);
         if(randomGenerator == null){
             Time now = new Time();
