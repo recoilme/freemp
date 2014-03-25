@@ -427,10 +427,10 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
         updateRemoteControlState(RemoteControlClient.PLAYSTATE_PLAYING);
 
         remoteControlClient.setTransportControlFlags(
-                RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
-                        RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
-                        RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
-                        RemoteControlClient.FLAG_KEY_MEDIA_STOP);
+                RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
+                RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
+                        RemoteControlClient.FLAG_KEY_MEDIA_NEXT
+                        );
 
         // Update the remote controls
         remoteControlClient.editMetadata(true)
