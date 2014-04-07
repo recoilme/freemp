@@ -24,6 +24,7 @@ import com.flurry.android.FlurryAgent;
 import me.piebridge.curl.Demo;
 import ru.recoilme.freeamp.*;
 import ru.recoilme.freeamp.artworks.ActArtworks;
+import ru.recoilme.freeamp.freemp.org.ActFreemporg;
 import ru.recoilme.freeamp.playlist.ActPlaylist;
 import ru.recoilme.freeamp.playlist.ViewLogin;
 
@@ -591,7 +592,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     private void showContextMenu(View anchorView,final ClsTrack o) {
 
         List<String> menuMusic = new ArrayList<String>();
-        //menuMusic.add(activity.getString(R.string.tab_search)+": "+o.getArtist());
+        menuMusic.add(activity.getString(R.string.search)+": "+o.getArtist());
         menuMusic.add(activity.getString(R.string.contextmenu_setasringtone));
 
 
@@ -610,6 +611,12 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
                 popup.dismiss();
                 switch (position){
                     case 0:
+                        Intent intent = new Intent(activity,ActFreemporg.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("q",o.getArtist());
+                        startActivity(intent);
+                        break;
+                    case 1:
                         MediaUtils.setRingtone(activity,o);
                         break;
                 }

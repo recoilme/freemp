@@ -22,5 +22,6 @@
     <string name="set_as_ringtone">Track was set as ringtone</string>
     <string name="contextmenu_setasringtone">Set current track as ringtone?</string>
     <string name="find_aw">Find Artworks</string>
+    <string name="search">Search for</string>
 
 </resources>

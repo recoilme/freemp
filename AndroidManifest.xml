@@ -28,7 +28,13 @@
         </activity>
         <activity android:name="ru.recoilme.freeamp.playlist.ViewLogin"
                   android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name=".artworks.ActArtworks"
+        <activity android:name="ru.recoilme.freeamp.artworks.ActArtworks"
+                  android:configChanges="keyboardHidden|orientation|screenSize">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="ru.recoilme.mielophone.player.ViewPlayer" />
+        </activity>
+        <activity android:name="ru.recoilme.freeamp.freemp.org.ActFreemporg"
                   android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
