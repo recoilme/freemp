@@ -3,6 +3,7 @@ package ru.recoilme.freeamp.freemp.org;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +13,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.*;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.*;
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
@@ -25,10 +28,7 @@ import ru.recoilme.freeamp.artworks.AdpArtworks;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by recoil on 26.01.14.
@@ -76,6 +76,20 @@ public class ActFreemporg extends ActionBarActivity {
         progressBar.setVisibility(View.GONE);
         webView = new WebView(activity);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient() {
+                 @Override
+                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                     if (Uri.parse(url).getHost().contains("freemp.org")) {
+                         // This is my web site, so do not override; let my WebView load the page
+                         return false;
+                     }
+                     // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
+                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                     startActivity(intent);
+                     return true;
+                 }
+             }
+        );
         ViewGroup.LayoutParams layoutParams2 = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         webView.setLayoutParams(layoutParams2);
         linearLayout.addView(progressBar);
@@ -101,8 +115,7 @@ public class ActFreemporg extends ActionBarActivity {
         refreshing = true;
         //раскручиваем колесеко
         setRefreshActionButtonState();
-
-        webView.loadUrl("http://freemp.org/artist/search?q="+Uri.encode(q));
+        webView.loadUrl("http://freemp.org/artist/s?q="+Uri.encode(q)+"&l="+(Locale.getDefault().getLanguage().contains("ru")?"ru":"en"));
         refreshing = false;
         setRefreshActionButtonState();
     }
