@@ -20,6 +20,7 @@ import android.os.*;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import com.androidquery.util.AQUtility;
 import com.faceture.google.play.PlayClient;
 import com.faceture.google.play.PlayClientBuilder;
@@ -179,7 +180,8 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 		if(activity != null) {
 			activity.onPluginsLoaded(plugins);
 		}
-
+        BASS.BASS_SetConfig(BASS.BASS_CONFIG_BUFFER,1000);
+        Log.w("BASS.BASS_CONFIG_BUFFER",""+BASS.BASS_GetConfig(BASS.BASS_CONFIG_BUFFER));
         //screen
         screenHeight= PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt("screenHeight",1000);
         screenWidth= PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt("screenWidth",800);
