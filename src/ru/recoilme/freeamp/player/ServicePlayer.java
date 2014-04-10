@@ -453,7 +453,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
     }
 
     private void fireNotification() {
-        notification = NotificationUtils.getNotification(this, pendIntent, tracks.get(position), isPlaying());
+        notification = NotificationUtils.getNotification(this, pendIntent, (tracks!=null && tracks.size()>0)?tracks.get(position):null, isPlaying());
         startForeground(1, notification);
     }
 
@@ -628,6 +628,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
             activity.onUpdatePlayPause();
         }
         updateRemoteControlState(RemoteControlClient.PLAYSTATE_PLAYING);
+        fireNotification();
     }
 
 
@@ -748,7 +749,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         if (isUnpluggedFlag && isPaused()) {
                             isUnpluggedFlag = false;
                             playFromPause();
-                            fireNotification();
+
                         }
 
                         break;
