@@ -156,7 +156,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
         }
     };
 
-
     @Override
 	public void onCreate() {
 		super.onCreate();
@@ -512,7 +511,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
         } else if("vodn".equals(action)){
             volumeDown();
         }
-
+        fireNotification();
         return START_NOT_STICKY;
     }
 
@@ -749,6 +748,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         if (isUnpluggedFlag && isPaused()) {
                             isUnpluggedFlag = false;
                             playFromPause();
+                            fireNotification();
                         }
 
                         break;
