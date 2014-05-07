@@ -627,7 +627,9 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
         if(activity != null) {
             activity.onUpdatePlayPause();
         }
-        updateRemoteControlState(RemoteControlClient.PLAYSTATE_PLAYING);
+        if (remoteControlClient != null) {
+            updateRemoteControlState(RemoteControlClient.PLAYSTATE_PLAYING);
+        }
         fireNotification();
     }
 
