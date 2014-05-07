@@ -60,7 +60,8 @@ public class AdpArtworks extends BaseAdapter {
         this.activity = activity;
 
         int iDisplayWidth= PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext()).getInt("screenWidth",800);
-        int numColumns = (iDisplayWidth / 310);
+        int numColumns = (int)(iDisplayWidth / 310);
+        if (numColumns==0) numColumns =1;
         int width = (iDisplayWidth / numColumns);
         layoutParams= new AbsListView.LayoutParams(width,width);
 
