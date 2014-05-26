@@ -11,11 +11,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.*;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
-import android.media.RemoteController;
 import android.os.*;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
@@ -27,13 +25,15 @@ import com.faceture.google.play.PlayClientBuilder;
 import com.faceture.google.play.PlaySession;
 import com.flurry.android.FlurryAgent;
 import com.un4seen.bass.BASS;
-import ru.recoilme.freeamp.*;
+import ru.recoilme.freeamp.ClsTrack;
+import ru.recoilme.freeamp.FileUtils;
+import ru.recoilme.freeamp.MediaUtils;
+import ru.recoilme.freeamp.NotificationUtils;
 import ru.recoilme.freeamp.playlist.MakePlaylistFS;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class ServicePlayer extends Service implements AudioManager.OnAudioFocusChangeListener {
 
@@ -439,16 +439,16 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         );
 
         // Update the remote controls
-        remoteControlClient.editMetadata(true)
+        Bitmap bitmap = MediaUtils.getArtworkQuick(this, currentTrack.getAlbumId(), screenWidth, screenHeight);
+        if (bitmap == null) {
+            bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
+        }
+        remoteControlClient.editMetadata(false)
                 .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentTrack.getArtist())
                 .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, currentTrack.getAlbum())
                 .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, currentTrack.getTitle())
-                .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION,
-                        currentTrack.getDuration())
-                        // TODO: fetch real item artwork
-                .putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK,
-                        MediaUtils.getArtworkQuick(this,currentTrack.getAlbumId(),screenWidth,screenHeight))
-
+                .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION,currentTrack.getDuration())
+                .putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap)
                 .apply();
     }
 
