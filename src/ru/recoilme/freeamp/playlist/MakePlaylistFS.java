@@ -168,6 +168,9 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                             }
                         }
                     }
+                    if (duration==0) {
+                        duration = (int)BASS.BASS_ChannelBytes2Seconds(chan, BASS.BASS_ChannelGetLength(chan, BASS.BASS_POS_BYTE));
+                    }
                     add2list(tagsArray[0],tagsArray[1],tagsArray[2],tagsArray[3],tagsArray[4],tagsArray[5].trim(),
                             path,folder,lastModified,pathArray[pathArray.length-1],duration,albumId);
 
