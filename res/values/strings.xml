@@ -24,4 +24,7 @@
     <string name="find_aw">Find Artworks</string>
     <string name="search">Search for</string>
 
+    <string name="tab_folders">folders</string>
+    <string name="tab_albums">albums</string>
+
 </resources>

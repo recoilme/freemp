@@ -5,6 +5,7 @@
           android:alphabeticShortcut="f"
           android:orderInCategory="2"
           FreeAmp:showAsAction="never" />
+    <!--
     <item android:id="@+id/menu_open_gm"
           android:title="@string/open_gm"
           android:alphabeticShortcut="g"
@@ -15,4 +16,5 @@
           android:alphabeticShortcut="a"
           android:orderInCategory="4"
           FreeAmp:showAsAction="never" />
+          -->
 </menu>

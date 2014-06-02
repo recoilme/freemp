@@ -1,34 +1,23 @@
 package ru.recoilme.freeamp.freemp.org;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.*;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.*;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import com.androidquery.AQuery;
-import com.androidquery.util.AQUtility;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import ru.recoilme.freeamp.*;
-import ru.recoilme.freeamp.artworks.AdpArtworks;
+import ru.recoilme.freeamp.ClsTrack;
+import ru.recoilme.freeamp.R;
+import ru.recoilme.freeamp.playlist.albums.AdpArtworks;
 
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by recoil on 26.01.14.

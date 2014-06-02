@@ -4,42 +4,31 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.internal.widget.ListPopupWindow;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
 import com.faceture.google.play.PlaySession;
 import com.flurry.android.FlurryAgent;
-import me.piebridge.curl.Demo;
-import ru.recoilme.freeamp.*;
-import ru.recoilme.freeamp.artworks.ActArtworks;
+import com.nhaarman.listviewanimations.widget.DynamicListView;
+import ru.recoilme.freeamp.ClsTrack;
+import ru.recoilme.freeamp.FileUtils;
+import ru.recoilme.freeamp.MediaUtils;
+import ru.recoilme.freeamp.R;
 import ru.recoilme.freeamp.freemp.org.ActFreemporg;
 import ru.recoilme.freeamp.playlist.ActPlaylist;
 import ru.recoilme.freeamp.playlist.ViewLogin;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.TimeZone;
-
-import com.nhaarman.listviewanimations.swinginadapters.prepared.AlphaInAnimationAdapter;
-import com.nhaarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
-import com.nhaarman.listviewanimations.widget.DynamicListView;
+import java.util.*;
 
 
 /**
@@ -451,6 +440,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
             case R.id.menu_open_fs:
                 startPlaylist(1);
                 return true;
+            /*
             case R.id.menu_open_gm:
                 startPlaylist(2);
                 return true;
@@ -459,7 +449,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 return true;
-
+            */
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="ru.recoilme.freeamp"
-        android:versionCode="128"
-        android:versionName="1.2.8">
+        android:versionCode="129"
+        android:versionName="1.2.9">
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -28,7 +28,7 @@
         </activity>
         <activity android:name="ru.recoilme.freeamp.playlist.ViewLogin"
                   android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name="ru.recoilme.freeamp.artworks.ActArtworks"
+        <activity android:name=".playlist.albums.ActArtworks"
                   android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"

@@ -35,7 +35,7 @@ public class FileUtils {
             t = (Object) os.readObject();
             os.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return t;
     }

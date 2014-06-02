@@ -1,4 +1,4 @@
-package ru.recoilme.freeamp.artworks;
+package ru.recoilme.freeamp.playlist.albums;
 
 import android.app.Activity;
 import android.content.ContentResolver;
