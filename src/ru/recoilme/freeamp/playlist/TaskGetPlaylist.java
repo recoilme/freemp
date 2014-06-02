@@ -39,8 +39,6 @@ public class TaskGetPlaylist extends AsyncTask {
                 return (new MakePlaylistMS(activity,refresh)).getArrTracks();
             case Constants.TYPE_FS:
                 return new MakePlaylistFS(activity,refresh).getArrTracks();
-            case Constants.TYPE_GM:
-                return new MakePlaylistGM(activity,refresh).getArrTracks();
             default:
                 return new MakePlaylistMS(activity,refresh).getArrTracks();
         }

@@ -20,9 +20,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.androidquery.util.AQUtility;
-import com.faceture.google.play.PlayClient;
-import com.faceture.google.play.PlayClientBuilder;
-import com.faceture.google.play.PlaySession;
 import com.flurry.android.FlurryAgent;
 import com.un4seen.bass.BASS;
 import ru.recoilme.freeamp.ClsTrack;
@@ -32,7 +29,6 @@ import ru.recoilme.freeamp.NotificationUtils;
 import ru.recoilme.freeamp.playlist.MakePlaylistFS;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 
 public class ServicePlayer extends Service implements AudioManager.OnAudioFocusChangeListener {
@@ -88,7 +84,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
     ClsTrack currentTrack = null;
 
-    private PlaySession playSession = null;
     //currentPosition
     private int position = 0;
 
@@ -235,7 +230,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
     public void updateTrackList(){
         String fileName = "tracks";
         tracks = (ArrayList<ClsTrack>)FileUtils.readObject("tracks",getApplicationContext());
-        playSession = (PlaySession)FileUtils.readObject("playSession",getApplicationContext());
     }
 
     public void updateTrackList(ArrayList<ClsTrack> data){
@@ -354,45 +348,16 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
             onPlayError("empty");
             return;
         }
-        if (path.startsWith("gmid:")) {
-            String[] href = {
-                    path.replace("gmid:","")
-            };
-            try {
-                path = (String) new GetGMStream().execute(href).get();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (path==null) {
-                onPlayError("null");
-                return;
-            }
-            AQUtility.debug("getSongStream", path);
-            //int c = BASS.BASS_StreamCreateURL(url, 0, BASS.BASS_STREAM_STATUS, StatusProc, r);
-            BASS.BASS_StreamFree(chan);
-            if ((chan=BASS.BASS_StreamCreateURL(path, 0, 0, null, 0))==0) {
 
-                onPlayError("gmid");
+        BASS.BASS_StreamFree(chan);
+        if ((chan=BASS.BASS_StreamCreateFile(path, 0, 0, 0))==0) {
+            onPlayError(path);
 
-                // Stop Foreground
-                //stopForeground(true);
+            // Stop Foreground
+            stopForeground(true);
 
-                return;
-            }
+            return;
         }
-        else {
-            BASS.BASS_StreamFree(chan);
-            if ((chan=BASS.BASS_StreamCreateFile(path, 0, 0, 0/*BASS.BASS_SAMPLE_LOOP*/))==0) {
-
-                onPlayError(path);
-
-                // Stop Foreground
-                stopForeground(true);
-
-                return;
-            }
-        }
-
 		// Play File
         int result = BASS.BASS_ChannelSetSync(chan, BASS.BASS_SYNC_END, 0, EndSync, 0);
         //ByteBuffer byteBuffer = (ByteBuffer)BASS.BASS_ChannelGetTags(chan, BASS.BASS_TAG_ID3V2);
@@ -656,28 +621,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
         if (currVolume<0)
             currVolume = 0;
         am.setStreamVolume(AudioManager.STREAM_MUSIC,currVolume,AudioManager.FLAG_SHOW_UI);
-    }
-
-    public class GetGMStream extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-            try {
-                //String deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
-                //        Settings.Secure.ANDROID_ID);
-                PlayClient playClient = new PlayClientBuilder().create();
-                if (playSession==null) {
-                    playSession = (PlaySession)FileUtils.readObject("playSession",getApplicationContext());
-                }
-
-                URI uri = playClient.getPlayURI(((String) params[0]), playSession);
-
-                return uri.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 
     public class UpdateAllFiles extends AsyncTask {

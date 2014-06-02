@@ -15,11 +15,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.faceture.google.play.LoginResponse;
-import com.faceture.google.play.PlayClient;
-import com.faceture.google.play.PlayClientBuilder;
-import com.faceture.google.play.PlaySession;
-import ru.recoilme.freeamp.FileUtils;
 import ru.recoilme.freeamp.NotificationUtils;
 import ru.recoilme.freeamp.R;
 
@@ -189,13 +184,6 @@ public class ViewLogin extends Activity {
         @Override
         protected String doInBackground(Void... params) {
             try {
-
-                PlayClient playClient = new PlayClientBuilder().create();
-                LoginResponse loginResponse = playClient.login(mEmail, mPassword);
-                PlaySession playSession = loginResponse.getPlaySession();
-                if (!FileUtils.writeObject("playSession", getApplicationContext(),playSession)) {
-                    return "Error";
-                }
             } catch (Exception e) {
                 return e.toString();
             }

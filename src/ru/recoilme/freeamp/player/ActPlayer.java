@@ -16,7 +16,6 @@ import android.view.*;
 import android.widget.*;
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
-import com.faceture.google.play.PlaySession;
 import com.flurry.android.FlurryAgent;
 import com.nhaarman.listviewanimations.widget.DynamicListView;
 import ru.recoilme.freeamp.ClsTrack;
@@ -25,7 +24,6 @@ import ru.recoilme.freeamp.MediaUtils;
 import ru.recoilme.freeamp.R;
 import ru.recoilme.freeamp.freemp.org.ActFreemporg;
 import ru.recoilme.freeamp.playlist.ActPlaylist;
-import ru.recoilme.freeamp.playlist.ViewLogin;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -309,14 +307,6 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     }
 
     public void startPlaylist(int type) {
-        if (type==2) {
-            PlaySession playSession = (PlaySession) FileUtils.readObject("playSession", getApplicationContext());
-            if (playSession==null) {
-                startActivityForResult(new Intent(ActPlayer.this, ViewLogin.class), LOGIN_RESULT);
-                return;
-            }
-        }
-
         Intent intent = new Intent(activity,ActPlaylist.class);
         intent.putExtra("type",type);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -440,16 +430,6 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
             case R.id.menu_open_fs:
                 startPlaylist(1);
                 return true;
-            /*
-            case R.id.menu_open_gm:
-                startPlaylist(2);
-                return true;
-            case R.id.menu_find_aw:
-                Intent intent = new Intent(activity,ActArtworks.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-            */
         }
         return super.onOptionsItemSelected(item);
     }
