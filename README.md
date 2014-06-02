@@ -11,7 +11,6 @@ Based on BASS library.
 - Custom mediascanner and tags reader
 - Don't guzzle battery
 - No more 100500 settings (it's just work)
-- Play music uploaded on Google Music
 - Smart coverart finder
 - LockScreen Widget (4.2)
 - Play/Pause on headphones plug/unplug
