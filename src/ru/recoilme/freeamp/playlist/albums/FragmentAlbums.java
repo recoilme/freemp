@@ -11,7 +11,7 @@ import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
 import ru.recoilme.freeamp.ClsTrack;
 import ru.recoilme.freeamp.Constants;
-import ru.recoilme.freeamp.FillMediaStoreTracks;
+import ru.recoilme.freeamp.FileUtils;
 import ru.recoilme.freeamp.playlist.ActPlaylist;
 import ru.recoilme.freeamp.playlist.TaskGetAlbums;
 
@@ -108,7 +108,9 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
                 ClsTrack track = (ClsTrack) adapter.getItem(position);
                 final String album = track.getAlbum();
                 final String artist = track.getArtist();
-                ArrayList<ClsTrack> tracks = new FillMediaStoreTracks(activity).getTracks();
+                ArrayList<ClsTrack> tracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", activity);
+
+
                 ArrayList<ClsTrack> tracksFiltered = new ArrayList<ClsTrack>();
                 for(ClsTrack t: tracks) {
                     if (t.getAlbum().equals(album) && t.getArtist().equals(artist)) {

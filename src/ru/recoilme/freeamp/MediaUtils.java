@@ -50,6 +50,7 @@ public class MediaUtils {
             ParcelFileDescriptor fd = null;
             try {
                 fd = res.openFileDescriptor(uri, "r");
+
                 int sampleSize = 1;
 
                 // Compute the closest power-of-two scale factor

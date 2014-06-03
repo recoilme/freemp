@@ -1,23 +1,15 @@
 package ru.recoilme.freeamp.playlist;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import com.androidquery.util.AQUtility;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import ru.recoilme.freeamp.*;
+import ru.recoilme.freeamp.ClsTrack;
+import ru.recoilme.freeamp.FileUtils;
+import ru.recoilme.freeamp.GetHttpData;
+import ru.recoilme.freeamp.MediaUtils;
 
-import java.io.*;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -48,153 +40,161 @@ public class TaskGetAlbums extends AsyncTask {
         if (null == activity) {
             return null;
         }
-        ArrayList<ClsTrack> allTracks = null;
-
-        FillMediaStoreTracks fillMediaStoreTracks = new FillMediaStoreTracks(activity);
-        allTracks =  fillMediaStoreTracks.getTracks();
-
-        if (allTracks == null) {
-            return new ArrayList<ClsTrack>();
+        ArrayList<ClsTrack> albumsTracks = new ArrayList<ClsTrack>();
+        if (!refresh) {
+            albumsTracks = (ArrayList<ClsTrack>) FileUtils.readObject("albumsTracks",activity);
+            if (albumsTracks!=null && albumsTracks.size()>0) {
+                return albumsTracks;
+            }
+            albumsTracks = new ArrayList<ClsTrack>();
         }
+
+        ArrayList<ClsArrTrack> arrTracks = new MakePlaylistFS(activity, refresh).getArrTracks();
+
         //выкидываем все дубликаты альбомов
         //сортируем по альбому
-        Collections.sort(allTracks, new Comparator<ClsTrack>() {
-            @Override
-            public int compare(ClsTrack lhs, ClsTrack rhs) {
-                return lhs.getAlbum().toLowerCase().compareTo(rhs.getAlbum().toLowerCase());
-            }
-        });
+        for (ClsArrTrack t:arrTracks) {
+            ArrayList<ClsTrack> allTracks = t.getPlaylists();
 
+            //Создаем итератор и выкидываем дубли
+            Iterator<ClsTrack> iterator = allTracks.iterator();
+            String album = "";
 
+            GetHttpData getHttpData = null;
+            int total = allTracks.size();
+            int step = 0;
+            newArtworksCounter = 0;
+            while (iterator.hasNext()) {
 
-        //Создаем итератор и выкидываем дубли
-        Iterator<ClsTrack> iterator = allTracks.iterator();
-        String album = "";
+                publishProgress((int) (100 * step / total));
+                step++;
 
-        GetHttpData getHttpData = null;
-        int total = allTracks.size();
-        int step = 0;
-        newArtworksCounter = 0;
-        while (iterator.hasNext()) {
-
-            publishProgress((int) (100 * step / total));
-            step++;
-
-            ClsTrack track = iterator.next();
-            final String currentAlbum = track.getAlbum().toLowerCase();
-            if (currentAlbum.equals(album)) {
-                iterator.remove();
-            }
-            else {
-                album = currentAlbum;
-                if (!refresh) {
-                    continue;
+                ClsTrack track = iterator.next();
+                final String currentAlbum = ""+track.getAlbum().toLowerCase();
+                if (currentAlbum.equals(album) || currentAlbum.equals("") || track.getAlbumId()<=0) {
+                    iterator.remove();
                 }
-                if (MediaUtils.getArtworkQuick(activity, track.getAlbumId(), 300, 300)!=null) {
-                    continue;
-                }
-
-                String url = String.format("http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=0cb75104931acd7f44f571ed12cff105&artist=%s&album=%s&format=json", Uri.encode(track.getArtist()),Uri.encode(currentAlbum));
-                getHttpData = new GetHttpData();
-                getHttpData.setUrl(url);
-                getHttpData.request();
-                String result = new String(getHttpData.getByteArray());
-                AQUtility.debug("result", result);
-                String albumArtImageLink = "";
-                if (result!=null) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                        jsonObject = jsonObject.getJSONObject("album");
-                        JSONArray image = jsonObject.getJSONArray("image");
-                        for (int i=0;i<image.length();i++) {
-                            jsonObject = image.getJSONObject(i);
-                            if (jsonObject.getString("size").equals("extralarge")) {
-                                albumArtImageLink = Uri.decode(jsonObject.getString("#text"));
-
-                                AQUtility.debug(track.getArtist()+":"+currentAlbum,albumArtImageLink);
+                else {
+                    album = currentAlbum;
+                    if (track.getArtist().toLowerCase().contains("coil")) {
+                        AQUtility.debug("coil",currentAlbum);
+                    }
+                    if (MediaUtils.getArtworkQuick(activity, track.getAlbumId(), 300, 300)!=null) {
+                        boolean skip = false;
+                        for (ClsTrack clsTrack:albumsTracks) {
+                            if (clsTrack.getAlbum().toLowerCase().equals(track.getAlbum().toLowerCase())) {
+                                skip = true;
+                                continue;
                             }
                         }
-                        if (!albumArtImageLink.equals("")) {
-                            //download image
-                            getHttpData = new GetHttpData();
-                            getHttpData.setUrl(albumArtImageLink);
-                            getHttpData.request();
+                        if (!skip) {
+                            albumsTracks.add(track);
+                        }
+                        continue;
+                    }/*
+                    String url = String.format("http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=0cb75104931acd7f44f571ed12cff105&artist=%s&album=%s&format=json", Uri.encode(track.getArtist()),Uri.encode(currentAlbum));
+                    getHttpData = new GetHttpData();
+                    getHttpData.setUrl(url);
+                    getHttpData.request();
+                    String result = new String(getHttpData.getByteArray());
+                    AQUtility.debug("result", result);
+                    String albumArtImageLink = "";
+                    if (result!=null) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            jsonObject = jsonObject.getJSONObject("album");
+                            JSONArray image = jsonObject.getJSONArray("image");
+                            for (int i=0;i<image.length();i++) {
+                                jsonObject = image.getJSONObject(i);
+                                if (jsonObject.getString("size").equals("extralarge")) {
+                                    albumArtImageLink = Uri.decode(jsonObject.getString("#text"));
 
-                            ContentResolver res = activity.getContentResolver();
-                            Bitmap bm = BitmapFactory.decodeByteArray(getHttpData.getByteArray(), 0, getHttpData.getByteArray().length);
-                            if (bm != null) {
-                                // Put the newly found artwork in the database.
-                                // Note that this shouldn't be done for the "unknown" album,
-                                // but if this method is called correctly, that won't happen.
+                                    AQUtility.debug(track.getArtist()+":"+currentAlbum,albumArtImageLink);
+                                }
+                            }
+                            if (!albumArtImageLink.equals("")) {
+                                //download image
+                                getHttpData = new GetHttpData();
+                                getHttpData.setUrl(albumArtImageLink);
+                                getHttpData.request();
 
-                                // first write it somewhere
-                                String file = Environment.getExternalStorageDirectory()
-                                        + "/albumthumbs/" + String.valueOf(System.currentTimeMillis());
-                                if (FileUtils.ensureFileExists(file)) {
-                                    try {
-                                        OutputStream outstream = new FileOutputStream(file);
-                                        if (bm.getConfig() == null) {
-                                            bm = bm.copy(Bitmap.Config.RGB_565, false);
-                                            if (bm == null) {
-                                                //return getDefaultArtwork(context);
+                                ContentResolver res = activity.getContentResolver();
+                                Bitmap bm = BitmapFactory.decodeByteArray(getHttpData.getByteArray(), 0, getHttpData.getByteArray().length);
+                                if (bm != null) {
+                                    // Put the newly found artwork in the database.
+                                    // Note that this shouldn't be done for the "unknown" album,
+                                    // but if this method is called correctly, that won't happen.
+
+                                    // first write it somewhere
+                                    String file = Environment.getExternalStorageDirectory()
+                                            + "/albumthumbs/" + String.valueOf(System.currentTimeMillis());
+                                    if (FileUtils.ensureFileExists(file)) {
+                                        try {
+                                            OutputStream outstream = new FileOutputStream(file);
+                                            if (bm.getConfig() == null) {
+                                                bm = bm.copy(Bitmap.Config.RGB_565, false);
+                                                if (bm == null) {
+                                                    //return getDefaultArtwork(context);
+                                                }
                                             }
-                                        }
-                                        boolean success = bm.compress(Bitmap.CompressFormat.JPEG, 75, outstream);
-                                        outstream.close();
-                                        bm.recycle();
-                                        if (success) {
-                                            ContentValues values = new ContentValues();
-                                            values.put("album_id", track.getAlbumId());
-                                            values.put("_data", file);
-                                            Uri newuri = res.insert(MediaUtils.sArtworkUri, values);
-                                            if (newuri == null) {
-                                                // Failed to insert in to the database. The most likely
-                                                // cause of this is that the item already existed in the
-                                                // database, and the most likely cause of that is that
-                                                // the album was scanned before, but the user deleted the
-                                                // album art from the sd card.
-                                                // We can ignore that case here, since the media provider
-                                                // will regenerate the album art for those entries when
-                                                // it detects this.
-                                                success = false;
+                                            boolean success = bm.compress(Bitmap.CompressFormat.JPEG, 75, outstream);
+                                            outstream.close();
+                                            bm.recycle();
+                                            if (success) {
+                                                ContentValues values = new ContentValues();
+                                                values.put("album_id", track.getAlbumId());
+                                                values.put("_data", file);
+                                                Uri newuri = res.insert(MediaUtils.sArtworkUri, values);
+                                                if (newuri == null) {
+                                                    // Failed to insert in to the database. The most likely
+                                                    // cause of this is that the item already existed in the
+                                                    // database, and the most likely cause of that is that
+                                                    // the album was scanned before, but the user deleted the
+                                                    // album art from the sd card.
+                                                    // We can ignore that case here, since the media provider
+                                                    // will regenerate the album art for those entries when
+                                                    // it detects this.
+                                                    success = false;
+                                                }
+                                                else {
+                                                    newArtworksCounter++;
+                                                }
                                             }
-                                            else {
-                                                newArtworksCounter++;
+                                            if (!success) {
+                                                File f = new File(file);
+                                                f.delete();
+                                                iterator.remove();
                                             }
+                                        } catch (FileNotFoundException e) {
+                                            AQUtility.debug( "error creating file", e);
+                                        } catch (IOException e) {
+                                            AQUtility.debug( "error creating file", e);
                                         }
-                                        if (!success) {
-                                            File f = new File(file);
-                                            f.delete();
-                                            iterator.remove();
-                                        }
-                                    } catch (FileNotFoundException e) {
-                                        AQUtility.debug( "error creating file", e);
-                                    } catch (IOException e) {
-                                        AQUtility.debug( "error creating file", e);
                                     }
                                 }
                             }
+                            else {
+                                //art not found
+
+                                iterator.remove();
+                            }
                         }
-                        else {
-                            //art not found
+                        catch (Exception e) {
 
                             iterator.remove();
+                            e.printStackTrace();
                         }
                     }
-                    catch (Exception e) {
-
-                        iterator.remove();
-                        e.printStackTrace();
+                    else {
+                        AQUtility.debug("info",getHttpData.getInfo());
+                        AQUtility.debug("err",getHttpData.getError());
                     }
-                }
-                else {
-                    AQUtility.debug("info",getHttpData.getInfo());
-                    AQUtility.debug("err",getHttpData.getError());
+                    */
                 }
             }
         }
-        System.gc();
-        return allTracks;
+        FileUtils.writeObject("albumsTracks",activity,albumsTracks);
+        return albumsTracks;
     }
 
     protected void onPostExecute(Object result) {
