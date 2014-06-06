@@ -412,6 +412,15 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
             }
         }
     }
+    /*
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem item= menu.findItem(action_settings);
+        item.setVisible(false);
+        return true;
+    }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

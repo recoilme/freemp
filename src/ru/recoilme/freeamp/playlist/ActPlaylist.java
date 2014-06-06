@@ -19,16 +19,14 @@ import android.view.WindowManager;
 import android.widget.Toast;
 import com.androidquery.AQuery;
 import com.flurry.android.FlurryAgent;
-import ru.recoilme.freeamp.ClsTrack;
-import ru.recoilme.freeamp.Constants;
-import ru.recoilme.freeamp.FileUtils;
-import ru.recoilme.freeamp.R;
+import ru.recoilme.freeamp.*;
 import ru.recoilme.freeamp.playlist.albums.FragmentAlbums;
 import ru.recoilme.freeamp.playlist.folders.FragmentFolders;
 import ru.recoilme.freeamp.view.SlidingTabLayout;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -119,7 +117,7 @@ public class ActPlaylist extends ActionBarActivity {
         Fragment fragment = adpPagerAdapter.getItem(mViewPager.getCurrentItem());
         if (fragment!=null) {
             if (fragment instanceof FragmentFolders) {
-                playlistFragment.update(activity, type, refresh);
+                playlistFragment.update(activity, Constants.TYPE_FS, refresh);
             }
             if (fragment instanceof FragmentAlbums) {
                 albumsFragment.update(activity, 1, refresh);
@@ -160,36 +158,20 @@ public class ActPlaylist extends ActionBarActivity {
         if (scanDir.equals("")) {
             final File primaryExternalStorage = Environment.getExternalStorageDirectory();
             String defaultScanDir = primaryExternalStorage.toString();
-            File secondaryExternalStorage = primaryExternalStorage;
-            final String state = Environment.getExternalStorageState();
-
-            if ( Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state) ) {  // we can read the External Storage...
-
-                //Retrieve the External Storages root directory:
-                final String externalStorageRootDir;
-                if ( (externalStorageRootDir = primaryExternalStorage.getParent()) == null ) {
-                }
-                else {
-                    final File externalStorageRoot = new File( externalStorageRootDir );
-                    final File[] files = externalStorageRoot.listFiles();
-
-                    for ( final File file : files ) {
-                        if ( file.isDirectory() && file.canRead() && (file.listFiles().length > 0) ) {
-                            // it is a real directory (not a USB drive)...
-                            if (!file.getAbsolutePath().equals(primaryExternalStorage.getAbsolutePath())) {
-                                defaultScanDir = file.getParent();
+            if (android.os.Build.VERSION.SDK_INT >= 9) {
+                try {
+                    List<StorageUtils.StorageInfo> list = StorageUtils.getStorageList();
+                    if (list.size()>1) {
+                        for (StorageUtils.StorageInfo storageInfo: list) {
+                            if (storageInfo.internal == false) {
+                                defaultScanDir = storageInfo.path;
+                                break;
                             }
                         }
                     }
                 }
+                catch (Exception e) {}
             }
-            //Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
-
-            //String defaultScanDir = secondaryExternalStorage.toString();//Environment.getExternalStorageDirectory().toString();
-
-            //if (externalLocations.get(FileUtils.EXTERNAL_SD_CARD)!=null && !externalLocations.get(FileUtils.EXTERNAL_SD_CARD).toString().equals("")) {
-            //    defaultScanDir = externalLocations.get(FileUtils.EXTERNAL_SD_CARD).toString();
-            //}
 
             DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity,dialogResult,
                     defaultScanDir);

@@ -12,6 +12,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import com.androidquery.AQuery;
+import com.androidquery.util.AQUtility;
 import ru.recoilme.freeamp.ClsTrack;
 import ru.recoilme.freeamp.Constants;
 import ru.recoilme.freeamp.FileUtils;
@@ -133,6 +134,12 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
                 progressBar.setProgress(progress);
             }
         });
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        AQUtility.debug("onResume", "Albums");
 
     }
 }

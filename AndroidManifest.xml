@@ -3,7 +3,7 @@
         package="ru.recoilme.freeamp"
         android:versionCode="130"
         android:versionName="1.3.0">
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="11"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
