@@ -34,8 +34,6 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="ru.recoilme.mielophone.player.ViewPlayer" />
         </activity>
-        <activity android:name="me.piebridge.curl.Demo"
-                  android:configChanges="keyboardHidden|orientation|screenSize"/>
         <receiver android:name=".player.RcvMediaControl">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
