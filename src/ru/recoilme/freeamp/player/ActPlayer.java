@@ -490,14 +490,18 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String f = "mm:ss";
-                if (progress>=3600d) {
-                    f = "HH:mm:ss";
-                }
+                //String f = "mm:ss";
                 int sec = (int)progress;
                 int min = sec / 60;
                 sec %= 60;
-                txtDur.setText(String.format("%2d:%02d", min, sec));
+                if (progress>=3600d) {
+                    //f = "HH:mm:ss";
+                    txtDur.setText(String.format("%2d:%2d:%02d",((int)sec / 3600), min, sec));
+                }
+                else {
+                    txtDur.setText(String.format("%2d:%02d", min, sec));
+                }
+
                 //txtDur.setText(new SimpleDateFormat(f) {{
                 //    setTimeZone(TimeZone.getTimeZone("UTC"));
                 //    }}.format(new Date((int)progress*1000)));
