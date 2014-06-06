@@ -12,7 +12,6 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import com.androidquery.AQuery;
-import com.androidquery.util.AQUtility;
 import ru.recoilme.freeamp.ClsTrack;
 import ru.recoilme.freeamp.Constants;
 import ru.recoilme.freeamp.FileUtils;
@@ -103,7 +102,6 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
     public void OnTaskResult(Object result) {
         if (null!=result && isAdded()) {
             ArrayList<ClsTrack> allTracks = (ArrayList<ClsTrack>) result;
-            AQUtility.debug("Alb OnTaskResult",allTracks.size());
             applyAdapter(allTracks);
             if (progressBar.getVisibility()==View.VISIBLE) {
                 progressBar.setVisibility(View.GONE);

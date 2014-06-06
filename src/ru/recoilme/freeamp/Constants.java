@@ -9,4 +9,5 @@ public final class Constants {
     public static final int TYPE_GM = 2;
     public static final int NUM_ITEMS = 2;
     public static final String KEY_TITLE = "title";
+    public static final boolean DEBUG = false;
 }

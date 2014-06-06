@@ -19,7 +19,6 @@ import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.androidquery.util.AQUtility;
 import com.flurry.android.FlurryAgent;
 import com.un4seen.bass.BASS;
 import ru.recoilme.freeamp.ClsTrack;
@@ -67,7 +66,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
     @Override
     public void onAudioFocusChange(int focusChange) {
-        AQUtility.debug("focus change");
+
     }
 
     // Bass Service Binder Class
@@ -370,7 +369,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
 		// Notify Activity
 		if(activity != null) {
-            AQUtility.debug("Playing title:",currentTrack.getTitle());
 			activity.onFileLoaded(currentTrack, this.duration,
                     currentTrack.getArtist(),
                     currentTrack.getTitle(),position,
@@ -425,7 +423,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
-        AQUtility.debug("!", action);
         if ("play".equals(action)) {
             if (mediabtnLastEventTime == 0) {
                 mediabtnLastEventTime = System.currentTimeMillis();
@@ -585,7 +582,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
         return BASS.BASS_ACTIVE_PAUSED ==BASS.BASS_ChannelIsActive(chan);
     }
     public void playFromPause() {
-        AQUtility.debug("playFromPause");
         BASS.BASS_ChannelPlay(chan, false);
         startUpdateProgress();
         // Notify activity
@@ -640,7 +636,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            AQUtility.debug("ACTION",intent.getAction()+":");
+
         }
     }
     private class MyBroadcastReceiver extends BroadcastReceiver {
@@ -650,8 +646,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
             if (intent==null) {
                 return;
             }
-
-            AQUtility.debug("ACTION",intent.getAction()+":");
             if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)){
                 //on power disconnect scan for new files
                 new UpdateAllFiles().execute(new ArrayList<String>());

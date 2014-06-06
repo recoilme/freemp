@@ -184,7 +184,6 @@ public class ActPlaylist extends ActionBarActivity {
                 }
             }
             //Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
-            //AQUtility.debug(externalLocations.get(FileUtils.SD_CARD),externalLocations.get(FileUtils.EXTERNAL_SD_CARD));
 
             //String defaultScanDir = secondaryExternalStorage.toString();//Environment.getExternalStorageDirectory().toString();
 

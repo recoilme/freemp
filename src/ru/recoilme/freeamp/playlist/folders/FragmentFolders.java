@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import com.androidquery.AQuery;
-import com.androidquery.util.AQUtility;
 import ru.recoilme.freeamp.Constants;
 import ru.recoilme.freeamp.R;
 import ru.recoilme.freeamp.playlist.ActPlaylist;
@@ -53,7 +52,6 @@ public class FragmentFolders extends Fragment implements TaskGetPlaylist.OnTaskG
         items = new ArrayList<ClsArrTrack>();
         adapter = new AdpPlaylist(activity, items);
         listView.setAdapter(adapter);
-        AQUtility.debug("Update","activity created");
     }
 
     @Override

@@ -18,10 +18,7 @@ import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
 import com.flurry.android.FlurryAgent;
 import com.nhaarman.listviewanimations.widget.DynamicListView;
-import ru.recoilme.freeamp.ClsTrack;
-import ru.recoilme.freeamp.FileUtils;
-import ru.recoilme.freeamp.MediaUtils;
-import ru.recoilme.freeamp.R;
+import ru.recoilme.freeamp.*;
 import ru.recoilme.freeamp.freemp.org.ActFreemporg;
 import ru.recoilme.freeamp.playlist.ActPlaylist;
 
@@ -77,7 +74,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_DITHER, WindowManager.LayoutParams.FLAG_DITHER);
 
-        AQUtility.setDebug(true);
+        AQUtility.setDebug(Constants.DEBUG);
 
         setContentView(R.layout.view_player);
 
@@ -392,8 +389,6 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
             if (result!=null) {
 
                 sourceItemsList = (ArrayList<ClsTrack>) result;
-
-                AQUtility.debug("items size:", sourceItemsList.size());
                 adapter.notifyDataSetInvalidated();
                 shuffleItemsList();
             }

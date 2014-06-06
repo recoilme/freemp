@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
-import com.androidquery.util.AQUtility;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.recoilme.freeamp.ClsTrack;
@@ -115,8 +114,6 @@ public class TaskGetAlbums extends AsyncTask {
                                     jsonObject = image.getJSONObject(i);
                                     if (jsonObject.getString("size").equals("extralarge")) {
                                         albumArtImageLink = Uri.decode(jsonObject.getString("#text"));
-
-                                        AQUtility.debug(track.getArtist()+":"+currentAlbum,albumArtImageLink);
                                     }
                                 }
                                 if (!albumArtImageLink.equals("")) {

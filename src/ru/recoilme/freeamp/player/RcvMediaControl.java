@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.view.KeyEvent;
-import com.androidquery.util.AQUtility;
 
 /**
  * Created by recoilme on 21/01/14.
@@ -23,7 +22,6 @@ public class RcvMediaControl extends BroadcastReceiver {
             if (event==null) {
                 return;
             }
-            AQUtility.debug("event_getKeyCode",event.getKeyCode());
             if (event.getAction() != KeyEvent.ACTION_DOWN) {
                 return;
             }
