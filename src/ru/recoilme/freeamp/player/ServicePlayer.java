@@ -104,7 +104,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 		this.activity = activity;
 		if(activity != null) {
 			activity.onPluginsLoaded(plugins);
-			activity.onFileLoaded("", duration, "", "",0,0);
+			activity.onFileLoaded(null, duration, "", "",0,0);
 			activity.onProgressChanged(progress);
 		}
 	}
@@ -371,7 +371,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 		// Notify Activity
 		if(activity != null) {
             AQUtility.debug("Playing title:",currentTrack.getTitle());
-			activity.onFileLoaded(currentTrack.getPath(), this.duration,
+			activity.onFileLoaded(currentTrack, this.duration,
                     currentTrack.getArtist(),
                     currentTrack.getTitle(),position,
                     currentTrack.getAlbumId());
@@ -404,7 +404,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         );
 
         // Update the remote controls
-        Bitmap bitmap = MediaUtils.getArtworkQuick(this, currentTrack.getAlbumId(), screenWidth, screenHeight);
+        Bitmap bitmap = MediaUtils.getArtworkQuick(this, currentTrack, screenWidth, screenHeight);
         if (bitmap == null) {
             bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         }
@@ -509,7 +509,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
         // Notify activity
         if(activity != null) {
-            activity.onFileLoaded(tracks.get(position).getPath(), this.duration, "", "", 0,0);
+            activity.onFileLoaded(tracks.get(position), this.duration, "", "", 0,0);
             activity.onProgressChanged(progress);
             activity.onUpdatePlayPause();
         }

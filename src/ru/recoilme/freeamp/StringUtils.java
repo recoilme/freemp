@@ -39,4 +39,15 @@ public class StringUtils {
                 .append(str.substring(1).toLowerCase())
                 .toString();
     }
+
+    public static String getFileName(ClsTrack track) {
+        final String filename = track.getArtist().toLowerCase().trim()+"_"+track.getAlbum().toLowerCase().trim();
+        StringBuilder builder = new StringBuilder();
+        for (char c : filename.toCharArray()) {
+            if (Character.isJavaIdentifierPart(c)) {
+                builder.append(c);
+            }
+        }
+        return builder.toString();
+    }
 }

@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 import com.androidquery.AQuery;
-import com.androidquery.util.AQUtility;
 import com.flurry.android.FlurryAgent;
 import ru.recoilme.freeamp.ClsTrack;
 import ru.recoilme.freeamp.Constants;
@@ -30,7 +29,6 @@ import ru.recoilme.freeamp.view.SlidingTabLayout;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -160,14 +158,39 @@ public class ActPlaylist extends ActionBarActivity {
 
         scanDir = PreferenceManager.getDefaultSharedPreferences(activity).getString("scanDir","");
         if (scanDir.equals("")) {
-            Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
-            AQUtility.debug(externalLocations.get(FileUtils.SD_CARD),externalLocations.get(FileUtils.EXTERNAL_SD_CARD));
+            final File primaryExternalStorage = Environment.getExternalStorageDirectory();
+            String defaultScanDir = primaryExternalStorage.toString();
+            File secondaryExternalStorage = primaryExternalStorage;
+            final String state = Environment.getExternalStorageState();
 
-            String defaultScanDir = Environment.getExternalStorageDirectory().toString();
+            if ( Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state) ) {  // we can read the External Storage...
 
-            if (externalLocations.get(FileUtils.EXTERNAL_SD_CARD)!=null && !externalLocations.get(FileUtils.EXTERNAL_SD_CARD).toString().equals("")) {
-                defaultScanDir = externalLocations.get(FileUtils.EXTERNAL_SD_CARD).toString();
+                //Retrieve the External Storages root directory:
+                final String externalStorageRootDir;
+                if ( (externalStorageRootDir = primaryExternalStorage.getParent()) == null ) {
+                }
+                else {
+                    final File externalStorageRoot = new File( externalStorageRootDir );
+                    final File[] files = externalStorageRoot.listFiles();
+
+                    for ( final File file : files ) {
+                        if ( file.isDirectory() && file.canRead() && (file.listFiles().length > 0) ) {
+                            // it is a real directory (not a USB drive)...
+                            if (!file.getAbsolutePath().equals(primaryExternalStorage.getAbsolutePath())) {
+                                defaultScanDir = file.getParent();
+                            }
+                        }
+                    }
+                }
             }
+            //Map<String, File> externalLocations = FileUtils.getAllStorageLocations();
+            //AQUtility.debug(externalLocations.get(FileUtils.SD_CARD),externalLocations.get(FileUtils.EXTERNAL_SD_CARD));
+
+            //String defaultScanDir = secondaryExternalStorage.toString();//Environment.getExternalStorageDirectory().toString();
+
+            //if (externalLocations.get(FileUtils.EXTERNAL_SD_CARD)!=null && !externalLocations.get(FileUtils.EXTERNAL_SD_CARD).toString().equals("")) {
+            //    defaultScanDir = externalLocations.get(FileUtils.EXTERNAL_SD_CARD).toString();
+            //}
 
             DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity,dialogResult,
                     defaultScanDir);

@@ -1,12 +1,16 @@
 package ru.recoilme.freeamp.playlist.albums;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
 import ru.recoilme.freeamp.ClsTrack;
@@ -20,7 +24,7 @@ import java.util.ArrayList;
 /**
  * Created by recoil on 02.06.14.
  */
-public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetAlbums{
+public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetAlbums, TaskGetAlbums.OnProgressUpdateMy{
 
     private Activity activity;
     private AQuery aq;
@@ -45,6 +49,25 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
         progressBar.setLayoutParams(layoutParams);
         progressBar.setVisibility(View.GONE);
         gridView = new GridView(activity);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (adapter==null) return;
+                ClsTrack track = (ClsTrack) adapter.getItem(position);
+                final String album = track.getAlbum();
+                final String artist = track.getArtist();
+                ArrayList<ClsTrack> tracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", activity);
+
+
+                ArrayList<ClsTrack> tracksFiltered = new ArrayList<ClsTrack>();
+                for(ClsTrack t: tracks) {
+                    if (t.getAlbum().equals(album) && t.getArtist().equals(artist)) {
+                        tracksFiltered.add(t);
+                    }
+                }
+                ((ActPlaylist)activity).close(tracksFiltered);
+            }
+        });
 
         linearLayout.addView(progressBar);
         linearLayout.addView(gridView);
@@ -62,9 +85,17 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
         update(activity,1,false);
     }
 
-    public void update(Activity activity, int type, boolean refresh) {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateGridView();
+    }
 
-        TaskGetAlbums taskGetAlbums = new TaskGetAlbums(activity,type,refresh, this);
+    public void update(Activity activity, int type, boolean refresh) {
+        if (progressBar.getVisibility()==View.GONE) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        TaskGetAlbums taskGetAlbums = new TaskGetAlbums(activity,type,refresh, this,this);
         taskGetAlbums.execute();
     }
 
@@ -74,51 +105,36 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
             ArrayList<ClsTrack> allTracks = (ArrayList<ClsTrack>) result;
             AQUtility.debug("Alb OnTaskResult",allTracks.size());
             applyAdapter(allTracks);
+            if (progressBar.getVisibility()==View.VISIBLE) {
+                progressBar.setVisibility(View.GONE);
+            }
         }
     }
 
-    void applyAdapter(ArrayList<ClsTrack> tracks) {
-        if (tracks == null) return;
-        adapter = new AdpArtworks(activity,tracks);
+    void updateGridView() {
         int iDisplayWidth = getResources().getDisplayMetrics().widthPixels ;
         int numColumns = iDisplayWidth / 310;
         gridView.setColumnWidth( (iDisplayWidth / numColumns) );
         gridView.setNumColumns(numColumns);
         gridView.setStretchMode( GridView.NO_STRETCH ) ;
-        gridView.setAdapter(adapter);
         gridView.invalidateViews();
-        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+    }
+
+    void applyAdapter(ArrayList<ClsTrack> tracks) {
+        if (tracks == null) return;
+        adapter = new AdpArtworks(activity,tracks);
+        gridView.setAdapter(adapter);
+        updateGridView();
+    }
+
+    @Override
+    public void OnAlbumsProgress(final int progress) {
+        activity.runOnUiThread(new Runnable() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                adapter.setScrollState(scrollState);
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    adapter.notifyDataSetChanged();
-                    gridView.invalidateViews();
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-        });
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ClsTrack track = (ClsTrack) adapter.getItem(position);
-                final String album = track.getAlbum();
-                final String artist = track.getArtist();
-                ArrayList<ClsTrack> tracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", activity);
-
-
-                ArrayList<ClsTrack> tracksFiltered = new ArrayList<ClsTrack>();
-                for(ClsTrack t: tracks) {
-                    if (t.getAlbum().equals(album) && t.getArtist().equals(artist)) {
-                        tracksFiltered.add(t);
-                    }
-                }
-                ((ActPlaylist)activity).close(tracksFiltered);
+            public void run() {
+                progressBar.setProgress(progress);
             }
         });
+
     }
 }

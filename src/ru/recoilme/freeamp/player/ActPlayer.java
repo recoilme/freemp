@@ -451,7 +451,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     }
 
     // BassInterface: onFileLoaded
-    public void onFileLoaded(String file, final double _duration, final String _artist, final String _title,
+    public void onFileLoaded(final ClsTrack track, final double _duration, final String _artist, final String _title,
                              final int position, final int albumId) {
 
 
@@ -470,12 +470,12 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
                 listView.invalidate();
                 Bitmap artwork = null;
                 if (activity!=null && !activity.isFinishing()) {
-                    artwork = MediaUtils.getArtworkQuick(activity, albumId, 180, 180);
+                    artwork = MediaUtils.getArtworkQuick(activity, track, 180, 180);
                 }
                 if (artwork!=null) {
                     albumImage.setImageBitmap(artwork);
                     int min = Math.min(listView.getWidth(),listView.getHeight());
-                    Bitmap bitmap = MediaUtils.getArtworkQuick(activity, albumId, min, min);
+                    Bitmap bitmap = MediaUtils.getArtworkQuick(activity, track, min, min);
                     artworkBgr.setImageBitmap(bitmap);
                 }
                 else {

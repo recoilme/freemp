@@ -14,8 +14,8 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
-import com.androidquery.util.AQUtility;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -29,73 +29,86 @@ import java.io.IOException;
 public class MediaUtils {
 
     public static final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+    public static final String ALBUM_FOLDER = "albumthumbs";
     private static final BitmapFactory.Options sBitmapOptionsCache = new BitmapFactory.Options();
 
 
     // Get album art for specified album. This method will not try to
     // fall back to getting artwork directly from the file, nor will
     // it attempt to repair the database.
-    public static Bitmap getArtworkQuick(Context context, int album_id, int w, int h) {
+    public static Bitmap getArtworkQuick(Context context, ClsTrack track, int w, int h) {
         // NOTE: There is in fact a 1 pixel frame in the ImageView used to
         // display this drawable. Take it into account now, so we don't have to
         // scale later.
-        if (album_id==0) {
-            return null;
+        Bitmap b = null;
+        if (track==null) return null;
+        String path = MediaUtils.getAlbumPath(track);
+        File file = new File(path);
+        if (file.exists()) {
+            b = getBitmap(context, file, null, w, h);
         }
-        //w -= 2; //GOOGOL, что тi делаешь, в космосе? ТЫ ЖЕ ТiGR!!!
-        //h -= 2;
-        ContentResolver res = context.getContentResolver();
-        Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
-        if (uri != null) {
-            ParcelFileDescriptor fd = null;
-            try {
-                fd = res.openFileDescriptor(uri, "r");
-
-                int sampleSize = 1;
-
-                // Compute the closest power-of-two scale factor
-                // and pass that to sBitmapOptionsCache.inSampleSize, which will
-                // result in faster decoding and better quality
-                sBitmapOptionsCache.inJustDecodeBounds = true;
-                BitmapFactory.decodeFileDescriptor(
-                        fd.getFileDescriptor(), null, sBitmapOptionsCache);
-                int nextWidth = sBitmapOptionsCache.outWidth >> 1;
-                int nextHeight = sBitmapOptionsCache.outHeight >> 1;
-                while (nextWidth>w && nextHeight>h) {
-                    sampleSize <<= 1;
-                    nextWidth >>= 1;
-                    nextHeight >>= 1;
-                }
-
-                sBitmapOptionsCache.inSampleSize = sampleSize;
-                sBitmapOptionsCache.inJustDecodeBounds = false;
-                Bitmap b = BitmapFactory.decodeFileDescriptor(
-                        fd.getFileDescriptor(), null, sBitmapOptionsCache);//теперь падает тут)
-
-                if (b != null) {
-                    // finally rescale to exactly the size we need
-                    if (sBitmapOptionsCache.outWidth != w || sBitmapOptionsCache.outHeight != h) {
-                        Bitmap tmp = Bitmap.createScaledBitmap(b, w, h, true);  //тут падало с аут оф мемори
-                        b.recycle();
-                        b = tmp;
-                    }
-                }
-
-                return b;
-            } catch (FileNotFoundException e) {
-                AQUtility.debug("Error", e.toString());
-                //FlurryAgent.onError("3", "3", e);
-                return null;
-            } finally {
-                try {
-                    if (fd != null)
-                        fd.close();
-                } catch (IOException e) {
-                    //FlurryAgent.onError("4", "4", e);
+        else {
+            final int album_id = track.getAlbumId();
+            if (album_id!=0) {
+                Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
+                if (uri != null) {
+                    b = getBitmap(context, null, uri,  w,  h);
                 }
             }
         }
-        return null;
+        return b;
+    }
+
+    public static Bitmap getBitmap(Context context, File file,Uri uri, int w, int h) {
+        ParcelFileDescriptor fd = null;
+        Bitmap b = null;
+        try {
+            if (file!=null) {
+                fd = ParcelFileDescriptor.open(file,ParcelFileDescriptor.MODE_READ_ONLY);
+            }
+            else {
+                ContentResolver res = context.getContentResolver();
+                fd = res.openFileDescriptor(uri, "r");
+            }
+
+            int sampleSize = 1;
+
+            // Compute the closest power-of-two scale factor
+            // and pass that to sBitmapOptionsCache.inSampleSize, which will
+            // result in faster decoding and better quality
+            sBitmapOptionsCache.inJustDecodeBounds = true;
+            BitmapFactory.decodeFileDescriptor(
+                    fd.getFileDescriptor(), null, sBitmapOptionsCache);
+            int nextWidth = sBitmapOptionsCache.outWidth >> 1;
+            int nextHeight = sBitmapOptionsCache.outHeight >> 1;
+            while (nextWidth>w && nextHeight>h) {
+                sampleSize <<= 1;
+                nextWidth >>= 1;
+                nextHeight >>= 1;
+            }
+
+            sBitmapOptionsCache.inSampleSize = sampleSize;
+            sBitmapOptionsCache.inJustDecodeBounds = false;
+            b = BitmapFactory.decodeFileDescriptor(
+                    fd.getFileDescriptor(), null, sBitmapOptionsCache);//теперь падает тут)
+
+            if (b != null) {
+                // finally rescale to exactly the size we need
+                if (sBitmapOptionsCache.outWidth != w || sBitmapOptionsCache.outHeight != h) {
+                    b = Bitmap.createScaledBitmap(b, w, h, true);  //тут падало с аут оф мемори
+
+                }
+            }
+        } catch (FileNotFoundException e) {
+            return null;
+        } finally {
+            try {
+                if (fd != null)
+                    fd.close();
+            } catch (IOException e) {
+            }
+        }
+        return b;
     }
 
     public static void setRingtoneWithCoping(Context context,ClsTrack track)
@@ -206,5 +219,20 @@ public class MediaUtils {
             return null;
         }
 
+    }
+
+    public static String getAlbumPath (ClsTrack track) {
+        final String directoryPath = FileUtils.getSdCardPath()+ALBUM_FOLDER;
+        File directory = new File(directoryPath);
+        boolean success = true;
+        if (!directory.exists()) {
+            success = directory.mkdirs();
+        }
+        if (!success) {
+            return null;
+        }
+        else {
+            return directoryPath +"/"+ StringUtils.getFileName(track)+".jpg";
+        }
     }
 }

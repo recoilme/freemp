@@ -42,7 +42,7 @@ public class NotificationUtils {
         views.setTextViewText(R.id.notifTitle, track.getTitle());
         views.setTextViewText(R.id.notifArtist, track.getArtist());
         //views.setImageViewResource(R.id.notifAlbum,  R.drawable.artwork);
-        Bitmap cover =  MediaUtils.getArtworkQuick(context, track.getAlbumId(), 180, 180);
+        Bitmap cover =  MediaUtils.getArtworkQuick(context, track, 180, 180);
         if (cover != null){
             views.setImageViewBitmap(R.id.notifAlbum, cover);
         }else {
