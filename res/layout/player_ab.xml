@@ -22,7 +22,7 @@
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="79dp"
-                android:layout_alignParentTop="true" android:layout_toRightOf="@+id/imageView"
+                android:layout_alignParentTop="true"
                 android:layout_above="@+id/relativeLayout" android:gravity="center_vertical">
             <TextView
                     android:layout_width="match_parent"

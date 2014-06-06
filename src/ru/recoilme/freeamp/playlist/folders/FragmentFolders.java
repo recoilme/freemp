@@ -103,6 +103,7 @@ public class FragmentFolders extends Fragment implements TaskGetPlaylist.OnTaskG
     public void OnTaskResult(Object result) {
         if (null!=result && isAdded()) {
             items.addAll((ArrayList<ClsArrTrack>) result);
+
             adapter.notifyDataSetChanged();
         }
     }

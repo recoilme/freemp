@@ -2,22 +2,15 @@ package ru.recoilme.freeamp.player;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import ru.recoilme.freeamp.ClsTrack;
 import ru.recoilme.freeamp.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import com.nhaarman.listviewanimations.ArrayAdapter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -89,7 +82,7 @@ public class AdpPlayer extends com.nhaarman.listviewanimations.ArrayAdapter {
         }
 
         ClsTrack currentTrack = (ClsTrack)getItem(position);
-        int sec = currentTrack.getDuration() / 1000;
+        int sec = currentTrack.getDuration();
         int min = sec / 60;
         sec %= 60;
 

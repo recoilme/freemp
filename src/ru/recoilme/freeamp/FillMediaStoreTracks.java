@@ -50,13 +50,14 @@ public class FillMediaStoreTracks  {
                     folder = pathArray[pathArray.length-2];
                 }
 
-                tempAllTracksMediaStore.add(new ClsTrack(cursor.getString(0),
+                tempAllTracksMediaStore.add(new ClsTrack(
+                        cursor.getString(0),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getInt(4),
                         cursor.getInt(5),
-                        cursor.getInt(6),
+                        (cursor.getInt(6)/1000),
                         cursor.getString(7),
                         folder,
                         new File(path).lastModified(),

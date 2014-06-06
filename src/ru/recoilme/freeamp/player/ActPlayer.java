@@ -22,8 +22,10 @@ import ru.recoilme.freeamp.*;
 import ru.recoilme.freeamp.freemp.org.ActFreemporg;
 import ru.recoilme.freeamp.playlist.ActPlaylist;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -492,9 +494,13 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
                 if (progress>=3600d) {
                     f = "HH:mm:ss";
                 }
-                txtDur.setText(new SimpleDateFormat(f) {{
-                    setTimeZone(TimeZone.getTimeZone("UTC"));
-                    }}.format(new Date((int)progress*1000)));
+                int sec = (int)progress;
+                int min = sec / 60;
+                sec %= 60;
+                txtDur.setText(String.format("%2d:%02d", min, sec));
+                //txtDur.setText(new SimpleDateFormat(f) {{
+                //    setTimeZone(TimeZone.getTimeZone("UTC"));
+                //    }}.format(new Date((int)progress*1000)));
 
             }
         });
