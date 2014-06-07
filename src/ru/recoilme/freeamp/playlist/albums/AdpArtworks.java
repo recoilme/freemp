@@ -36,7 +36,7 @@ public class AdpArtworks extends BaseAdapter {
 
         listAq = new AQuery(activity);
 
-        int iDisplayWidth= PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext()).getInt("screenWidth",800);
+        int iDisplayWidth= Math.max(320,PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext()).getInt("screenWidth",800));
         int numColumns = (int)(iDisplayWidth / 310);
         if (numColumns==0) numColumns =1;
         width = (iDisplayWidth / numColumns);

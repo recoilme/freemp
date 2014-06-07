@@ -111,7 +111,7 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
     }
 
     void updateGridView() {
-        int iDisplayWidth = getResources().getDisplayMetrics().widthPixels ;
+        int iDisplayWidth = Math.max(320,getResources().getDisplayMetrics().widthPixels);
         int numColumns = iDisplayWidth / 310;
         gridView.setColumnWidth( (iDisplayWidth / numColumns) );
         gridView.setNumColumns(numColumns);
