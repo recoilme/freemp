@@ -43,9 +43,11 @@ public class MediaUtils {
         Bitmap b = null;
         if (track==null) return null;
         String path = MediaUtils.getAlbumPath(track);
-        File file = new File(path);
-        if (file.exists()) {
-            b = getBitmap(context, file, null, w, h);
+        if (path!=null) {
+            File file = new File(path);
+            if (file.exists()) {
+                b = getBitmap(context, file, null, w, h);
+            }
         }
         else {
             final int album_id = track.getAlbumId();
