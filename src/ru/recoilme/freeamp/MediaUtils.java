@@ -97,8 +97,11 @@ public class MediaUtils {
             if (b != null) {
                 // finally rescale to exactly the size we need
                 if (sBitmapOptionsCache.outWidth != w || sBitmapOptionsCache.outHeight != h) {
-                    b = Bitmap.createScaledBitmap(b, w, h, true);  //тут падало с аут оф мемори
-
+                    Bitmap tmp = Bitmap.createScaledBitmap(b, w, h, true);  //тут падало с аут оф мемори
+                    if (tmp != b) {
+                        b.recycle();
+                    }
+                    b = tmp;
                 }
             }
         } catch (FileNotFoundException e) {

@@ -10,7 +10,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.*;
-import android.graphics.Bitmap;
+import android.graphics.*;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.RemoteControlClient;
@@ -29,6 +29,7 @@ import ru.recoilme.freeamp.playlist.MakePlaylistFS;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ServicePlayer extends Service implements AudioManager.OnAudioFocusChangeListener {
 
@@ -394,7 +395,6 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     void updateRemoteControl() {
         updateRemoteControlState(RemoteControlClient.PLAYSTATE_PLAYING);
-
         remoteControlClient.setTransportControlFlags(
                 RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
                 RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE |
@@ -402,9 +402,49 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         );
 
         // Update the remote controls
-        Bitmap bitmap = MediaUtils.getArtworkQuick(this, currentTrack, screenWidth/2, screenHeight/2);
-        if (bitmap == null) {
-            bitmap = Bitmap.createBitmap(screenWidth/2, screenHeight/2, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = MediaUtils.getArtworkQuick(this, currentTrack, screenWidth/2, screenWidth/2);
+        int redTop = 0, greenTop=0, blueTop = 0,pixelsTop = 0;
+        int redBtm = 0, greenBtm=0, blueBtm = 0,pixelsBtm = 0;
+        int colorTop = 0, colorBtm = 0;
+
+        if (bitmap != null) {
+            int w = bitmap.getWidth();
+            int h = bitmap.getHeight();
+            for (int i=0;i<w;i++) {
+                try {
+                    colorTop = bitmap.getPixel(i, 0);
+                    redTop += Color.red(colorTop);
+                    greenTop += Color.green(colorTop);
+                    blueTop += Color.blue(colorTop);
+                    pixelsTop += 1;
+
+                    colorBtm = bitmap.getPixel(i, h-1);
+                    redBtm += Color.red(colorBtm);
+                    greenBtm += Color.green(colorBtm);
+                    blueBtm += Color.blue(colorBtm);
+                    pixelsBtm += 1;
+                }
+                catch (Exception e) {}
+            }
+            if (pixelsTop>0 && pixelsBtm>0) {
+                colorTop = Color.rgb(redTop / pixelsTop, greenTop / pixelsTop, blueTop / pixelsTop); //EDE7E9
+                colorBtm = Color.rgb(redBtm / pixelsBtm, greenBtm / pixelsBtm, blueBtm / pixelsBtm);
+                Shader shader = new LinearGradient(w/2,0,w/2,h,colorTop,colorBtm,Shader.TileMode.CLAMP);
+                Bitmap bitmapBgr = Bitmap.createBitmap(w, screenHeight/2, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmapBgr);
+                Paint paint = new Paint();
+                paint.setShader(shader);
+                canvas.drawRect(0, 0, w, screenHeight/2, paint);
+                canvas.drawBitmap(bitmap,0,(screenHeight/2-screenWidth/2)/2,null);
+                bitmap.recycle();
+                bitmap = bitmapBgr;
+            }
+        }
+        else {
+            //create random color
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            Random rnd = new Random();
+            bitmap.eraseColor(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)));
         }
         remoteControlClient.editMetadata(true)
                 .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentTrack.getArtist())
