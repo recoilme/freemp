@@ -3,7 +3,6 @@ package ru.recoilme.freeamp;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -65,9 +64,9 @@ public class StorageUtils {
             buf_reader = new BufferedReader(new FileReader("/proc/mounts"));
             String line;
             int cur_display_number = 1;
-            Log.d(TAG, "/proc/mounts");
+            //Log.d(TAG, "/proc/mounts");
             while ((line = buf_reader.readLine()) != null) {
-                Log.d(TAG, line);
+                //Log.d(TAG, line);
                 if (line.contains("vfat") || line.contains("/mnt")) {
                     StringTokenizer tokens = new StringTokenizer(line, " ");
                     String unused = tokens.nextToken(); //device

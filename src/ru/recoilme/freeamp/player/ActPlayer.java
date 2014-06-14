@@ -51,6 +51,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     private ImageView albumImage;
     private ImageView artworkBgr;
     private static Random randomGenerator;
+    private int screenHeight, screenWidth;
 
     // Bass Service
     private ServicePlayer mBoundService = null;
@@ -82,8 +83,10 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
 
         activity = this;
         Display display = getWindowManager().getDefaultDisplay();
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("screenWidth",display.getWidth()).commit();
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("screenHeight",display.getHeight()).commit();
+        screenWidth = display.getWidth();
+        screenHeight = display.getHeight();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("screenWidth",screenWidth).commit();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("screenHeight",screenHeight).commit();
         aq = new AQuery(activity);
         if(randomGenerator == null){
             Time now = new Time();
@@ -475,12 +478,27 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
                 listView.smoothScrollToPosition(position);
                 listView.invalidate();
                 Bitmap artwork = null;
+                /*
+                Drawable drawable = ((ImageView)view).getDrawable();
+                if(drawable instanceof BitmapDrawable)
+                {
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable)drawable;
+                    bitmapDrawable.getBitmap().recycle();
+                }
+
+                final BitmapDrawable aid = ((BitmapDrawable) albumImage.getDrawable());
+                if (aid!=null && aid.getBitmap()!=null) aid.getBitmap().recycle();
+
+                final BitmapDrawable ari = ((BitmapDrawable) artworkBgr.getDrawable());
+                if (ari!=null && ari.getBitmap()!=null) ari.getBitmap().recycle();
+                */
                 if (activity!=null && !activity.isFinishing()) {
                     artwork = MediaUtils.getArtworkQuick(activity, track, 180, 180);
                 }
                 if (artwork!=null) {
+
                     albumImage.setImageBitmap(artwork);
-                    int min = Math.min(listView.getWidth(),listView.getHeight());
+                    int min = Math.min(screenWidth,screenHeight)/2;
                     Bitmap bitmap = MediaUtils.getArtworkQuick(activity, track, min, min);
                     artworkBgr.setImageBitmap(bitmap);
                 }

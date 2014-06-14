@@ -31,7 +31,7 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
 
     //UI
     private GridView gridView;
-    private AdpArtworks adapter;
+    public  AdpArtworks adapter;
     private ProgressBar progressBar;
 
     @Override
@@ -82,7 +82,10 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
         if (args != null) {
             String title = ""+args.getCharSequence(Constants.KEY_TITLE);
         }
-        update(activity,1,false);
+        //ArrayList<ClsTrack> albumsTracks = (ArrayList<ClsTrack>) FileUtils.readObject("albumsTracks", activity);
+        //if (albumsTracks!=null && albumsTracks.size()>0) {
+        OnTaskResult((ArrayList<ClsTrack>) FileUtils.readObject("albumsTracks", activity));
+        //}
     }
 
     @Override

@@ -126,6 +126,8 @@ public class ActPlaylist extends ActionBarActivity {
     }
 
     public AdpPlaylist getAdapter() {
+        return playlistFragment.adapter;
+        /*
         Fragment fragment = adpPagerAdapter.getItem(mViewPager.getCurrentItem());
         if (fragment!=null) {
             if (fragment instanceof FragmentFolders) {
@@ -133,6 +135,7 @@ public class ActPlaylist extends ActionBarActivity {
             }
         }
         return null;
+        */
     }
 
     @Override

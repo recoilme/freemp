@@ -92,7 +92,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
     // Activity with implemented BassInterface
 	private InterfacePlayer activity;
-    public static int screenHeight, screenWidth;
+    private int screenHeight, screenWidth;
 
     // our RemoteControlClient object, which will use remote control APIs available in
     // SDK level >= 14, if they're available.
@@ -402,11 +402,11 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         );
 
         // Update the remote controls
-        Bitmap bitmap = MediaUtils.getArtworkQuick(this, currentTrack, screenWidth, screenHeight);
+        Bitmap bitmap = MediaUtils.getArtworkQuick(this, currentTrack, screenWidth/2, screenHeight/2);
         if (bitmap == null) {
-            bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(screenWidth/2, screenHeight/2, Bitmap.Config.ARGB_8888);
         }
-        remoteControlClient.editMetadata(false)
+        remoteControlClient.editMetadata(true)
                 .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST, currentTrack.getArtist())
                 .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM, currentTrack.getAlbum())
                 .putString(MediaMetadataRetriever.METADATA_KEY_TITLE, currentTrack.getTitle())
@@ -416,7 +416,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
     }
 
     private void fireNotification() {
-        notification = NotificationUtils.getNotification(this, pendIntent, (tracks!=null && tracks.size()>0)?tracks.get(position):null, isPlaying());
+        notification = NotificationUtils.getNotification(this, pendIntent, (tracks!=null && tracks.size()>position)?tracks.get(position):null, isPlaying());
         startForeground(1, notification);
     }
 
