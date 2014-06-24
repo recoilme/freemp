@@ -168,11 +168,11 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
 
         final TextView artist = new TextView(activity);
         artist.setTextAppearance(activity,android.R.attr.textAppearanceMedium);
-        artist.setTextSize(TypedValue.COMPLEX_UNIT_SP,med);
+        artist.setTextSize(TypedValue.COMPLEX_UNIT_PX,med);
         artist.setText(o.getArtist());
 
         final TextView title = new TextView(activity);
-        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, sml);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_PX, sml);
         title.setText(o.getTitle());
 
         linearLayout.addView(artist);
