@@ -31,23 +31,24 @@ public class FillMediaStoreTracks  {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.ALBUM_ID
         };
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    selection,
+                    null,
+                    null);
 
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                null,
-                null);
+            while (cursor!=null && cursor.moveToNext()) {
 
-        while(cursor.moveToNext()) {
-            try {
                 String folder = "";
                 String path = cursor.getString(7);
                 String[] pathArray = path.split(
-                        TextUtils.equals(System.getProperty("file.separator"), "")?"/":System.getProperty("file.separator")
+                        TextUtils.equals(System.getProperty("file.separator"), "") ? "/" : System.getProperty("file.separator")
                 );
-                if (pathArray!=null && pathArray.length>1) {
-                    folder = pathArray[pathArray.length-2];
+                if (pathArray != null && pathArray.length > 1) {
+                    folder = pathArray[pathArray.length - 2];
                 }
 
                 tempAllTracksMediaStore.add(new ClsTrack(
@@ -57,19 +58,26 @@ public class FillMediaStoreTracks  {
                         cursor.getString(3),
                         cursor.getInt(4),
                         cursor.getInt(5),
-                        (cursor.getInt(6)/1000),
+                        (cursor.getInt(6) / 1000),
                         cursor.getString(7),
                         folder,
                         new File(path).lastModified(),
                         cursor.getInt(8)
                 ));
             }
-            catch (Exception e) {
-                FlurryAgent.onError("1", "1", e);
-                e.printStackTrace();
+            if (cursor!=null) {
+                cursor.close();
             }
         }
-        cursor.close();
+        catch (Exception e) {
+            FlurryAgent.onError("1", "1", e.toString());
+            try {
+                cursor.close();
+            }
+            catch (Exception ee) {}
+            //e.printStackTrace();
+        }
+
         FileUtils.writeObject("alltracksms", context, tempAllTracksMediaStore);
     }
 

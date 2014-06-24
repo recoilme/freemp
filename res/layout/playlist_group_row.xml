@@ -14,6 +14,7 @@
             android:paddingLeft="5dip"
             android:textColor="@android:color/darker_gray"
             android:textStyle="bold"
+            android:textSize="@dimen/medium_text"
             android:background="#323232"
             style="?android:attr/listSeparatorTextViewStyle" android:singleLine="true"/>
 
@@ -48,8 +49,10 @@
             android:lines="2"
             android:textColor="#F6FFFF"
             android:id="@+id/textView" android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true" android:layout_toLeftOf="@+id/relativeLayout"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/relativeLayout"
 
-            android:singleLine="false" android:gravity="center_vertical" android:textStyle="bold"/>
+            android:singleLine="false" android:gravity="center_vertical"
+            android:textStyle="bold"/>
 </RelativeLayout>
 </LinearLayout>

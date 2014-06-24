@@ -22,7 +22,7 @@
             android:minHeight="50dp"
             android:text="@string/save"
             android:textStyle="bold"
-
+            android:textSize="@dimen/medium_text"
             android:id="@+id/textViewSave"
             android:gravity="center_vertical|center_horizontal"/>
 

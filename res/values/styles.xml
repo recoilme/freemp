@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="theme" parent="@style/Theme.AppCompat">
-
+        <item name="actionBarSize">90dp</item>
+        <item name="actionBarStyle">@style/player.ActionBarStyle</item>
+        <item name="android:actionBarSize">90dp</item>
+        <item name="android:actionBarStyle">@style/player.ActionBarStyle</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
     <style name="DeafultPlayingSeekBar" parent="android:Widget.SeekBar">
         <item name="android:gravity">center_vertical</item>
@@ -14,10 +18,6 @@
         <item name="android:thumb">@drawable/progress_hundle</item>
     </style>
 
-    <style name="player" parent="@style/Theme.AppCompat">
-        <item name="actionBarSize">90dp</item>
-        <item name="actionBarStyle">@style/player.ActionBarStyle</item>
-    </style>
 
     <style name="player.ActionBarStyle" parent="@style/Widget.AppCompat.ActionBar">
         <item name="android:background">@drawable/ab_bgr</item>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FreeMp</string>
+
+    <!-- Playlist -->
+    <string name="save">Выбрать &amp; Закрыть</string>
+    <string name="select_pls">Выберите треки</string>
+
+    <!-- Player -->
+    <string name="open_fs">Открыть</string>
+    <string name="createNewPlaylist">Могу я просканировать файловую систему сейчас?</string>
+    <string name="shuffle_is">Случайный режим:</string>
+    <string name="dlg_choosedir_title">Выберите папку с музыкой или нажмите OK</string>
+    <string name="setup_scandir">Установить директорию сканирования</string>
+
+    <string name="error">Опс!</string>
+    <string name="set_as_ringtone">Трек установлен как рингтон</string>
+    <string name="contextmenu_setasringtone">Установить трек как рингтон?</string>
+    <string name="find_aw">Найти обложки альбомов</string>
+    <string name="search">Искать</string>
+
+    <string name="tab_folders">ПАПКИ</string>
+    <string name="tab_albums">АЛЬБОМЫ</string>
+    <string name="dir_reset">Некорректная директория. Сброшено</string>
+
+</resources>

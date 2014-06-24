@@ -77,6 +77,12 @@ public class ActPlaylist extends ActionBarActivity {
         dialogResult = new DlgChooseDirectory.Result() {
                     @Override
                     public void onChooseDirectory(String dir) {
+                        if (dir.equals("/")) {
+
+                            final File primaryExternalStorage = Environment.getExternalStorageDirectory();
+                            dir = primaryExternalStorage.toString();
+                            Toast.makeText(activity,R.string.dir_reset+": "+dir,Toast.LENGTH_LONG).show();
+                        }
                         scanDir = dir;
                         PreferenceManager.getDefaultSharedPreferences(activity).edit().putString("scanDir", dir).commit();
                         update(true);
@@ -166,7 +172,7 @@ public class ActPlaylist extends ActionBarActivity {
                     List<StorageUtils.StorageInfo> list = StorageUtils.getStorageList();
                     if (list.size()>1) {
                         for (StorageUtils.StorageInfo storageInfo: list) {
-                            if (storageInfo.internal == false) {
+                            if (storageInfo.internal == false && storageInfo.readonly ==false) {
                                 defaultScanDir = storageInfo.path;
                                 break;
                             }

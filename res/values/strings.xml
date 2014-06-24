@@ -8,8 +8,8 @@
 
     <!-- Player -->
     <string name="open_ms">Open Media Store</string>
-    <string name="open_fs">Open File System</string>
-    <string name="createNewPlaylist">All your songs must belong to us!\nMay i scan your file system now?</string>
+    <string name="open_fs">Open File Store</string>
+    <string name="createNewPlaylist">May i scan your filesystem now?</string>
     <string name="shuffle_is">Shuffle is:</string>
     <string name="flurry">TT2CP65VTX9TN8S5D7ZV</string>
     <string name="dlg_choosedir_title">Select folder with music or press OK</string>
@@ -24,7 +24,8 @@
     <string name="find_aw">Find Artworks</string>
     <string name="search">Search for</string>
 
-    <string name="tab_folders">folders</string>
-    <string name="tab_albums">albums</string>
+    <string name="tab_folders">FOLDERS</string>
+    <string name="tab_albums">ALBUMS</string>
+    <string name="dir_reset">Incorrect directory. Reset to default</string>
 
 </resources>

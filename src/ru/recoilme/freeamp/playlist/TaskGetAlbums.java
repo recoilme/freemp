@@ -87,10 +87,15 @@ public class TaskGetAlbums extends AsyncTask {
                 }
                 else {
                     album = currentAlbum;
+                    boolean stop = false;
                     for (ClsTrack clsTrack:albumsTracks) {
-                        if (clsTrack.getAlbum().toLowerCase().equals(currentAlbum)) {
-                            continue;
+                        if (clsTrack.getAlbum().toLowerCase().equals(album)) {
+                            stop = true;
+                            break;
                         }
+                    }
+                    if (stop) {
+                        continue;
                     }
                     if (MediaUtils.getArtworkQuick(activity, track, 300, 300)!=null) {
                         albumsTracks.add(track);
@@ -100,7 +105,7 @@ public class TaskGetAlbums extends AsyncTask {
                         //noartwork (refresh or first start)
                         String url = String.format("http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=0cb75104931acd7f44f571ed12cff105&artist=%s&album=%s&format=json", Uri.encode(track.getArtist()),Uri.encode(currentAlbum));
                         AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-                        cb.url(url).type(JSONObject.class);
+                        cb.url(url).type(JSONObject.class).fileCache(true).expire(3600 * 60 * 1000);
                         aq.sync(cb);
                         JSONObject result = cb.getResult();
 

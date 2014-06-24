@@ -3,6 +3,7 @@ package ru.recoilme.freeamp.playlist;
 import android.app.Activity;
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -28,9 +29,13 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
     ArrayList<ClsArrTrack> data;
     Activity activity;
     float scale;
+    int med=18,sml=14;
 
     public AdpPlaylist(Activity activity, ArrayList<ClsArrTrack> data){
         this.data = data;
+        med = (int)activity.getResources().getDimension(R.dimen.medium_text);
+        sml = (int)activity.getResources().getDimension(R.dimen.small_text);
+
         this.activity = activity;
         scale = activity.getResources().getDisplayMetrics().density;
     }
@@ -163,10 +168,11 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
 
         final TextView artist = new TextView(activity);
         artist.setTextAppearance(activity,android.R.attr.textAppearanceMedium);
+        artist.setTextSize(TypedValue.COMPLEX_UNIT_SP,med);
         artist.setText(o.getArtist());
 
         final TextView title = new TextView(activity);
-        title.setTextAppearance(activity, android.R.attr.textAppearanceSmall);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, sml);
         title.setText(o.getTitle());
 
         linearLayout.addView(artist);

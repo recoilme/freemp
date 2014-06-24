@@ -38,7 +38,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
         tempAllTracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", context);
         tempAllTracksMediaStore = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksms", context);
 
-        if (tempAllTracksMediaStore == null || tempAllTracksMediaStore.size()==0) {
+        if (refresh || tempAllTracksMediaStore == null || tempAllTracksMediaStore.size()==0) {
             fillMediaStoreTracks = new FillMediaStoreTracks(context);
             tempAllTracksMediaStore =  fillMediaStoreTracks.getTracks();
         }
