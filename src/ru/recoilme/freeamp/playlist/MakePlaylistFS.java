@@ -85,7 +85,9 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                         || endOfPath.equals(".m4a") || endOfPath.equals(".m4b")
                         || endOfPath.equals(".m4p") || endOfPath.equals("opus")
                         || endOfPath.equals(".wma") || endOfPath.equals(".wav")
-                        || endOfPath.equals(".mpc") || endOfPath.equals(".ape")) {
+                        || endOfPath.equals(".mpc") || endOfPath.equals(".ape")
+                        || endOfPath.equals(".alac")
+                        ) {
 
                     //if (path.toLowerCase().contains("mp3") || path.toLowerCase().contains("ogg")) {
                         //continue;
