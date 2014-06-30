@@ -7,12 +7,15 @@ import android.text.TextUtils;
 import com.androidquery.util.AQUtility;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.TAGS;
+import org.mozilla.universalchardet.UniversalDetector;
 import ru.recoilme.freeamp.ClsTrack;
 import ru.recoilme.freeamp.FileUtils;
 import ru.recoilme.freeamp.FillMediaStoreTracks;
 import ru.recoilme.freeamp.StringUtils;
 
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +26,11 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
     private ArrayList<ClsTrack> tempAllTracks,tempAllTracksMediaStore;
     private boolean refresh;
     private FillMediaStoreTracks fillMediaStoreTracks;
+    //base tags for scan
+    private static final int[] formats = {BASS.BASS_TAG_ID3V2,BASS.BASS_TAG_ID3,BASS.BASS_TAG_OGG,BASS.BASS_TAG_APE,BASS.BASS_TAG_MP4};
+
+    //encoding detector
+    UniversalDetector detector;
 
     public MakePlaylistFS(Context context, boolean refresh) {
         super(context,refresh);
@@ -30,7 +38,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
 
     @Override
     public void getAllTracks(Context context, boolean refresh) {
-
+        this.refresh = refresh;
         t = System.currentTimeMillis();
         String scanDir = PreferenceManager.getDefaultSharedPreferences(context).getString("scanDir",Environment.getExternalStorageDirectory().getAbsolutePath());
         File currentDir = new File(scanDir);
@@ -54,6 +62,8 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                     int plug=BASS.BASS_PluginLoad(nativePath+"/"+s, 0);
                 }
             }
+            detector = new UniversalDetector(null);
+
             walk(currentDir);
 
             FileUtils.writeObject("alltracksfs", context, allTracks);
@@ -77,7 +87,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                 String path = f.getAbsolutePath().toString();
 
                 int lengthPath = path.length();
-                if (lengthPath<4) continue;
+                if (lengthPath<4) continue;//file without extension
                 String endOfPath = path.substring(lengthPath-4).toLowerCase();
                 if (endOfPath.equals(".mp3")
                         || endOfPath.equals("flac") || endOfPath.equals(".ogg")
@@ -86,13 +96,9 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                         || endOfPath.equals(".m4p") || endOfPath.equals("opus")
                         || endOfPath.equals(".wma") || endOfPath.equals(".wav")
                         || endOfPath.equals(".mpc") || endOfPath.equals(".ape")
-                        || endOfPath.equals(".alac")
-                        ) {
 
-                    //if (path.toLowerCase().contains("mp3") || path.toLowerCase().contains("ogg")) {
-                        //continue;
-                    //}
-                    if (tempAllTracks !=null && tempAllTracks.size()>0) {
+                        ) {
+                    if (!this.refresh && tempAllTracks !=null && tempAllTracks.size()>0) {
                         ClsTrack track = null;
                         for (ClsTrack t: tempAllTracks) {
                             if (t.getPath().equals(path)) {
@@ -118,42 +124,47 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
 
                     BASS.BASS_StreamFree(chan);
                     chan = BASS.BASS_StreamCreateFile(path, 0, 0, 0);
+                    //check base tags and get encoding
+                    String tags = null;
+                    for (int format=0;format<formats.length;format++) {
+                        final ByteBuffer byteBuffer = (ByteBuffer)TAGS.TAGS_ReadExByte(chan, "%ARTI@%YEAR@%TRCK@%TITL@%ALBM@%COMP" + " ", formats[format]);
 
-                    String tags =""+TAGS.TAGS_Read(chan, "%ARTI@%YEAR@%TRCK@%TITL@%ALBM@%COMP"+" ");
-
-                    if (tags.equals("")) {
-                        if (endOfPath.equals(".ape")) {
-                            tags = "@@@@@ ";//dummy tags for ape
-                        }
-                        else {
+                        final int bufferSize = byteBuffer.capacity();
+                        if (bufferSize<10) {
+                            //so if no tags it return something strange, like this "??" - skip it for optimization
                             continue;
                         }
+                        //byteBuffer dont have array (direct access?), so copy it
+                        final ByteBuffer frameBuf = ByteBuffer.allocate( bufferSize );
+                        frameBuf.put(byteBuffer);
 
+                        detector.handleData(frameBuf.array(), 0, bufferSize);
+                        detector.dataEnd();
+                        final String encoding = detector.getDetectedCharset();
+
+                        try {
+                            tags = new String(frameBuf.array(), 0, bufferSize, Charset.forName(encoding));
+                        }
+                        catch (Exception e) {
+                            AQUtility.debug("Encoding ex",e.toString());
+                        }
+                        finally {
+                            detector.reset();
+                        }
+                    }
+                    if (TextUtils.isEmpty(tags)) {
+                        //it may have tags from http forexample so handle it with default way (utf8 encoding)
+                        tags = TAGS.TAGS_Read(chan, "%UTF8(%ARTI)@%YEAR@%TRCK@%UTF8(%TITL)@%UTF8(%ALBM)@%UTF8(%COMP)" + " ");
+                    }
+
+                    if (TextUtils.isEmpty(tags)) {
+                        continue;
                     }
 
                     String[] tagsArray = tags.split("@");
-                    if (path.toLowerCase().contains(".ogg") && tagsArray[0].equals("") && tagsArray[3].equals("")) {
+                    if (tagsArray==null || tagsArray.length<4) {
                         //это говно какое-то типа музыки из игры скорее всего
                         continue;
-                    }
-                    if (tags.contains("????")) {
-                        //try convert to utf-8
-                        String mask = "%ARTI@%YEAR@%TRCK@%TITL@%ALBM@%COMP";
-                        String[] maskArray = mask.split("@");
-                        mask = "";
-
-                        for (int i=0;i<maskArray.length;i++) {
-                            if (!mask.equals("")) {
-                                mask+="@";
-                            }
-                            if (tagsArray[i].contains("????")) {
-                                mask+="%UTF8("+ maskArray[i] + ")";
-                            }
-                            else {
-                                mask+= maskArray[i];
-                            }
-                        }
-                        tags =""+TAGS.TAGS_Read(chan, mask+" ");
                     }
 
                     tagsArray = tags.split("@");
@@ -173,11 +184,10 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                         duration = (int) (0.5d+BASS.BASS_ChannelBytes2Seconds(chan, BASS.BASS_ChannelGetLength(chan, BASS.BASS_POS_BYTE)));
                     }
 
-                    if (tagsArray.length>=4 && pathArray.length>0) {
+                    if (pathArray.length>0) {
                         add2list(tagsArray[0], tagsArray[1], tagsArray[2], tagsArray[3], tagsArray[4], tagsArray[5].trim(),
                                 path, folder, lastModified, pathArray[pathArray.length - 1], duration, albumId);
                     }
-
                 }
             }
         }
