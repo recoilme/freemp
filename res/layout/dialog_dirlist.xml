@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/editText"
             android:singleLine="true"
+            android:editable="false"
             android:maxLines="1"
             android:scrollHorizontally="true"
             android:ellipsize="end"

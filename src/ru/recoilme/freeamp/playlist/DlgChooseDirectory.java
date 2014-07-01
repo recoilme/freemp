@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.*;
 import ru.recoilme.freeamp.R;
 
@@ -85,7 +84,7 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
         {
             for ( File file : files )
             {
-                if ( !file.isDirectory() )
+                if ( !file.isDirectory() && !file.canWrite())
                     continue;
 
                 m_entries.add( file );

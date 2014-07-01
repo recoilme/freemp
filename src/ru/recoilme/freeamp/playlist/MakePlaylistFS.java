@@ -27,7 +27,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
     private boolean refresh;
     private FillMediaStoreTracks fillMediaStoreTracks;
     //base tags for scan
-    private static final int[] formats = {BASS.BASS_TAG_ID3V2,BASS.BASS_TAG_ID3,BASS.BASS_TAG_OGG,BASS.BASS_TAG_APE,BASS.BASS_TAG_MP4};
+    private static final int[] formats = {BASS.BASS_TAG_ID3V2,BASS.BASS_TAG_OGG,BASS.BASS_TAG_APE,BASS.BASS_TAG_MP4,BASS.BASS_TAG_ID3};
 
     //encoding detector
     UniversalDetector detector;
@@ -40,7 +40,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
     public void getAllTracks(Context context, boolean refresh) {
         this.refresh = refresh;
         t = System.currentTimeMillis();
-        String scanDir = PreferenceManager.getDefaultSharedPreferences(context).getString("scanDir",Environment.getExternalStorageDirectory().getAbsolutePath());
+        String scanDir = PreferenceManager.getDefaultSharedPreferences(context).getString("scanDir",Environment.getExternalStorageDirectory().getAbsolutePath().toString());
         File currentDir = new File(scanDir);
 
         tempAllTracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", context);
@@ -79,8 +79,8 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
         if (list==null) return;
         int chan = 0;
         for (File f : list) {
-            if (f.isDirectory()) {
-
+            if (f.isDirectory() && f.canWrite()) {
+                AQUtility.debug("dir",f.getAbsolutePath().toString());
                 walk(f);
             }
             else {
@@ -126,30 +126,38 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                     chan = BASS.BASS_StreamCreateFile(path, 0, 0, 0);
                     //check base tags and get encoding
                     String tags = null;
-                    for (int format=0;format<formats.length;format++) {
-                        final ByteBuffer byteBuffer = (ByteBuffer)TAGS.TAGS_ReadExByte(chan, "%ARTI@%YEAR@%TRCK@%TITL@%ALBM@%COMP" + " ", formats[format]);
+                    if (android.os.Build.VERSION.SDK_INT >=9) {
+                        for (int format = 0; format < formats.length; format++) {
+                            final ByteBuffer byteBuffer = (ByteBuffer) TAGS.TAGS_ReadExByte(chan, "%ARTI@%YEAR@%TRCK@%TITL@%ALBM@%COMP" + " ", formats[format]);
 
-                        final int bufferSize = byteBuffer.capacity();
-                        if (bufferSize<10) {
-                            //so if no tags it return something strange, like this "??" - skip it for optimization
-                            continue;
-                        }
-                        //byteBuffer dont have array (direct access?), so copy it
-                        final ByteBuffer frameBuf = ByteBuffer.allocate( bufferSize );
-                        frameBuf.put(byteBuffer);
+                            final int bufferSize = byteBuffer.capacity();
+                            if (bufferSize < 10) {
+                                //so if no tags it return something strange, like this "??" - skip it for optimization
+                                continue;
+                            }
+                            //byteBuffer dont have array (direct access?), so copy it
+                            final ByteBuffer frameBuf = ByteBuffer.allocate(bufferSize);
+                            frameBuf.put(byteBuffer);
 
-                        detector.handleData(frameBuf.array(), 0, bufferSize);
-                        detector.dataEnd();
-                        final String encoding = detector.getDetectedCharset();
-
-                        try {
-                            tags = new String(frameBuf.array(), 0, bufferSize, Charset.forName(encoding));
-                        }
-                        catch (Exception e) {
-                            AQUtility.debug("Encoding ex",e.toString());
-                        }
-                        finally {
-                            detector.reset();
+                            detector.handleData(frameBuf.array(), 0, bufferSize);
+                            detector.dataEnd();
+                            final String encoding = detector.getDetectedCharset();
+                            boolean wrongencoding = false;
+                            try {
+                                tags = new String(frameBuf.array(), 0, bufferSize, Charset.forName(encoding));
+                            } catch (Exception e) {
+                                wrongencoding = true;
+                            } finally {
+                                detector.reset();
+                            }
+                            if (wrongencoding) {
+                                continue;
+                            }
+                            if (!TextUtils.isEmpty(tags)) {
+                                if (tags.split("@").length >= 4) {
+                                    break;
+                                }
+                            }
                         }
                     }
                     if (TextUtils.isEmpty(tags)) {
