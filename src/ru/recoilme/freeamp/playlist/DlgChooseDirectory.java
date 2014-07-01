@@ -84,7 +84,7 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
         {
             for ( File file : files )
             {
-                if ( !file.isDirectory() && !file.canWrite())
+                if ( !file.isDirectory() || !file.canWrite())
                     continue;
 
                 m_entries.add( file );
