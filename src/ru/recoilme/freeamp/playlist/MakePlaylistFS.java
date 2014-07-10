@@ -170,7 +170,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                     }
 
                     String[] tagsArray = tags.split("@");
-                    if (tagsArray==null || tagsArray.length<4) {
+                    if (tagsArray==null || tagsArray.length<=4) {
                         //это говно какое-то типа музыки из игры скорее всего
                         continue;
                     }

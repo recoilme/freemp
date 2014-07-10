@@ -40,8 +40,9 @@ public class StringUtils {
                 .toString();
     }
 
-    public static String getFileName(ClsTrack track) {
-        final String filename = track.getArtist().toLowerCase().trim()+"_"+track.getAlbum().toLowerCase().trim();
+    public static String getFileName(ClsTrack track, boolean withAlbum) {
+
+        final String filename = track.getArtist().toLowerCase().trim()+(withAlbum?("_"+track.getAlbum().toLowerCase().trim()):"");
         StringBuilder builder = new StringBuilder();
         for (char c : filename.toCharArray()) {
             if (Character.isJavaIdentifierPart(c)) {
@@ -50,4 +51,5 @@ public class StringUtils {
         }
         return builder.toString();
     }
+
 }

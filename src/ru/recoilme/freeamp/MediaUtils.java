@@ -61,6 +61,22 @@ public class MediaUtils {
         return b;
     }
 
+    public static Bitmap getArtistQuick(Context context, ClsTrack track, int w, int h) {
+        // NOTE: There is in fact a 1 pixel frame in the ImageView used to
+        // display this drawable. Take it into account now, so we don't have to
+        // scale later.
+        Bitmap b = null;
+        if (track==null) return null;
+        String path = MediaUtils.getArtistPath(track);
+        if (path!=null) {
+            File file = new File(path);
+            if (file.exists()) {
+                b = getBitmap(context, file, null, w, h);
+            }
+        }
+        return b;
+    }
+
     public static Bitmap getBitmap(Context context, File file,Uri uri, int w, int h) {
         ParcelFileDescriptor fd = null;
         Bitmap b = null;
@@ -226,7 +242,7 @@ public class MediaUtils {
 
     }
 
-    public static String getAlbumPath (ClsTrack track) {
+    public static String getAlbumPath (ClsTrack track,boolean withAlbum) {
         final String directoryPath = FileUtils.getSdCardPath()+ALBUM_FOLDER;
         File directory = new File(directoryPath);
         boolean success = true;
@@ -237,7 +253,15 @@ public class MediaUtils {
             return null;
         }
         else {
-            return directoryPath +"/"+ StringUtils.getFileName(track)+".jpg";
+            return directoryPath +"/"+ StringUtils.getFileName(track,withAlbum)+".jpg";
         }
+    }
+
+    public static String getAlbumPath (ClsTrack track) {
+        return getAlbumPath(track,true);
+    }
+
+    public static String getArtistPath (ClsTrack track) {
+        return getAlbumPath(track,false);
     }
 }

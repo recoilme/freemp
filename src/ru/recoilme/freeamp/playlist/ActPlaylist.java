@@ -21,6 +21,7 @@ import com.androidquery.AQuery;
 import com.flurry.android.FlurryAgent;
 import ru.recoilme.freeamp.*;
 import ru.recoilme.freeamp.playlist.albums.FragmentAlbums;
+import ru.recoilme.freeamp.playlist.artists.FragmentArtists;
 import ru.recoilme.freeamp.playlist.folders.FragmentFolders;
 import ru.recoilme.freeamp.view.SlidingTabLayout;
 
@@ -52,6 +53,7 @@ public class ActPlaylist extends ActionBarActivity {
 
     private FragmentFolders playlistFragment = new FragmentFolders();
     private FragmentAlbums  albumsFragment   = new FragmentAlbums();
+    private FragmentArtists artistsFragment   = new FragmentArtists();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,14 +79,7 @@ public class ActPlaylist extends ActionBarActivity {
         dialogResult = new DlgChooseDirectory.Result() {
                     @Override
                     public void onChooseDirectory(String dir) {
-                        /*
-                        if (dir.equals("/")) {
 
-                            final File primaryExternalStorage = Environment.getExternalStorageDirectory();
-                            dir = primaryExternalStorage.toString();
-                            Toast.makeText(activity,R.string.dir_reset+": "+dir,Toast.LENGTH_LONG).show();
-                        }
-                        */
                         scanDir = dir;
                         PreferenceManager.getDefaultSharedPreferences(activity).edit().putString("scanDir", dir).commit();
                         update(true);
@@ -92,6 +87,7 @@ public class ActPlaylist extends ActionBarActivity {
                 };
 
         mViewPager = (ViewPager) aq.id(R.id.viewpager).getView();
+        mViewPager.setOffscreenPageLimit(2);
         adpPagerAdapter = new AdpPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adpPagerAdapter);
 
@@ -129,6 +125,9 @@ public class ActPlaylist extends ActionBarActivity {
             }
             if (fragment instanceof FragmentAlbums) {
                 albumsFragment.update(activity, 1, refresh);
+            }
+            if (fragment instanceof FragmentArtists) {
+                artistsFragment.update(activity, 1, refresh);
             }
         }
     }
@@ -329,6 +328,8 @@ public class ActPlaylist extends ActionBarActivity {
                     return playlistFragment ;
                 case 1:
                     return albumsFragment;
+                case 2:
+                    return artistsFragment;
             }
             return null;
         }
@@ -340,6 +341,8 @@ public class ActPlaylist extends ActionBarActivity {
                     return getString(R.string.tab_folders);
                 case 1:
                     return getString(R.string.tab_albums);
+                case 2:
+                    return getString(R.string.tab_artists);
             }
             return "-";
         }

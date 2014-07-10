@@ -9,7 +9,7 @@
     <!-- Player -->
     <string name="open_ms">Open Media Store</string>
     <string name="open_fs">Open File Store</string>
-    <string name="createNewPlaylist">May i scan your filesystem now?</string>
+    <string name="createNewPlaylist">May i scan your filesystem now?\nIt may take few minutes.</string>
     <string name="shuffle_is">Shuffle is:</string>
     <string name="flurry">TT2CP65VTX9TN8S5D7ZV</string>
     <string name="dlg_choosedir_title">Select folder with music or press OK</string>
@@ -26,6 +26,7 @@
 
     <string name="tab_folders">FOLDERS</string>
     <string name="tab_albums">ALBUMS</string>
+    <string name="tab_artists">ARTISTS</string>
     <string name="dir_reset">Incorrect directory. Reset to default</string>
 
 </resources>

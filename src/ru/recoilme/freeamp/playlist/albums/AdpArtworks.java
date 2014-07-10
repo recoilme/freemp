@@ -43,7 +43,7 @@ public class AdpArtworks extends BaseAdapter {
         layoutParams= new AbsListView.LayoutParams(width,width);
 
         fadeIn = new AlphaAnimation(0, 1);
-        fadeIn.setDuration(500);
+        fadeIn.setDuration(300);
         fadeIn.setInterpolator(new DecelerateInterpolator());
     }
 
