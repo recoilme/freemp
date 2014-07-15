@@ -43,7 +43,7 @@ public class MediaUtils {
         Bitmap b = null;
         if (track==null) return null;
         String path = MediaUtils.getAlbumPath(track);
-        if (path!=null) {
+        if (path!=null && new File(path).exists()) {
             File file = new File(path);
             if (file.exists()) {
                 b = getBitmap(context, file, null, w, h);
@@ -56,6 +56,12 @@ public class MediaUtils {
                 if (uri != null) {
                     b = getBitmap(context, null, uri,  w,  h);
                 }
+                else {
+                    b = getArtistQuick(context,track,w,h);
+                }
+            }
+            else {
+                b = getArtistQuick(context,track,w,h);
             }
         }
         return b;
