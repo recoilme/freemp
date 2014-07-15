@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
@@ -105,8 +106,15 @@ public class ActFreemporg extends ActionBarActivity {
         //раскручиваем колесеко
         setRefreshActionButtonState();
         webView.loadUrl("http://freemp.org/artist/s?q="+Uri.encode(q)+"&l="+(Locale.getDefault().getLanguage().contains("ru")?"ru":"en"));
-        refreshing = false;
-        setRefreshActionButtonState();
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress) {
+
+                if (progress >= 99) {
+                    refreshing = false;
+                    setRefreshActionButtonState();
+                }
+            }
+        });
     }
 
     @Override

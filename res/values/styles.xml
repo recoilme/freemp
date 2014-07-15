@@ -7,6 +7,10 @@
         <item name="android:actionBarStyle">@style/player.ActionBarStyle</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+    <style name="thinAb" parent="theme">
+        <item name="actionBarSize">56dp</item>
+        <item name="android:actionBarSize">56dp</item>
+    </style>
     <style name="DeafultPlayingSeekBar" parent="android:Widget.SeekBar">
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_width">fill_parent</item>

@@ -9,6 +9,7 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:id="@+id/album_img"
+            android:src="@drawable/artwork"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             />
