@@ -3,7 +3,6 @@ package ru.recoilme.freeamp.playlist;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,15 +18,16 @@ import android.view.WindowManager;
 import android.widget.Toast;
 import com.androidquery.AQuery;
 import com.flurry.android.FlurryAgent;
-import ru.recoilme.freeamp.*;
+import ru.recoilme.freeamp.ClsTrack;
+import ru.recoilme.freeamp.Constants;
+import ru.recoilme.freeamp.FileUtils;
+import ru.recoilme.freeamp.R;
 import ru.recoilme.freeamp.playlist.albums.FragmentAlbums;
 import ru.recoilme.freeamp.playlist.artists.FragmentArtists;
 import ru.recoilme.freeamp.playlist.folders.FragmentFolders;
 import ru.recoilme.freeamp.view.SlidingTabLayout;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -166,7 +166,7 @@ public class ActPlaylist extends ActionBarActivity {
 
         scanDir = PreferenceManager.getDefaultSharedPreferences(activity).getString("scanDir","");
         if (scanDir.equals("")) {
-            final File primaryExternalStorage = Environment.getExternalStorageDirectory();
+            /*final File primaryExternalStorage = Environment.getExternalStorageDirectory();
             String defaultScanDir = primaryExternalStorage.toString();
             if (android.os.Build.VERSION.SDK_INT >= 9) {
                 try {
@@ -182,9 +182,9 @@ public class ActPlaylist extends ActionBarActivity {
                 }
                 catch (Exception e) {}
             }
-
+            */
             DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity,dialogResult,
-                    defaultScanDir);
+                    "/");
         }
         else {
             update(false);

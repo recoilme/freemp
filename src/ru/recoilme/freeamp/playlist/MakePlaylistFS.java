@@ -79,9 +79,15 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
         if (list==null) return;
         int chan = 0;
         for (File f : list) {
+
             if (f.isDirectory() && f.canWrite()) {
-                AQUtility.debug("dir",f.getAbsolutePath().toString());
-                walk(f);
+                if (f.canWrite()) {
+                    AQUtility.debug("dir", f.getAbsolutePath().toString());
+                    walk(f);
+                }
+                else {
+                    AQUtility.debug("dirnotwrite", f.getAbsolutePath().toString());
+                }
             }
             else {
                 String path = f.getAbsolutePath().toString();
