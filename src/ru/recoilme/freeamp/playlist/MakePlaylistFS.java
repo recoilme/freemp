@@ -75,18 +75,38 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
     public void walk(File root) {
 
         File[] list = root.listFiles();
-
         if (list==null) return;
+        if (root.getAbsolutePath().toString().equals("/")) {
+            File extSd = FileUtils.getExternalSdCardPath();
+            boolean needAdd = true;
+            if (extSd!=null) {
+                for ( File file : list )
+                {
+                    if (file.getAbsolutePath().equals(extSd.getAbsolutePath())) {
+                        needAdd = false;
+                        break;
+                    }
+                }
+            }
+            else {
+                needAdd = false;
+            }
+            if (extSd!=null && needAdd) {
+                File [] extSdlist = new File[1];
+                extSdlist[0] = extSd;
+                int listLen = list.length;
+                File [] newlist = new File[list.length+1];
+
+                newlist = FileUtils.concatenate(extSdlist,list);
+                list = newlist;
+            }
+        }
         int chan = 0;
         for (File f : list) {
 
             if (f.isDirectory() && f.canWrite()) {
                 if (f.canWrite()) {
-                    AQUtility.debug("dir", f.getAbsolutePath().toString());
                     walk(f);
-                }
-                else {
-                    AQUtility.debug("dirnotwrite", f.getAbsolutePath().toString());
                 }
             }
             else {

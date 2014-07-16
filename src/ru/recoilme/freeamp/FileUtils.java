@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -190,5 +192,41 @@ public class FileUtils {
             }
             return false;
         }
+    }
+
+    public static File getExternalSdCardPath() {
+        String path = null;
+        File sdCardFile = null;
+        List<String> sdCardPossiblePath = Arrays.asList("external_sd", "ext_sd", "external", "extSdCard", "sdcard2");
+        for (String sdPath : sdCardPossiblePath) {
+            File file = new File("/mnt/", sdPath);
+            if (file.isDirectory() && file.canWrite()) {
+                path = file.getAbsolutePath();
+                String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
+                File testWritable = new File(path, "test_" + timeStamp);
+                if (testWritable.mkdirs()) {
+                    testWritable.delete();
+                }
+                else {
+                    path = null;
+                }
+            }
+        }
+        if (path != null) {
+            sdCardFile = new File(path);
+        }
+        return sdCardFile;
+    }
+
+    public static <T> T[] concatenate (T[] A, T[] B) {
+        int aLen = A.length;
+        int bLen = B.length;
+
+        @SuppressWarnings("unchecked")
+        T[] C = (T[]) Array.newInstance(A.getClass().getComponentType(), aLen + bLen);
+        System.arraycopy(A, 0, C, 0, aLen);
+        System.arraycopy(B, 0, C, aLen, bLen);
+
+        return C;
     }
 }

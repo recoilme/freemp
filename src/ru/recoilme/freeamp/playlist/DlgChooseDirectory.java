@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import ru.recoilme.freeamp.FileUtils;
 import ru.recoilme.freeamp.R;
 
 import java.io.File;
@@ -88,6 +89,25 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
                     continue;
 
                 m_entries.add( file );
+            }
+        }
+        if ( m_currentDir.getAbsolutePath().equals("/")) {
+            File extSd = FileUtils.getExternalSdCardPath();
+            boolean needAdd = true;
+            if (extSd!=null) {
+                for ( File file : files )
+                {
+                    if (file.getAbsolutePath().equals(extSd.getAbsolutePath())) {
+                        needAdd = false;
+                        break;
+                    }
+                }
+            }
+            else {
+                needAdd = false;
+            }
+            if (extSd!=null && needAdd) {
+                m_entries.add(extSd);
             }
         }
 
