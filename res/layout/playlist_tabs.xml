@@ -5,7 +5,7 @@
               android:background="@android:color/transparent"
               android:orientation="vertical">
 
-    <ru.recoilme.freeamp.view.SlidingTabLayout
+    <org.freemp.android.view.SlidingTabLayout
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
