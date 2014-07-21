@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="org.freemp.android"
 
-        android:versionCode="141"
-        android:versionName="1.4.1">
+        android:versionCode="100"
+        android:versionName="1.0.0">
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

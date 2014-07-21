@@ -7,9 +7,8 @@
 
 package com.un4seen.bass;
 
-import android.content.res.AssetManager;
-
 import java.nio.ByteBuffer;
+import android.content.res.AssetManager;
 
 public class BASS
 {
@@ -82,6 +81,9 @@ public class BASS
 	public static final int BASS_CONFIG_HANDLES = 41;
 	public static final int BASS_CONFIG_SRC = 43;
 	public static final int BASS_CONFIG_SRC_SAMPLE = 44;
+	public static final int BASS_CONFIG_ASYNCFILE_BUFFER = 45;
+	public static final int BASS_CONFIG_OGG_PRESCAN = 47;
+	public static final int BASS_CONFIG_NONSTOP = 50;
 
 	// BASS_SetConfigPtr options
 	public static final int BASS_CONFIG_NET_AGENT = 16;
