@@ -46,7 +46,6 @@ It is an open source player and you're welcome to contribute.
 
 ![Screenshot](https://github.com/recoilme/freemp/blob/master/screen10.png?raw=true)
 ![Screenshot](https://github.com/recoilme/freemp/blob/master/screen11.png?raw=true)
-![Screenshot](https://github.com/recoilme/freemp/blob/master/screen12.png?raw=true)
 
 **Troubleshooting:**
 
@@ -55,6 +54,9 @@ Fill free to write me at vadim.kulibaba@gmail.com
 
 ### Author
 Kulibaba Vadim <<vadim.kulibaba@gmail.com>>
+
+### Thanks for App Icon to Ponomarenko Ilya
+[Пономаренко Илья](https://twitter.com/Fitchew_).
 
 ### License
 Distributed under [Apache 2 license](https://bitbucket.org/recoilme/freeamp/raw/master/LICENSE.txt).
