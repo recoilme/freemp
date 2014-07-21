@@ -40,7 +40,7 @@ It is an open source player and you're welcome to contribute.
 
 **Get it on Google Play:**
 
-[Google Play](https://play.google.com/store/apps/details?id=ru.recoilme.freeamp)
+[Google Play](https://play.google.com/store/apps/details?id=org.freemp.android)
 
 **Screenshots:**
 
