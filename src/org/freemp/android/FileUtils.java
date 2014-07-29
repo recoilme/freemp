@@ -197,7 +197,7 @@ public class FileUtils {
     public static File getExternalSdCardPath() {
         String path = null;
         File sdCardFile = null;
-        List<String> sdCardPossiblePath = Arrays.asList("external_sd", "ext_sd", "external", "extSdCard", "sdcard2", "sdcard1");
+        List<String> sdCardPossiblePath = Arrays.asList("external_sd", "ext_sd", "external", "extSdCard", "sdcard2", "sdcard1","external1");
         for (String sdPath : sdCardPossiblePath) {
             File file = new File("/mnt/", sdPath);
             if (file.isDirectory() && file.canWrite()) {
