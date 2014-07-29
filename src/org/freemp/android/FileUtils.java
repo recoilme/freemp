@@ -5,7 +5,6 @@ import android.os.Environment;
 
 import java.io.*;
 import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -200,7 +199,7 @@ public class FileUtils {
         List<String> sdCardPossiblePath = Arrays.asList("external_sd", "ext_sd", "external", "extSdCard", "sdcard2", "sdcard1","external1");
         for (String sdPath : sdCardPossiblePath) {
             File file = new File("/mnt/", sdPath);
-            if (file.isDirectory() && file.canWrite()) {
+            if (file.isDirectory()) {/* && file.canWrite()) {
                 path = file.getAbsolutePath();
                 String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
                 File testWritable = new File(path, "test_" + timeStamp);
@@ -209,7 +208,8 @@ public class FileUtils {
                 }
                 else {
                     path = null;
-                }
+                }  */
+                path = file.getAbsolutePath();
             }
         }
         if (path != null) {
