@@ -74,9 +74,11 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
 
     public void walk(File root) {
 
-        File[] list = root.listFiles();
-        if (list==null) return;
+        File[] list = null;
+
         if (root.getAbsolutePath().toString().equals("/")) {
+            list = new File[1];
+            list[0] = Environment.getExternalStorageDirectory();
             File extSd = FileUtils.getExternalSdCardPath();
             boolean needAdd = true;
             if (extSd!=null) {
@@ -94,20 +96,21 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
             if (extSd!=null && needAdd) {
                 File [] extSdlist = new File[1];
                 extSdlist[0] = extSd;
-                int listLen = list.length;
-                File [] newlist = new File[list.length+1];
+                File[] newlist = new File[list.length+1];
 
                 newlist = FileUtils.concatenate(extSdlist,list);
                 list = newlist;
             }
         }
+        else {
+            list = root.listFiles();
+        }
+        if (list==null) return;
         int chan = 0;
         for (File f : list) {
 
-            if (f.isDirectory() && f.canWrite()) {
-                if (f.canWrite()) {
-                    walk(f);
-                }
+            if (f.isDirectory()) {
+                walk(f);
             }
             else {
                 String path = f.getAbsolutePath().toString();

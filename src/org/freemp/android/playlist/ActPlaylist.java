@@ -11,10 +11,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Toast;
 import com.androidquery.AQuery;
 import com.flurry.android.FlurryAgent;
@@ -27,6 +24,7 @@ import org.freemp.android.playlist.artists.FragmentArtists;
 import org.freemp.android.playlist.folders.FragmentFolders;
 import org.freemp.android.view.SlidingTabLayout;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -68,6 +66,17 @@ public class ActPlaylist extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bgr));
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        try {
+            ViewConfiguration config = ViewConfiguration.get(activity);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if(menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Bundle extras = getIntent().getExtras();
         if (extras==null) {
@@ -166,29 +175,13 @@ public class ActPlaylist extends ActionBarActivity {
 
         scanDir = PreferenceManager.getDefaultSharedPreferences(activity).getString("scanDir","");
         if (scanDir.equals("")) {
-            /*final File primaryExternalStorage = Environment.getExternalStorageDirectory();
-            String defaultScanDir = primaryExternalStorage.toString();
-            if (android.os.Build.VERSION.SDK_INT >= 9) {
-                try {
-                    List<StorageUtils.StorageInfo> list = StorageUtils.getStorageList();
-                    if (list.size()>1) {
-                        for (StorageUtils.StorageInfo storageInfo: list) {
-                            if (storageInfo.internal == false && storageInfo.readonly ==false) {
-                                defaultScanDir = storageInfo.path;
-                                break;
-                            }
-                        }
-                    }
-                }
-                catch (Exception e) {}
-            }
-            */
             DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity,dialogResult,
                     "/");
         }
         else {
             update(false);
         }
+
         return super.onCreateOptionsMenu(menu);
     }
 
