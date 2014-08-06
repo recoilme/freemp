@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -87,12 +88,17 @@ public class UpdateUtils {
                         showedMessages+=id+";";
                         //PreferenceManager.getDefaultSharedPreferences(context).edit().putString(MESSAGEURL,showedMessages).commit();
                         // Prepare intent which is triggered if the notification is selected
-                        Intent intent = new Intent(activity,activity.getClass());
-                        intent.putExtra("msgid",id);
-                        intent.putExtra("msgtitle",jsonNotification.optString("title",""));
-                        intent.putExtra("msgtext",jsonNotification.optString("text",""));
-                        intent.putExtra("msgaction",jsonNotification.optString("action",""));
-                        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                        Intent intent = null;
+                        if (!TextUtils.equals("",jsonNotification.optString("action",""))) {
+                            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                    jsonNotification.optString("action","")));
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        }
+                        else {
+                            intent = new Intent(activity,activity.getClass());
+                        }
+                        PendingIntent pIntent = PendingIntent.getActivity(context, id, intent, 0);
 
                         // if you don't use support library, change NotificationCompat on Notification
                         Notification noti = new NotificationCompat.Builder(context)
@@ -104,7 +110,7 @@ public class UpdateUtils {
                         // hide the notification after its selected
                         noti.flags |= Notification.FLAG_AUTO_CANCEL;
 
-                        notificationManager.notify(0, noti);
+                        notificationManager.notify(id, noti);
                         break;
                     }
                 }
