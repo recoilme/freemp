@@ -1,10 +1,6 @@
 {
     "notifications": [
 
-        {"id":0, "title":"Привет", "text":"Как дела? Как погода, азаза!"},
-
-        {"id":1, "title":"Извините, нас удалили(", "text":"Кликните, для скачивания новой версии",
-        "version":105, "action":"market://search?q=freemp", "locale":"ru_RU"}
-
         ]
+    "update":{"version":"106", "file":"","whatsnew":""}
 }
