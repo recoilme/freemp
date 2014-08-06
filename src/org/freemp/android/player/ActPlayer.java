@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -11,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.internal.widget.ListPopupWindow;
+import android.text.TextUtils;
 import android.text.format.Time;
 import android.view.*;
 import android.widget.*;
@@ -139,6 +141,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         // Bind Service
         bindService(new Intent(this, ServicePlayer.class), mConnection, Context.BIND_AUTO_CREATE);
         new UpdateUtils(activity);
+
     }
 
     // onBassServiceConnected: Put some activity stuff here
@@ -547,7 +550,13 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     public void onResume(){
         super.onResume();
         updatePlayPause();
+        if (getIntent()!=null && getIntent().hasExtra("msgaction")
+                && !TextUtils.equals("",getIntent().getStringExtra("msgaction"))) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                    getIntent().getStringExtra("msgaction")
+            )));
 
+        }
     }
 
     public void updatePlayPause() {

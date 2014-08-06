@@ -86,20 +86,20 @@ public class UpdateUtils {
                     else {
                         showedMessages+=id+";";
                         //PreferenceManager.getDefaultSharedPreferences(context).edit().putString(MESSAGEURL,showedMessages).commit();
-                        // Prepare intent which is triggered if the
-                        // notification is selected
+                        // Prepare intent which is triggered if the notification is selected
                         Intent intent = new Intent(activity,activity.getClass());
+                        intent.putExtra("msgid",id);
+                        intent.putExtra("msgtitle",jsonNotification.optString("title",""));
+                        intent.putExtra("msgtext",jsonNotification.optString("text",""));
+                        intent.putExtra("msgaction",jsonNotification.optString("action",""));
                         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-                        // Build notification
-                        // Actions are just fake
+                        // if you don't use support library, change NotificationCompat on Notification
                         Notification noti = new NotificationCompat.Builder(context)
-                                .setContentTitle("New mail from " + "test@gmail.com")
-                                .setContentText("Subject").setSmallIcon(R.drawable.icon)
-                                .setContentIntent(pIntent)
-                                .addAction(R.drawable.icon, "Call", pIntent)
-                                .addAction(R.drawable.icon, "More", pIntent)
-                                .addAction(R.drawable.icon, "And more", pIntent).build();
+                                .setContentTitle(jsonNotification.optString("title",""))
+                                .setContentText(jsonNotification.optString("text",""))
+                                .setSmallIcon(R.drawable.icon)//change this on your icon
+                                .setContentIntent(pIntent).build();
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
                         // hide the notification after its selected
                         noti.flags |= Notification.FLAG_AUTO_CANCEL;
