@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -21,19 +22,45 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 /**
  * Created by recoil on 06.08.14.
+ * example file:
+
+ {
+ "notifications": [{ id":1, "title":"Sorry we are deleted from GPlay", "text":"Please click for download new app",
+ "version":105 , "action":"market://search?q=freemp", "locale":"ru_Ru"}]
+ }
+
+  - id: unique number of message
+  - title: title of message
+  - text: text of message
+  - version: if not set message for all (may be not set)
+  - action: default action (may be not set)
+  - locale: may be not set
+
  */
+
 public class UpdateUtils {
 
     public static final String MESSAGEURL = "https://github.com/recoilme/freemp/blob/master/message.json?raw=true";
     private Context context;
     private Activity activity;
+    private int versionCode;
+    private String locale;
 
     public UpdateUtils(Activity activity) {
         this.activity = activity;
         context = activity.getApplicationContext();
+
+        try {
+            versionCode = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        locale = Locale.getDefault().toString();
         new Update().execute();
     }
 
@@ -75,11 +102,27 @@ public class UpdateUtils {
                 if (notifications==null) {
                     return;
                 }
+
+                if (context==null) {
+                    return;
+                }
                 //string with showed messages
                 String showedMessages = PreferenceManager.getDefaultSharedPreferences(context).getString(MESSAGEURL,"");
                 for (int i=0;i<notifications.length();i++) {
                     JSONObject jsonNotification = notifications.optJSONObject(i);
+
                     if (jsonNotification==null) break;
+
+                    final int version = jsonNotification.optInt("version",-1);
+                    if (version>0 && version!=versionCode) {
+                        continue;
+                    }
+
+                    final String localeTarget = jsonNotification.optString("locale","all");
+                    if (!TextUtils.equals("all",localeTarget) && localeTarget!=locale) {
+                        continue;
+                    }
+
                     final int id = jsonNotification.optInt("id");
                     if (showedMessages.contains(id+";")) {
                         continue;
@@ -87,15 +130,17 @@ public class UpdateUtils {
                     else {
                         showedMessages+=id+";";
                         //PreferenceManager.getDefaultSharedPreferences(context).edit().putString(MESSAGEURL,showedMessages).commit();
-                        // Prepare intent which is triggered if the notification is selected
+
                         Intent intent = null;
                         if (!TextUtils.equals("",jsonNotification.optString("action",""))) {
+                            // if has action add it
                             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
                                     jsonNotification.optString("action","")));
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                         }
                         else {
+                            // if no - just inform
                             intent = new Intent(activity,activity.getClass());
                         }
                         PendingIntent pIntent = PendingIntent.getActivity(context, id, intent, 0);

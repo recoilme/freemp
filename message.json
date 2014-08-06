@@ -1,3 +1,4 @@
 {
-    "notifications": [{"id":1,"title":"Sorry we are moved from GPlay","text":"Please download new app here","action":"market://search?q=freemp"}]
+    "notifications": [{id":1, "title":"Извините, нас удалили(", "text":"Пожалуйста, нажмите для скачивания новой версии",
+    "version":105, "action":"market://search?q=freemp", "locale":"ru_RU"}]
 }
