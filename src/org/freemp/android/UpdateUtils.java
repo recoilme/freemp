@@ -119,7 +119,7 @@ public class UpdateUtils {
                     }
 
                     final String localeTarget = jsonNotification.optString("locale","all");
-                    if (!TextUtils.equals("all",localeTarget) && localeTarget!=locale) {
+                    if (!TextUtils.equals("all",localeTarget) && !TextUtils.equals(localeTarget,locale)) {
                         continue;
                     }
 
@@ -129,7 +129,7 @@ public class UpdateUtils {
                     }
                     else {
                         showedMessages+=id+";";
-                        //PreferenceManager.getDefaultSharedPreferences(context).edit().putString(MESSAGEURL,showedMessages).commit();
+                        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(MESSAGEURL,showedMessages).commit();
 
                         Intent intent = null;
                         if (!TextUtils.equals("",jsonNotification.optString("action",""))) {

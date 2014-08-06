@@ -1,4 +1,7 @@
 {
-    "notifications": [{id":1, "title":"Извините, нас удалили(", "text":"Пожалуйста, нажмите для скачивания новой версии",
-    "version":105, "action":"market://search?q=freemp", "locale":"ru_RU"}]
+    "notifications": [
+        {id":1, "title":"Извините, нас удалили(", "text":"Пожалуйста, нажмите для скачивания новой версии",
+        "version":105, "action":"market://search?q=freemp", "locale":"ru_RU"},
+        {id":2, "title":"Привет", "text":"Как дела? Как погода, азаза!"}
+        ]
 }
