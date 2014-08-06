@@ -138,7 +138,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
 
         // Bind Service
         bindService(new Intent(this, ServicePlayer.class), mConnection, Context.BIND_AUTO_CREATE);
-
+        new UpdateUtils(activity);
     }
 
     // onBassServiceConnected: Put some activity stuff here

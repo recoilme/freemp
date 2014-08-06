@@ -1,10 +1,21 @@
 package org.freemp.android;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -15,9 +26,13 @@ import java.io.InputStreamReader;
  */
 public class UpdateUtils {
 
-    static final String MESSAGEURL = "";
+    public static final String MESSAGEURL = "https://github.com/recoilme/freemp/blob/master/message.json?raw=true";
+    private Context context;
+    private Activity activity;
 
-    public void UpdateUtils() {
+    public UpdateUtils(Activity activity) {
+        this.activity = activity;
+        context = activity.getApplicationContext();
         new Update().execute();
     }
 
@@ -46,8 +61,56 @@ public class UpdateUtils {
         @Override
         protected void onPostExecute(String result) {
             if (!TextUtils.equals("",result)) {
+                JSONObject jsonResult = null;
+                try {
+                    jsonResult = new JSONObject(result);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                //process notifications if exists
+                JSONArray notifications = jsonResult.optJSONArray("notifications");
+                if (notifications==null) {
+                    return;
+                }
+                //string with showed messages
+                String showedMessages = PreferenceManager.getDefaultSharedPreferences(context).getString(MESSAGEURL,"");
+                for (int i=0;i<notifications.length();i++) {
+                    JSONObject jsonNotification = notifications.optJSONObject(i);
+                    if (jsonNotification==null) break;
+                    final int id = jsonNotification.optInt("id");
+                    if (showedMessages.contains(id+";")) {
+                        continue;
+                    }
+                    else {
+                        showedMessages+=id+";";
+                        //PreferenceManager.getDefaultSharedPreferences(context).edit().putString(MESSAGEURL,showedMessages).commit();
+                        // Prepare intent which is triggered if the
+                        // notification is selected
+                        Intent intent = new Intent(activity,activity.getClass());
+                        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+                        // Build notification
+                        // Actions are just fake
+                        Notification noti = new NotificationCompat.Builder(context)
+                                .setContentTitle("New mail from " + "test@gmail.com")
+                                .setContentText("Subject").setSmallIcon(R.drawable.icon)
+                                .setContentIntent(pIntent)
+                                .addAction(R.drawable.icon, "Call", pIntent)
+                                .addAction(R.drawable.icon, "More", pIntent)
+                                .addAction(R.drawable.icon, "And more", pIntent).build();
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+                        // hide the notification after its selected
+                        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        notificationManager.notify(0, noti);
+                        break;
+                    }
+                }
 
             }
         }
+
     }
 }
