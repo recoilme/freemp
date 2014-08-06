@@ -53,14 +53,6 @@ public class UpdateUtils {
     public UpdateUtils(Activity activity) {
         this.activity = activity;
         context = activity.getApplicationContext();
-
-        try {
-            versionCode = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        locale = Locale.getDefault().toString();
         new Update().execute();
     }
 
@@ -68,6 +60,13 @@ public class UpdateUtils {
 
         @Override
         protected String doInBackground(Void... params) {
+            try {
+                versionCode = context.getPackageManager()
+                        .getPackageInfo(context.getPackageName(), 0).versionCode;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            locale = Locale.getDefault().toString();
             String response = "";
             DefaultHttpClient client = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet(MESSAGEURL);
