@@ -29,7 +29,7 @@ import java.util.Locale;
  * example file:
 
  {
- "notifications": [{ id":1, "title":"Sorry we are deleted from GPlay", "text":"Please click for download new app",
+ "notifications": [{ "id":1, "title":"Sorry we are deleted from GPlay", "text":"Please click for download new app",
  "version":105 , "action":"market://search?q=freemp", "locale":"ru_Ru"}]
  }
 
