@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -19,9 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 /**
@@ -46,13 +46,12 @@ public class UpdateUtils {
 
     public static final String MESSAGEURL = "https://github.com/recoilme/freemp/blob/master/message.json?raw=true";
     private Context context;
-    private Activity activity;
     private int versionCode;
     private String locale;
+    private final WeakReference<Activity> activityContainer;
 
     public UpdateUtils(Activity activity) {
-        this.activity = activity;
-        context = activity.getApplicationContext();
+        activityContainer = new WeakReference<Activity>(activity);
         new Update().execute();
     }
 
@@ -60,9 +59,13 @@ public class UpdateUtils {
 
         @Override
         protected String doInBackground(Void... params) {
+            Activity activity = activityContainer.get();
+            if (null == activity) {
+                return "";
+            }
             try {
-                versionCode = context.getPackageManager()
-                        .getPackageInfo(context.getPackageName(), 0).versionCode;
+                versionCode = activity.getPackageManager()
+                        .getPackageInfo(activity.getPackageName(), 0).versionCode;
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
@@ -101,7 +104,11 @@ public class UpdateUtils {
                 if (notifications==null) {
                     return;
                 }
-
+                Activity activity = activityContainer.get();
+                if (null == activity) {
+                    return;
+                }
+                context = activity.getApplicationContext();
                 if (context==null) {
                     return;
                 }
@@ -118,7 +125,7 @@ public class UpdateUtils {
                     }
 
                     final String localeTarget = jsonNotification.optString("locale","all");
-                    if (!TextUtils.equals("all",localeTarget) && !TextUtils.equals(localeTarget,locale)) {
+                    if (!TextUtils.equals("all",localeTarget) && !TextUtils.equals(localeTarget, locale)) {
                         continue;
                     }
 
@@ -159,8 +166,80 @@ public class UpdateUtils {
                     }
                 }
 
+                //process update if exists
+                JSONObject update = jsonResult.optJSONObject("update");
+                if (update==null) {
+                    return;
+                }
+
+                final int version = update.optInt("version",-1);
+                if (version<0 || version>=versionCode) {
+                    return;
+                }
+                else {
+                    //need update
+                    String url = update.optString("file");
+                    if (!TextUtils.equals("",url)) {
+                        new Download().execute(new String[]{url, "" + version});
+                    }
+                }
             }
         }
 
+    }
+
+    private class Download extends AsyncTask<String,Void,String>  {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            boolean success = false;
+            String path = Environment.getExternalStorageDirectory()+"/"+urls[1]+".apk";
+            File file = new File(path);
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(urls[0]);
+            try {
+                HttpResponse execute = client.execute(httpGet);
+                InputStream content = execute.getEntity().getContent();
+                FileOutputStream fileOutput = new FileOutputStream(file);
+
+                byte[] buffer = new byte[1024];
+                int bufferLength = 0;
+                while ( (bufferLength = content.read(buffer)) > 0 ) {
+                    fileOutput.write(buffer, 0, bufferLength);
+                }
+                fileOutput.close();
+
+                success = true;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (success) {
+                if (file.exists() && file.length()>0) {
+                    return path;
+                }
+                else {
+                    return "";
+                }
+            }
+            else {
+                return "";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (!TextUtils.equals("",result)) {
+                //file downloaded
+                Activity activity = activityContainer.get();
+                if (null == activity) {
+                    return;
+                }
+                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+                        .setDataAndType(Uri.parse("file:///"+result),
+                                "application/vnd.android.package-archive");
+                activity.startActivity(promptInstall);
+            }
+        }
     }
 }
