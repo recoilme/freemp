@@ -4,9 +4,10 @@
         [
         ] ,
     "update": {
-        "version": "106" ,
+        "version": 106,
         "file": "https://github.com/recoilme/freemp/blob/master/freemp.apk?raw=true" ,
-        "whatsnew": "something"
+        "title": "something",
+        "text": "text"
     }
 
 } 

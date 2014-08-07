@@ -151,17 +151,8 @@ public class UpdateUtils {
                         }
                         PendingIntent pIntent = PendingIntent.getActivity(context, id, intent, 0);
 
-                        // if you don't use support library, change NotificationCompat on Notification
-                        Notification noti = new NotificationCompat.Builder(context)
-                                .setContentTitle(jsonNotification.optString("title",""))
-                                .setContentText(jsonNotification.optString("text",""))
-                                .setSmallIcon(R.drawable.icon)//change this on your icon
-                                .setContentIntent(pIntent).build();
-                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-                        // hide the notification after its selected
-                        noti.flags |= Notification.FLAG_AUTO_CANCEL;
-
-                        notificationManager.notify(id, noti);
+                        buildNotification(jsonNotification.optString("title",""),jsonNotification.optString("text",""),
+                                pIntent,id);
                         break;
                     }
                 }
@@ -180,7 +171,7 @@ public class UpdateUtils {
                     //need update
                     String url = update.optString("file");
                     if (!TextUtils.equals("",url)) {
-                        new Download().execute(new String[]{url, "" + version});
+                        new Download(update.optString("title"),update.optString("text"),version).execute(new String[]{url});
                     }
                 }
             }
@@ -188,12 +179,39 @@ public class UpdateUtils {
 
     }
 
+    private void buildNotification(String title, String text, PendingIntent pIntent,int id) {
+        if (TextUtils.equals("",title) && TextUtils.equals("",text)) {
+            return;
+        }
+        // if you don't use support library, change NotificationCompat on Notification
+        Notification noti = new NotificationCompat.Builder(context)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setSmallIcon(R.drawable.icon)//change this on your icon
+                .setContentIntent(pIntent).build();
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        // hide the notification after its selected
+        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(id, noti);
+    }
+
     private class Download extends AsyncTask<String,Void,String>  {
+
+        private String title;
+        private String text;
+        private int id;
+
+        public Download(String title,String text, int id) {
+            this.title = title;
+            this.text = text;
+            this.id = id;
+        }
 
         @Override
         protected String doInBackground(String... urls) {
             boolean success = false;
-            String path = Environment.getExternalStorageDirectory()+"/"+urls[1]+".apk";
+            String path = Environment.getExternalStorageDirectory()+"/"+id+".apk";
             File file = new File(path);
             DefaultHttpClient client = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet(urls[0]);
@@ -235,10 +253,13 @@ public class UpdateUtils {
                 if (null == activity) {
                     return;
                 }
+                context = activity.getApplicationContext();
                 Intent promptInstall = new Intent(Intent.ACTION_VIEW)
                         .setDataAndType(Uri.parse("file:///"+result),
                                 "application/vnd.android.package-archive");
-                activity.startActivity(promptInstall);
+                promptInstall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pIntent = PendingIntent.getActivity(context, id, promptInstall, 0);
+                buildNotification(title,text,pIntent,id);
             }
         }
     }
