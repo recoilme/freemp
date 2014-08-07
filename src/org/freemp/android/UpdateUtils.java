@@ -173,7 +173,7 @@ public class UpdateUtils {
                 }
 
                 final int version = update.optInt("version",-1);
-                if (version<0 || version>=versionCode) {
+                if (version<0 || version<=versionCode) {
                     return;
                 }
                 else {
