@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import com.androidquery.util.AQUtility;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -22,23 +23,41 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 /**
  * Created by recoil on 06.08.14.
  * example file:
 
  {
- "notifications": [{ "id":1, "title":"Sorry we are deleted from GPlay", "text":"Please click for download new app",
- "version":105 , "action":"market://search?q=freemp", "locale":"ru_Ru"}]
+
+ "notifications":
+ [
+ {
+ "id": 1 ,
+ "title": "Sorry we are deleted from GPlay" ,
+ "text": "Please click for download new app" ,
+ "version": 105 ,
+ "action": "market://search?q=freemp" ,
+ "locale": "ru_Ru"
+ }
+ ] ,
+ "update": {
+ "version": 106 ,
+ "file": "https://github.com/recoilme/freemp/blob/master/freemp.apk?raw=true" ,
+ "title": "New version avialable" ,
+ "text": "Click for update"
  }
 
+ }
+ //noti
   - id: unique number of message
   - title: title of message
   - text: text of message
   - version: if not set message for all (may be not set)
   - action: default action (may be not set)
   - locale: may be not set
+//update
+ - version: current version of update
 
  */
 
@@ -69,7 +88,8 @@ public class UpdateUtils {
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-            locale = Locale.getDefault().toString();
+            locale = activity.getResources().getConfiguration().locale.toString();//Locale.getDefault().toString();
+            AQUtility.debug("locale",locale);
             String response = "";
             DefaultHttpClient client = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet(MESSAGEURL);
