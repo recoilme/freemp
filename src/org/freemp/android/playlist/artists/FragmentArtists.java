@@ -94,7 +94,7 @@ public class FragmentArtists extends Fragment implements TaskGetArtists.OnTaskGe
     }
 
     public void update(Activity activity, int type, boolean refresh) {
-        if (progressBar.getVisibility()==View.GONE) {
+        if (progressBar!=null && progressBar.getVisibility()==View.GONE) {
             progressBar.setVisibility(View.VISIBLE);
         }
         TaskGetArtists taskGetArtists = new TaskGetArtists(activity,type,refresh, this,this);

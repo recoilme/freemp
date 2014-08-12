@@ -95,7 +95,7 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
     }
 
     public void update(Activity activity, int type, boolean refresh) {
-        if (progressBar.getVisibility()==View.GONE) {
+        if (progressBar!=null && progressBar.getVisibility()==View.GONE) {
             progressBar.setVisibility(View.VISIBLE);
         }
         TaskGetAlbums taskGetAlbums = new TaskGetAlbums(activity,type,refresh, this,this);
