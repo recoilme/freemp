@@ -10,7 +10,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.internal.widget.ListPopupWindow;
 import android.text.format.Time;
 import android.view.*;
 import android.widget.*;
@@ -20,11 +19,9 @@ import com.flurry.android.FlurryAgent;
 import com.nhaarman.listviewanimations.widget.DynamicListView;
 import org.freemp.android.*;
 import org.freemp.android.playlist.ActPlaylist;
-import org.freemp.android.web.ActFreemporg;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 
@@ -122,17 +119,6 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
             }
         });
 
-        albumImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(selected >= 0 && selected < adapter.getCount() && seekBar.getMax() > 0){
-                    showContextMenu(view,(ClsTrack)adapter.getItem(selected));
-                }
-            }
-        });
-
-       // listView.setAdapter(adapter);
-
         // Start Service
         startService(new Intent(this, ServicePlayer.class));
 
@@ -190,13 +176,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
 
             }
         });
-       /* listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showContextMenu(view,(ClsTrack)parent.getAdapter().getItem(position));
-                return true;
-            }
-        });*/
+
 
         aq.id(R.id.btnFf).clicked(new View.OnClickListener() {
             @Override
@@ -591,39 +571,4 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         }
     }
 
-    private void showContextMenu(View anchorView,final ClsTrack o) {
-
-        List<String> menuMusic = new ArrayList<String>();
-        menuMusic.add(activity.getString(R.string.search)+": "+o.getArtist());
-        menuMusic.add(activity.getString(R.string.contextmenu_setasringtone));
-
-
-        final ListPopupWindow
-                    popup = new ListPopupWindow(activity);
-        popup.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1,menuMusic.toArray(new String[menuMusic.size()]) ));
-        popup.setAnchorView(anchorView);
-        popup.setModal(true);
-        popup.setWidth(Math.max(400, anchorView.getWidth()));
-
-        popup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                popup.dismiss();
-                switch (position){
-                    case 0:
-                        Intent intent = new Intent(activity,ActFreemporg.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("q",o.getArtist());
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        MediaUtils.setRingtone(activity,o);
-                        break;
-                }
-            }
-        });
-        popup.show();
-    }
 }
