@@ -13,4 +13,5 @@
     <color name="text_rowslave">@color/lightgray</color>
     <color name="text_header">@color/yellow</color>
     <color name="text_header_highlight">@color/orange</color>
+    <color name="bgr">#1D2125</color>
 </resources>

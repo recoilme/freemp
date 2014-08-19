@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/player_bgr"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
@@ -32,7 +33,7 @@
     <TextView
         android:id="@+id/cell_title"
         android:layout_below="@id/cell_artist"
-        android:layout_toLeftOf="@+id/cell_menu"
+        android:layout_toLeftOf="@+id/cell_duration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/medium_text"
@@ -49,7 +50,7 @@
             android:paddingLeft="5dp"
             android:textSize="@dimen/small_text"
             android:text="0:00"
-            />
+            android:layout_centerVertical="true"/>
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

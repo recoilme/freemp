@@ -28,5 +28,6 @@
     <string name="tab_albums">ALBUMS</string>
     <string name="tab_artists">ARTISTS</string>
     <string name="dir_reset">Incorrect directory. Reset to default</string>
+    <string name="areyousure">Are you sure?</string>
 
 </resources>

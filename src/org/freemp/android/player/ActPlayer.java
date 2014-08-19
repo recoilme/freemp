@@ -482,10 +482,12 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
                     int min = Math.min(screenWidth,screenHeight)/2;
                     Bitmap bitmap = MediaUtils.getArtworkQuick(activity, track, min, min);
                     artworkBgr.setImageBitmap(bitmap);
+                    listView.setBackgroundResource(R.drawable.player_listview_bgr);
                 }
                 else {
                     artworkBgr.setImageBitmap(null);
                     albumImage.setImageDrawable(getResources().getDrawable(R.drawable.artwork));
+                    listView.setBackgroundColor(getResources().getColor(R.color.bgr));
                 }
             }
         });

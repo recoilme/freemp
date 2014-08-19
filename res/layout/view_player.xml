@@ -22,7 +22,7 @@
                 android:layout_weight="1"
                 android:divider="@drawable/player_listview_divider"
                 android:dividerHeight="1dp"
-                android:background="@drawable/player_listview_bgr"
+                android:background="@color/bgr"
                 android:choiceMode="none"
                 android:id="@+id/listView" />
 

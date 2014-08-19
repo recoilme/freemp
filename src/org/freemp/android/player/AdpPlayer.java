@@ -1,7 +1,9 @@
 package org.freemp.android.player;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.internal.widget.ListPopupWindow;
 import android.view.LayoutInflater;
@@ -145,7 +147,17 @@ public class AdpPlayer extends com.nhaarman.listviewanimations.ArrayAdapter {
                         activity.startActivity(intent);
                         break;
                     case 1:
-                        MediaUtils.setRingtone(activity, o);
+                        AlertDialog.Builder bld = new AlertDialog.Builder(activity);
+                        bld.setMessage(R.string.areyousure);
+                        bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                MediaUtils.setRingtone(activity, o);
+                            }
+                        });
+
+                        bld.create().show();
+
                         break;
                 }
             }

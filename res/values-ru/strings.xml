@@ -23,5 +23,6 @@
     <string name="tab_albums">АЛЬБОМЫ</string>
     <string name="tab_artists">АРТИСТЫ</string>
     <string name="dir_reset">Некорректная директория. Сброшено</string>
+    <string name="areyousure">Уверен?</string>
 
 </resources>
