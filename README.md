@@ -44,8 +44,8 @@ It is an open source player and you're welcome to contribute.
 
 **Screenshots:**
 
-![Screenshot](https://github.com/recoilme/freemp/blob/master/screen10.png?raw=true)
-![Screenshot](https://github.com/recoilme/freemp/blob/master/screen11.png?raw=true)
+![Screenshot](https://github.com/recoilme/freemp/blob/master/screen1.png?raw=true)
+![Screenshot](https://github.com/recoilme/freemp/blob/master/screen2.png?raw=true)
 
 **Troubleshooting:**
 
