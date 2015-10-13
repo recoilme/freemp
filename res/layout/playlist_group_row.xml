@@ -27,8 +27,10 @@
 
     <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" android:id="@+id/relativeLayout"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/relativeLayout"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:focusable="false"

@@ -3,16 +3,16 @@
 
     <item android:state_pressed="true"
           android:state_window_focused="true"
-          android:drawable="@drawable/base_seek_normal" />
+          android:drawable="@drawable/btn_seek_normal" />
 
     <item android:state_focused="true"
           android:state_window_focused="true"
-          android:drawable="@drawable/base_seek_normal" />
+          android:drawable="@drawable/btn_seek_normal" />
 
     <item android:state_selected="true"
           android:state_window_focused="true"
-          android:drawable="@drawable/base_seek_normal" />
+          android:drawable="@drawable/btn_seek_normal" />
 
-    <item android:drawable="@drawable/base_seek_normal" />
+    <item android:drawable="@drawable/btn_seek_normal" />
 
 </selector>

@@ -57,7 +57,7 @@
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:background="#272C31"
-            android:src="@drawable/base_rew_button" />
+            android:src="@drawable/player_rew_button" />
     <ImageButton
             android:id="@+id/action_play"
             android:paddingTop="0dip"
@@ -67,7 +67,7 @@
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:background="#272C31"
-            android:src="@drawable/base_play_button"/>
+            android:src="@drawable/player_play_button"/>
     <ImageButton
             android:id="@+id/action_next"
             android:paddingTop="0dip"
@@ -77,6 +77,6 @@
             android:layout_gravity="center"
             android:background="#272C31"
             android:scaleType="fitCenter"
-            android:src="@drawable/base_forward_button"/>
+            android:src="@drawable/player_forward_button"/>
 
 </LinearLayout>

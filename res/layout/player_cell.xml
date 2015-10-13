@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/cell_menu"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_menu_btn"
+            android:src="@drawable/icon_menu_btn"
             android:clickable="true"
             android:layout_centerVertical="true"/>
 </RelativeLayout>

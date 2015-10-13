@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:FreeAmp="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_open_fs"
+          android:title="@string/open_fs"
+          android:alphabeticShortcut="f"
+          android:orderInCategory="2"
+          android:icon="@drawable/icon_menu_moreoverflow_normal_holo_dark"
+          FreeAmp:showAsAction="always" />
+    <!--
+    <item android:id="@+id/menu_open_gm"
+          android:title="@string/open_gm"
+          android:alphabeticShortcut="g"
+          android:orderInCategory="3"
+          FreeAmp:showAsAction="never" />
+    <item android:id="@+id/menu_find_aw"
+          android:title="@string/find_aw"
+          android:alphabeticShortcut="a"
+          android:orderInCategory="4"
+          FreeAmp:showAsAction="never" />
+          -->
+</menu>
