@@ -16,7 +16,6 @@ import android.widget.*;
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
 import com.flurry.android.FlurryAgent;
-import com.nhaarman.listviewanimations.widget.DynamicListView;
 import org.freemp.droid.*;
 import org.freemp.droid.playlist.ActPlaylist;
 import org.freemp.droid.*;
@@ -42,7 +41,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     private ArrayList<ClsTrack> items;
     private ArrayList<ClsTrack> sourceItemsList;
     private Activity activity;
-    private DynamicListView listView;
+    private ListView listView;
     private SeekBar seekBar;
     private TextView txtDur, artist, title;
     public static int selected = -1;
@@ -98,7 +97,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
 
         actionBar.setCustomView(customView, new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));//(int) (90*scale + 0.5f)));
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        listView = (DynamicListView)aq.id(R.id.listView).getListView();
+        listView = aq.id(R.id.listView).getListView();
         txtDur = (TextView) customView.findViewById(R.id.textViewDur);
         artist = (TextView) customView.findViewById(R.id.textViewArttist);
         title = (TextView) customView.findViewById(R.id.textViewTitle);
@@ -110,15 +109,6 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         adapter = new AdpPlayer(activity,items);
 
         listView.setAdapter(adapter);
-        listView.setOnItemMovedListener(new DynamicListView.OnItemMovedListener() {
-            @Override
-            public void onItemMoved(final int newPosition) {
-                if(synchronizeTrackList()){
-                    adapter.notifyDataSetChanged();
-                }
-                Toast.makeText(getApplicationContext(), ((ClsTrack)adapter.getItem(newPosition)).getTitle() + " moved to position " + newPosition, Toast.LENGTH_SHORT).show();
-            }
-        });
 
         // Start Service
         startService(new Intent(this, ServicePlayer.class));
@@ -264,7 +254,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
                                 }
                                 else {
                                     int pos = listView.getSelectedItemPosition()>0?listView.getSelectedItemPosition():0;
-                                    if (!adapter.isEmpty() && adapter.size()>pos) {
+                                    if (!adapter.isEmpty() && adapter.getCount()>pos) {
                                         mBoundService.play(pos);
                                         mBoundService.startVolumeUpFlag = System.currentTimeMillis();
                                         //aq.id(R.id.btnPlay).background(R.drawable.player_pause_button);

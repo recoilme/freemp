@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.freemp.droid.ClsTrack;
@@ -28,9 +29,10 @@ import java.util.List;
  * Time: 17:25
  * To change this template use File | Settings | File Templates.
  */
-public class AdpPlayer extends com.nhaarman.listviewanimations.ArrayAdapter {
+public class AdpPlayer extends BaseAdapter {
 
     Activity activity;
+    List<ClsTrack> mItems = new ArrayList<>();
     float scale;
     LayoutInflater mInflater;
     int mSelectedTrackColor,mDefaultTrackColor;
@@ -56,16 +58,27 @@ public class AdpPlayer extends com.nhaarman.listviewanimations.ArrayAdapter {
     }
 
     public AdpPlayer(Activity activity, List<ClsTrack> data){
-        super(data, false);
+        //super(data, false);
         this.activity = activity;
+        mItems = data;
         scale = activity.getResources().getDisplayMetrics().density;
         mSelectedTrackColor = activity.getResources().getColor(R.color.text_header);
         mDefaultTrackColor = activity.getResources().getColor(R.color.text_rowslave);
     }
 
     @Override
+    public int getCount() {
+        return mItems.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mItems.get(position);
+    }
+
+    @Override
     public long getItemId(int position) {
-        return getItem(position).hashCode();  //To change body of implemented methods use File | Settings | File Templates.
+        return getItem(position).hashCode();
     }
 
     @Override
