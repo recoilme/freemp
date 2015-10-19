@@ -1,0 +1,32 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    sourceSets.main {
+        jniLibs.srcDir  'jnilibs'
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+
+    defaultConfig {
+        applicationId "org.freemp.droid"
+        minSdkVersion 8
+        targetSdkVersion 23
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile files('libs/FlurryAnalytics_3.3.1.jar')
+    compile files('libs/android-query.0.26.7.jar')
+    compile files('libs/juniversalchardet-1.0.3.jar')
+    compile files('libs/nineoldandroids-2.4.0.jar')
+}
