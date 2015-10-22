@@ -448,7 +448,11 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
 
     private void fireNotification() {
         notification = NotificationUtils.getNotification(this, pendIntent, (tracks != null && tracks.size() > position) ? tracks.get(position) : null, isPlaying());
-        startForeground(1, notification);
+        if (notification != null) {
+            startForeground(1, notification);
+        } else {
+            stopForeground(true);
+        }
     }
 
     @Override

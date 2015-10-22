@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -22,15 +23,22 @@ public class NotificationUtils {
 
     public static Notification getNotification(Context context, PendingIntent pendingIntent, ClsTrack track, boolean isPlaying) {
 
-        Notification notification = new Notification();
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+        notificationBuilder
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.freemp)
+                .setContentTitle(track != null ? track.getArtist() : "")
+                .setContentText(track != null ? track.getTitle() : "");
+        Notification notification = notificationBuilder.build();
+        notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+        notification.contentIntent = pendingIntent;
         if (track != null) {
             notification.contentView = getNotificationViews(track, context, isPlaying, R.layout.notification);
         } else {
+            notification.contentView = null;
             //notification.setLatestEventInfo(context, "", "", pendingIntent);
         }
-        notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-        notification.contentIntent = pendingIntent;
-        notification.icon = R.drawable.freemp;
+
         return notification;
     }
 
