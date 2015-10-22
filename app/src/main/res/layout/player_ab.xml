@@ -1,68 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--android:background="@drawable/stroke"-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:background="@drawable/stroke"
-                android:layout_height="90dp">
+                android:layout_height="90dp"
+                android:background="@drawable/stroke">
 
     <ImageView
+        android:id="@+id/album_img"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:id="@+id/album_img"
-            android:src="@drawable/empty_artwork"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+        android:src="@drawable/freemp"
             />
     <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_toRightOf="@+id/album_img"
-
             android:layout_alignTop="@+id/album_img"
+
+            android:layout_toRightOf="@+id/album_img"
             android:padding="5dp">
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="79dp"
+                android:layout_above="@+id/relativeLayout"
                 android:layout_alignParentTop="true"
-                android:layout_above="@+id/relativeLayout" android:gravity="center_vertical">
+                android:gravity="center_vertical">
             <TextView
+                android:id="@+id/textViewArttist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textViewArttist"
-                    android:textSize="@dimen/small_text"
-                    android:textColor="@color/text_header"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"/>
+                android:layout_alignParentTop="true"
+                android:textColor="@color/text_header"
+                android:textSize="@dimen/small_text"/>
             <TextView
+                android:id="@+id/textViewTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textViewTitle"
-                    android:textSize="@dimen/small_text"
                     android:layout_alignLeft="@+id/textViewArttist"
-                    android:layout_below="@+id/textViewArttist"/>
+                android:layout_below="@+id/textViewArttist"
+                android:textSize="@dimen/small_text"/>
         </RelativeLayout>
         <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true" android:gravity="center_vertical"
-                android:id="@+id/relativeLayout">
+            android:id="@+id/relativeLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_vertical">
             <TextView
+                android:id="@+id/textViewDur"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textViewDur"
-                    android:paddingLeft="2dp"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:paddingLeft="2dp"/>
             <SeekBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                android:id="@+id/seekBar"
                     style="@style/DeafultPlayingSeekBar"
-                    android:id="@+id/seekBar"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignTop="@+id/textViewDur"
-                    android:layout_toLeftOf="@+id/textViewDur"/>
+                android:layout_toLeftOf="@+id/textViewDur"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"/>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

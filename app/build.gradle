@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "org.freemp.droid"
-        minSdkVersion 8
+        minSdkVersion 11
         targetSdkVersion 23
     }
 
@@ -28,5 +28,4 @@ dependencies {
     compile files('libs/FlurryAnalytics_3.3.1.jar')
     compile files('libs/android-query.0.26.7.jar')
     compile files('libs/juniversalchardet-1.0.3.jar')
-    compile files('libs/nineoldandroids-2.4.0.jar')
 }

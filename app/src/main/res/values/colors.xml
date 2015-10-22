@@ -14,4 +14,6 @@
     <color name="text_header">@color/yellow</color>
     <color name="text_header_highlight">@color/orange</color>
     <color name="bgr">#1D2125</color>
+    <color name="ab_bgr_center">#21242A</color>
+
 </resources>
