@@ -8,7 +8,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by recoil on 06.06.14.
@@ -17,36 +21,6 @@ import java.util.*;
 public class StorageUtils {
 
     private static final String TAG = "StorageUtils";
-
-    public static class StorageInfo {
-
-        public final String path;
-        public final boolean internal;
-        public final boolean readonly;
-        public final int display_number;
-
-        StorageInfo(String path, boolean internal, boolean readonly, int display_number) {
-            this.path = path;
-            this.internal = internal;
-            this.readonly = readonly;
-            this.display_number = display_number;
-        }
-
-        public String getDisplayName() {
-            StringBuilder res = new StringBuilder();
-            if (internal) {
-                res.append("Internal SD card");
-            } else if (display_number > 1) {
-                res.append("SD card " + display_number);
-            } else {
-                res.append("SD card");
-            }
-            if (readonly) {
-                res.append(" (Read only)");
-            }
-            return res.toString();
-        }
-    }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public static List<StorageInfo> getStorageList() {
@@ -106,9 +80,40 @@ public class StorageUtils {
             if (buf_reader != null) {
                 try {
                     buf_reader.close();
-                } catch (IOException ex) {}
+                } catch (IOException ex) {
+                }
             }
         }
         return list;
+    }
+
+    public static class StorageInfo {
+
+        public final String path;
+        public final boolean internal;
+        public final boolean readonly;
+        public final int display_number;
+
+        StorageInfo(String path, boolean internal, boolean readonly, int display_number) {
+            this.path = path;
+            this.internal = internal;
+            this.readonly = readonly;
+            this.display_number = display_number;
+        }
+
+        public String getDisplayName() {
+            StringBuilder res = new StringBuilder();
+            if (internal) {
+                res.append("Internal SD card");
+            } else if (display_number > 1) {
+                res.append("SD card " + display_number);
+            } else {
+                res.append("SD card");
+            }
+            if (readonly) {
+                res.append(" (Read only)");
+            }
+            return res.toString();
+        }
     }
 }

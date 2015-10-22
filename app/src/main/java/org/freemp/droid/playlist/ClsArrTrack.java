@@ -33,13 +33,13 @@ public class ClsArrTrack {
     }
 
     public int checkSelection() {
-        int i=0;
-        for (ClsTrack t: this.getPlaylists()) {
+        int i = 0;
+        for (ClsTrack t : this.getPlaylists()) {
             if (t.isSelected()) {
                 i++;
             }
         }
-        return i==0?-1:(i==this.getPlaylists().size()?1:0);
+        return i == 0 ? -1 : (i == this.getPlaylists().size() ? 1 : 0);
     }
 
     public String getArtists() {

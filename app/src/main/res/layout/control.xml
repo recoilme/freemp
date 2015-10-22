@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/stroke_top"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:background="@drawable/stroke_top">
+
     <LinearLayout
         android:id="@+id/keyboardhidelayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:clickable="true"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <include
-                android:id="@+id/include2"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                layout="@layout/buttongroup" />
+            android:id="@+id/include2"
+            layout="@layout/buttongroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </LinearLayout>

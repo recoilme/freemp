@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
+
 import org.freemp.droid.Constants;
 import org.freemp.droid.R;
 import org.freemp.droid.playlist.ActPlaylist;
@@ -24,12 +26,11 @@ import java.util.ArrayList;
  */
 public class FragmentFolders extends Fragment implements TaskGetPlaylist.OnTaskGetPlaylist {
 
+    public AdpPlaylist adapter;
+    public ArrayList<ClsArrTrack> items;
     private Activity activity;
     private AQuery aq;
     private ExpandableListView listView;
-
-    public AdpPlaylist adapter;
-    public ArrayList<ClsArrTrack> items;
 
     public static FragmentFolders newInstance(CharSequence title) {
         Bundle bundle = new Bundle();
@@ -57,15 +58,15 @@ public class FragmentFolders extends Fragment implements TaskGetPlaylist.OnTaskG
 
     @Override
     public void onViewCreated(android.view.View view, android.os.Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
 
         if (args != null) {
-            String title = ""+args.getCharSequence(Constants.KEY_TITLE);
+            String title = "" + args.getCharSequence(Constants.KEY_TITLE);
         }
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
         listView.setGroupIndicator(null);
-        final TextView textView = (TextView)view.findViewById(R.id.textViewSave);
+        final TextView textView = (TextView) view.findViewById(R.id.textViewSave);
         textView.setClickable(true);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,12 +78,12 @@ public class FragmentFolders extends Fragment implements TaskGetPlaylist.OnTaskG
     }
 
     public void update(Activity activity, int type, boolean refresh) {
-        if (items!=null) {
+        if (items != null) {
             adapter.notifyDataSetInvalidated();
             items.clear();
             adapter.invalidate();
         }
-        TaskGetPlaylist taskGetPlaylist = new TaskGetPlaylist(activity,type,refresh, this);
+        TaskGetPlaylist taskGetPlaylist = new TaskGetPlaylist(activity, type, refresh, this);
         taskGetPlaylist.execute();
     }
 
@@ -105,7 +106,7 @@ public class FragmentFolders extends Fragment implements TaskGetPlaylist.OnTaskG
 
     @Override
     public void OnTaskResult(Object result) {
-        if (null!=result && isAdded()) {
+        if (null != result && isAdded()) {
             items.addAll((ArrayList<ClsArrTrack>) result);
 
             adapter.notifyDataSetChanged();

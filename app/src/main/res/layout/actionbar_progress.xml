@@ -1,11 +1,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_height="wrap_content"
              android:layout_width="64dp"
+             android:layout_height="wrap_content"
              android:gravity="center">
-    <ProgressBar android:layout_width="32dp"
-                 android:layout_height="32dp"
-                 android:layout_gravity="center"
-                 android:indeterminate="true" />
+
+    <ProgressBar
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:indeterminate="true"/>
 
 </FrameLayout>
 

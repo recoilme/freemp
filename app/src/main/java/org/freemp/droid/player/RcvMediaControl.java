@@ -13,55 +13,54 @@ import android.view.KeyEvent;
 public class RcvMediaControl extends BroadcastReceiver {
 
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
             KeyEvent event = (KeyEvent) intent
                     .getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-            if (event==null) {
+            if (event == null) {
                 return;
             }
             if (event.getAction() != KeyEvent.ACTION_DOWN) {
                 return;
             }
 
-            switch (event.getKeyCode())
-            {
+            switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_MEDIA_STOP:
                 case KeyEvent.KEYCODE_HEADSETHOOK:
                 case KeyEvent.KEYCODE_MEDIA_PLAY:
-                    sendMessage(context,"play");
+                    sendMessage(context, "play");
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PAUSE:
-                    sendMessage(context,"play");
+                    sendMessage(context, "play");
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 
-                    sendMessage(context,"play");
+                    sendMessage(context, "play");
                     break;
                 case KeyEvent.KEYCODE_MEDIA_NEXT:
-                    sendMessage(context,"next");
+                    sendMessage(context, "next");
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    sendMessage(context,"prev");
+                    sendMessage(context, "prev");
                     break;
                 case KeyEvent.KEYCODE_VOLUME_UP:
-                    sendMessage(context,"voup");
+                    sendMessage(context, "voup");
                     break;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    sendMessage(context,"vodn");
+                    sendMessage(context, "vodn");
                     break;
             }
         }
 
     }
-    void sendMessage(Context context, String msg){
+
+    void sendMessage(Context context, String msg) {
         Intent sendIntent = null;
         PendingIntent pendingIntent = null;
         sendIntent = new Intent(msg);
         sendIntent.setComponent(new ComponentName(context, ServicePlayer.class));
-        pendingIntent = PendingIntent.getService(context,0, sendIntent, 0);
+        pendingIntent = PendingIntent.getService(context, 0, sendIntent, 0);
         try {
             pendingIntent.send();
         } catch (PendingIntent.CanceledException e) {

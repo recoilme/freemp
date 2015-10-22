@@ -15,13 +15,12 @@ public class StringUtils {
         if (str == null || str.length() == 0) {
             return str;
         }
-        String [] s = TextUtils.split(str, " ");
+        String[] s = TextUtils.split(str, " ");
         if (s.length == 0) {
             return capitalize(str);
-        }
-        else {
+        } else {
             StringBuilder stringBuilder = new StringBuilder();
-            for (String ss:s){
+            for (String ss : s) {
                 stringBuilder.append(capitalize(ss));
                 stringBuilder.append(" ");
             }
@@ -42,7 +41,7 @@ public class StringUtils {
 
     public static String getFileName(ClsTrack track, boolean withAlbum) {
 
-        final String filename = track.getArtist().toLowerCase().trim()+(withAlbum?("_"+track.getAlbum().toLowerCase().trim()):"");
+        final String filename = track.getArtist().toLowerCase().trim() + (withAlbum ? ("_" + track.getAlbum().toLowerCase().trim()) : "");
         StringBuilder builder = new StringBuilder();
         for (char c : filename.toCharArray()) {
             if (Character.isJavaIdentifierPart(c)) {

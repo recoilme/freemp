@@ -3,15 +3,31 @@ package org.freemp.droid;
 import android.content.Context;
 import android.os.Environment;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Created by recoil on 08.12.13.
  */
 public class FileUtils {
 
+
+    public static final String SD_CARD = "sdCard";
+    public static final String EXTERNAL_SD_CARD = "externalSdCard";
+
+
+    //public class ExternalStorage {
 
     public static boolean writeObject(String filename, Context context, Object o) {
         boolean success = false;
@@ -40,12 +56,6 @@ public class FileUtils {
         }
         return t;
     }
-
-
-    //public class ExternalStorage {
-
-    public static final String SD_CARD = "sdCard";
-    public static final String EXTERNAL_SD_CARD = "externalSdCard";
 
     /**
      * @return True if the external storage is available. False otherwise.
@@ -87,7 +97,7 @@ public class FileUtils {
 
         try {
             File mountFile = new File("/proc/mounts");
-            if(mountFile.exists()){
+            if (mountFile.exists()) {
                 Scanner scanner = new Scanner(mountFile);
                 while (scanner.hasNext()) {
                     String line = scanner.nextLine();
@@ -108,7 +118,7 @@ public class FileUtils {
 
         try {
             File voldFile = new File("/system/etc/vold.fstab");
-            if(voldFile.exists()){
+            if (voldFile.exists()) {
                 Scanner scanner = new Scanner(voldFile);
                 while (scanner.hasNext()) {
                     String line = scanner.nextLine();
@@ -137,18 +147,18 @@ public class FileUtils {
 
         List<String> mountHash = new ArrayList<String>(10);
 
-        for(String mount : mMounts){
+        for (String mount : mMounts) {
             File root = new File(mount);
             if (root.exists() && root.isDirectory() && root.canWrite()) {
                 File[] list = root.listFiles();
                 String hash = "[";
-                if(list!=null){
-                    for(File f : list){
-                        hash += f.getName().hashCode()+":"+f.length()+", ";
+                if (list != null) {
+                    for (File f : list) {
+                        hash += f.getName().hashCode() + ":" + f.length() + ", ";
                     }
                 }
                 hash += "]";
-                if(!mountHash.contains(hash)){
+                if (!mountHash.contains(hash)) {
                     String key = SD_CARD + "_" + map.size();
                     if (map.size() == 0) {
                         key = SD_CARD;
@@ -163,7 +173,7 @@ public class FileUtils {
 
         mMounts.clear();
 
-        if(map.isEmpty()){
+        if (map.isEmpty()) {
             map.put(SD_CARD, Environment.getExternalStorageDirectory());
         }
         return map;
@@ -186,7 +196,7 @@ public class FileUtils {
             file.getParentFile().mkdirs();
             try {
                 return file.createNewFile();
-            } catch(IOException ioe) {
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
             return false;
@@ -196,7 +206,7 @@ public class FileUtils {
     public static File getExternalSdCardPath() {
         String path = null;
         File sdCardFile = null;
-        List<String> sdCardPossiblePath = Arrays.asList("external_sd", "ext_sd", "external", "extSdCard", "sdcard2", "sdcard1","external1");
+        List<String> sdCardPossiblePath = Arrays.asList("external_sd", "ext_sd", "external", "extSdCard", "sdcard2", "sdcard1", "external1");
         for (String sdPath : sdCardPossiblePath) {
             File file = new File("/mnt/", sdPath);
             if (file.isDirectory()) {/* && file.canWrite()) {
@@ -218,7 +228,7 @@ public class FileUtils {
         return sdCardFile;
     }
 
-    public static <T> T[] concatenate (T[] A, T[] B) {
+    public static <T> T[] concatenate(T[] A, T[] B) {
         int aLen = A.length;
         int bLen = B.length;
 

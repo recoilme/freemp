@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+
 import com.flurry.android.FlurryAgent;
+
 import org.freemp.droid.ClsTrack;
 
 import java.io.File;
@@ -15,11 +17,11 @@ import java.io.File;
 public class MakePlaylistMS extends MakePlaylistAbstract {
 
     public MakePlaylistMS(Context context, boolean refresh) {
-        super(context,refresh);
+        super(context, refresh);
     }
 
     @Override
-    public void getAllTracks(Context context,boolean refresh) {
+    public void getAllTracks(Context context, boolean refresh) {
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
         String[] projection = {
@@ -44,15 +46,15 @@ public class MakePlaylistMS extends MakePlaylistAbstract {
 
         t = System.currentTimeMillis();
 
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             try {
                 String folder = "";
                 String path = cursor.getString(7);
                 String[] pathArray = path.split(
-                        TextUtils.equals(System.getProperty("file.separator"), "")?"/":System.getProperty("file.separator")
+                        TextUtils.equals(System.getProperty("file.separator"), "") ? "/" : System.getProperty("file.separator")
                 );
-                if (pathArray!=null && pathArray.length>1) {
-                    folder = pathArray[pathArray.length-2];
+                if (pathArray != null && pathArray.length > 1) {
+                    folder = pathArray[pathArray.length - 2];
                 }
 
                 allTracks.add(new ClsTrack(cursor.getString(0),
@@ -68,8 +70,7 @@ public class MakePlaylistMS extends MakePlaylistAbstract {
                         cursor.getInt(8)
                 ));
                 //Log.w("folder",folder);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 FlurryAgent.onError("1", "1", e);
                 e.printStackTrace();
             }

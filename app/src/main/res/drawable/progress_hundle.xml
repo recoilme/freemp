@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_pressed="true"
-          android:state_window_focused="true"
-          android:drawable="@drawable/btn_seek_normal" />
+    <item android:drawable="@drawable/btn_seek_normal"
+          android:state_pressed="true"
+          android:state_window_focused="true"/>
 
-    <item android:state_focused="true"
-          android:state_window_focused="true"
-          android:drawable="@drawable/btn_seek_normal" />
+    <item android:drawable="@drawable/btn_seek_normal"
+          android:state_focused="true"
+          android:state_window_focused="true"/>
 
-    <item android:state_selected="true"
-          android:state_window_focused="true"
-          android:drawable="@drawable/btn_seek_normal" />
+    <item android:drawable="@drawable/btn_seek_normal"
+          android:state_selected="true"
+          android:state_window_focused="true"/>
 
-    <item android:drawable="@drawable/btn_seek_normal" />
+    <item android:drawable="@drawable/btn_seek_normal"/>
 
 </selector>

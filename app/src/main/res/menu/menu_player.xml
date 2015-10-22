@@ -1,11 +1,12 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:FreeAmp="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_open_fs"
-          android:title="@string/open_fs"
-          android:alphabeticShortcut="f"
-          android:orderInCategory="2"
-          android:icon="@drawable/icon_menu_moreoverflow_normal_holo_dark"
-          FreeAmp:showAsAction="always" />
+<menu xmlns:FreeAmp="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_open_fs"
+        android:alphabeticShortcut="f"
+        android:icon="@drawable/icon_menu_moreoverflow_normal_holo_dark"
+        android:orderInCategory="2"
+        android:title="@string/open_fs"
+        FreeAmp:showAsAction="always"/>
     <!--
     <item android:id="@+id/menu_open_gm"
           android:title="@string/open_gm"

@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
-import org.freemp.droid.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,27 +41,24 @@ public class MediaUtils {
         // display this drawable. Take it into account now, so we don't have to
         // scale later.
         Bitmap b = null;
-        if (track==null) return null;
+        if (track == null) return null;
         String path = MediaUtils.getAlbumPath(track);
-        if (path!=null && new File(path).exists()) {
+        if (path != null && new File(path).exists()) {
             File file = new File(path);
             if (file.exists()) {
                 b = getBitmap(context, file, null, w, h);
             }
-        }
-        else {
+        } else {
             final int album_id = track.getAlbumId();
-            if (album_id!=0) {
+            if (album_id != 0) {
                 Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
                 if (uri != null) {
-                    b = getBitmap(context, null, uri,  w,  h);
+                    b = getBitmap(context, null, uri, w, h);
+                } else {
+                    b = getArtistQuick(context, track, w, h);
                 }
-                else {
-                    b = getArtistQuick(context,track,w,h);
-                }
-            }
-            else {
-                b = getArtistQuick(context,track,w,h);
+            } else {
+                b = getArtistQuick(context, track, w, h);
             }
         }
         return b;
@@ -73,9 +69,9 @@ public class MediaUtils {
         // display this drawable. Take it into account now, so we don't have to
         // scale later.
         Bitmap b = null;
-        if (track==null) return null;
+        if (track == null) return null;
         String path = MediaUtils.getArtistPath(track);
-        if (path!=null) {
+        if (path != null) {
             File file = new File(path);
             if (file.exists()) {
                 b = getBitmap(context, file, null, w, h);
@@ -84,14 +80,13 @@ public class MediaUtils {
         return b;
     }
 
-    public static Bitmap getBitmap(Context context, File file,Uri uri, int w, int h) {
+    public static Bitmap getBitmap(Context context, File file, Uri uri, int w, int h) {
         ParcelFileDescriptor fd = null;
         Bitmap b = null;
         try {
-            if (file!=null) {
-                fd = ParcelFileDescriptor.open(file,ParcelFileDescriptor.MODE_READ_ONLY);
-            }
-            else {
+            if (file != null) {
+                fd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+            } else {
                 ContentResolver res = context.getContentResolver();
                 fd = res.openFileDescriptor(uri, "r");
             }
@@ -106,7 +101,7 @@ public class MediaUtils {
                     fd.getFileDescriptor(), null, sBitmapOptionsCache);
             int nextWidth = sBitmapOptionsCache.outWidth >> 1;
             int nextHeight = sBitmapOptionsCache.outHeight >> 1;
-            while (nextWidth>w && nextHeight>h) {
+            while (nextWidth > w && nextHeight > h) {
                 sampleSize <<= 1;
                 nextWidth >>= 1;
                 nextHeight >>= 1;
@@ -139,8 +134,7 @@ public class MediaUtils {
         return b;
     }
 
-    public static void setRingtoneWithCoping(Context context,ClsTrack track)
-    {
+    public static void setRingtoneWithCoping(Context context, ClsTrack track) {
         /*
         http://www.stealthcopter.com/blog/2010/01/android-saving-a-sound-file-to-sd-from-resource-and-setting-as-ringtone/
 
@@ -157,8 +151,7 @@ public class MediaUtils {
         */
     }
 
-    public static void setRingtone(Context context,ClsTrack track)
-    {
+    public static void setRingtone(Context context, ClsTrack track) {
 
         ContentValues values = new ContentValues();
         values.put(MediaStore.MediaColumns.DATA, track.getPath());
@@ -174,8 +167,7 @@ public class MediaUtils {
 
         Uri uri = MediaStore.Audio.Media.getContentUriForPath(track.getPath());
 
-        if(uri == null || context.getContentResolver()==null)
-        {
+        if (uri == null || context.getContentResolver() == null) {
             Toast.makeText(context, context.getString(R.string.error), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -183,14 +175,11 @@ public class MediaUtils {
         context.getContentResolver().delete(uri, MediaStore.MediaColumns.DATA + "=\"" + track.getPath() + "\"", null);
         Uri newUri = context.getContentResolver().insert(uri, values);
 
-        if(newUri == null)
-        {
-            Toast.makeText(context,context.getString(R.string.error),Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        if (newUri == null) {
+            Toast.makeText(context, context.getString(R.string.error), Toast.LENGTH_SHORT).show();
+        } else {
             RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
-            Toast.makeText(context,context.getString(R.string.set_as_ringtone),Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.set_as_ringtone), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -211,7 +200,7 @@ public class MediaUtils {
             return;
         }
 
-        String[] cols = new String[] {
+        String[] cols = new String[]{
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.TITLE
@@ -219,7 +208,7 @@ public class MediaUtils {
 
         String where = MediaStore.Audio.Media._ID + "=" + id;
         Cursor cursor = query(context, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                cols, where , null, null);
+                cols, where, null, null);
         try {
             if (cursor != null && cursor.getCount() == 1) {
                 // Set the system setting to make this the current ringtone
@@ -249,8 +238,8 @@ public class MediaUtils {
 
     }
 
-    public static String getAlbumPath (ClsTrack track,boolean withAlbum) {
-        final String directoryPath = FileUtils.getSdCardPath()+ALBUM_FOLDER;
+    public static String getAlbumPath(ClsTrack track, boolean withAlbum) {
+        final String directoryPath = FileUtils.getSdCardPath() + ALBUM_FOLDER;
         File directory = new File(directoryPath);
         boolean success = true;
         if (!directory.exists()) {
@@ -258,17 +247,16 @@ public class MediaUtils {
         }
         if (!success) {
             return null;
-        }
-        else {
-            return directoryPath +"/"+ StringUtils.getFileName(track,withAlbum)+".jpg";
+        } else {
+            return directoryPath + "/" + StringUtils.getFileName(track, withAlbum) + ".jpg";
         }
     }
 
-    public static String getAlbumPath (ClsTrack track) {
-        return getAlbumPath(track,true);
+    public static String getAlbumPath(ClsTrack track) {
+        return getAlbumPath(track, true);
     }
 
-    public static String getArtistPath (ClsTrack track) {
-        return getAlbumPath(track,false);
+    public static String getArtistPath(ClsTrack track) {
+        return getAlbumPath(track, false);
     }
 }

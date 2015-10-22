@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:id="@+id/player_bgr"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
@@ -8,55 +9,55 @@
 
     <TextView
         android:id="@+id/cell_index"
-        android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:paddingRight="10dp"
-        android:textSize="@dimen/medium_text"
-        android:textColor="@color/text_rowslave"
         android:text="1"
+        android:textColor="@color/text_rowslave"
+        android:textSize="@dimen/medium_text"
         />
 
     <TextView
         android:id="@+id/cell_artist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/cell_index"
         android:layout_toLeftOf="@+id/cell_duration"
-        android:textSize="@dimen/medium_text"
-        android:textColor="@color/text_rowslave"
+        android:layout_toRightOf="@+id/cell_index"
         android:text="Artist"
+        android:textColor="@color/text_rowslave"
+        android:textSize="@dimen/medium_text"
         />
-
 
 
     <TextView
         android:id="@+id/cell_title"
-        android:layout_below="@id/cell_artist"
-        android:layout_toLeftOf="@+id/cell_duration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/medium_text"
-        android:textColor="@color/text_rowslave"
+        android:layout_below="@id/cell_artist"
+        android:layout_toLeftOf="@+id/cell_duration"
         android:text="Title"
+        android:textColor="@color/text_rowslave"
+        android:textSize="@dimen/medium_text"
         />
 
     <TextView
-            android:id="@+id/cell_duration"
-            android:layout_toLeftOf="@+id/cell_menu"
-            android:layout_alignBaseline="@id/cell_artist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:textSize="@dimen/small_text"
-            android:text="0:00"
-            android:layout_centerVertical="true"/>
+        android:id="@+id/cell_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/cell_artist"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/cell_menu"
+        android:paddingLeft="5dp"
+        android:text="0:00"
+        android:textSize="@dimen/small_text"/>
+
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/cell_menu"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/icon_menu_btn"
-            android:clickable="true"
-            android:layout_centerVertical="true"/>
+        android:id="@+id/cell_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        android:src="@drawable/icon_menu_btn"/>
 </RelativeLayout>

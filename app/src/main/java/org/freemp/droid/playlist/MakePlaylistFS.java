@@ -5,9 +5,11 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.androidquery.util.AQUtility;
 import com.un4seen.bass.BASS;
 import com.un4seen.bass.TAGS;
+
 import org.freemp.droid.ClsTrack;
 import org.freemp.droid.FileUtils;
 import org.freemp.droid.FillMediaStoreTracks;
@@ -24,43 +26,41 @@ import java.util.ArrayList;
  */
 public class MakePlaylistFS extends MakePlaylistAbstract {
 
-    private ArrayList<ClsTrack> tempAllTracks,tempAllTracksMediaStore;
-    private boolean refresh;
-    private FillMediaStoreTracks fillMediaStoreTracks;
     //base tags for scan
-    private static final int[] formats = {BASS.BASS_TAG_ID3V2,BASS.BASS_TAG_OGG,BASS.BASS_TAG_APE,BASS.BASS_TAG_MP4,BASS.BASS_TAG_ID3};
-
+    private static final int[] formats = {BASS.BASS_TAG_ID3V2, BASS.BASS_TAG_OGG, BASS.BASS_TAG_APE, BASS.BASS_TAG_MP4, BASS.BASS_TAG_ID3};
     //encoding detector
     UniversalDetector detector;
+    private ArrayList<ClsTrack> tempAllTracks, tempAllTracksMediaStore;
+    private boolean refresh;
+    private FillMediaStoreTracks fillMediaStoreTracks;
 
     public MakePlaylistFS(Context context, boolean refresh) {
-        super(context,refresh);
+        super(context, refresh);
     }
 
     @Override
     public void getAllTracks(Context context, boolean refresh) {
         this.refresh = refresh;
         t = System.currentTimeMillis();
-        String scanDir = PreferenceManager.getDefaultSharedPreferences(context).getString("scanDir",Environment.getExternalStorageDirectory().getAbsolutePath().toString());
+        String scanDir = PreferenceManager.getDefaultSharedPreferences(context).getString("scanDir", Environment.getExternalStorageDirectory().getAbsolutePath().toString());
         File currentDir = new File(scanDir);
 
         tempAllTracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", context);
         tempAllTracksMediaStore = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksms", context);
 
-        if (refresh || tempAllTracksMediaStore == null || tempAllTracksMediaStore.size()==0) {
+        if (refresh || tempAllTracksMediaStore == null || tempAllTracksMediaStore.size() == 0) {
             fillMediaStoreTracks = new FillMediaStoreTracks(context);
-            tempAllTracksMediaStore =  fillMediaStoreTracks.getTracks();
+            tempAllTracksMediaStore = fillMediaStoreTracks.getTracks();
         }
 
-        if (!refresh && tempAllTracks !=null && tempAllTracks.size()>0) {
+        if (!refresh && tempAllTracks != null && tempAllTracks.size() > 0) {
             allTracks = new ArrayList<ClsTrack>(tempAllTracks);
-        }
-        else {
+        } else {
             if (BASS.BASS_Init(-1, 44100, 0)) {
                 String nativePath = context.getApplicationInfo().nativeLibraryDir;
-                String[] listPlugins=new File(nativePath).list();
-                for (String s: listPlugins) {
-                    int plug=BASS.BASS_PluginLoad(nativePath+"/"+s, 0);
+                String[] listPlugins = new File(nativePath).list();
+                for (String s : listPlugins) {
+                    int plug = BASS.BASS_PluginLoad(nativePath + "/" + s, 0);
                 }
             }
             detector = new UniversalDetector(null);
@@ -69,7 +69,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
 
             FileUtils.writeObject("alltracksfs", context, allTracks);
 
-            AQUtility.debug("time","(ms):"+(System.currentTimeMillis()-t)); //5000 //81000  //7000
+            AQUtility.debug("time", "(ms):" + (System.currentTimeMillis() - t)); //5000 //81000  //7000
         }
     }
 
@@ -82,44 +82,40 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
             list[0] = Environment.getExternalStorageDirectory();
             File extSd = FileUtils.getExternalSdCardPath();
             boolean needAdd = true;
-            if (extSd!=null) {
-                for ( File file : list )
-                {
+            if (extSd != null) {
+                for (File file : list) {
                     if (file.getAbsolutePath().equals(extSd.getAbsolutePath())) {
                         needAdd = false;
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 needAdd = false;
             }
-            if (extSd!=null && needAdd) {
-                File [] extSdlist = new File[1];
+            if (extSd != null && needAdd) {
+                File[] extSdlist = new File[1];
                 extSdlist[0] = extSd;
-                File[] newlist = new File[list.length+1];
+                File[] newlist = new File[list.length + 1];
 
-                newlist = FileUtils.concatenate(extSdlist,list);
+                newlist = FileUtils.concatenate(extSdlist, list);
                 list = newlist;
             }
-        }
-        else {
+        } else {
             list = root.listFiles();
         }
-        if (list==null) return;
+        if (list == null) return;
         int chan = 0;
         for (File f : list) {
 
             if (f.isDirectory()) {
                 walk(f);
-            }
-            else {
+            } else {
                 String path = f.getAbsolutePath().toString();
                 if (path.contains("Richter")) {
-                    Log.w("Richter",path);
+                    Log.w("Richter", path);
                 }
                 int lengthPath = path.length();
-                if (lengthPath<4) continue;//file without extension
+                if (lengthPath < 4) continue;//file without extension
                 String endOfPath = path.substring(lengthPath - 4).toLowerCase();
                 if (endOfPath.equals(".mp3")
                         || endOfPath.equals("flac") || endOfPath.equals(".ogg")
@@ -130,15 +126,15 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                         || endOfPath.equals(".mpc") || endOfPath.equals(".ape")
 
                         ) {
-                    if (!this.refresh && tempAllTracks !=null && tempAllTracks.size()>0) {
+                    if (!this.refresh && tempAllTracks != null && tempAllTracks.size() > 0) {
                         ClsTrack track = null;
-                        for (ClsTrack t: tempAllTracks) {
+                        for (ClsTrack t : tempAllTracks) {
                             if (t.getPath().equals(path)) {
                                 track = t;
                                 break;
                             }
                         }
-                        if (track!=null) {
+                        if (track != null) {
                             allTracks.add(track);
                             continue;
                         }
@@ -146,10 +142,10 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
 
                     String folder = "";
                     String[] pathArray = path.split(
-                            TextUtils.equals(System.getProperty("file.separator"), "")?"/":System.getProperty("file.separator")
+                            TextUtils.equals(System.getProperty("file.separator"), "") ? "/" : System.getProperty("file.separator")
                     );
-                    if (pathArray!=null && pathArray.length>1) {
-                        folder = pathArray[pathArray.length-2];
+                    if (pathArray != null && pathArray.length > 1) {
+                        folder = pathArray[pathArray.length - 2];
                     }
                     long lastModified = f.lastModified();
 
@@ -158,7 +154,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                     chan = BASS.BASS_StreamCreateFile(path, 0, 0, 0);
                     //check base tags and get encoding
                     String tags = null;
-                    if (android.os.Build.VERSION.SDK_INT >=9) {
+                    if (android.os.Build.VERSION.SDK_INT >= 9) {
                         for (int format = 0; format < formats.length; format++) {
                             final ByteBuffer byteBuffer = (ByteBuffer) TAGS.TAGS_ReadExByte(chan, "%ARTI@%YEAR@%TRCK@%TITL@%ALBM@%COMP" + " ", formats[format]);
 
@@ -200,10 +196,10 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
 
                     if (TextUtils.isEmpty(tags)) {
                         //check file without tags on exists in mediastore
-                        if (tempAllTracksMediaStore !=null && tempAllTracksMediaStore.size()>0) {
-                            for (ClsTrack t: tempAllTracksMediaStore) {
+                        if (tempAllTracksMediaStore != null && tempAllTracksMediaStore.size() > 0) {
+                            for (ClsTrack t : tempAllTracksMediaStore) {
                                 if (t.getPath().equals(path)) {
-                                    if (t!=null) {
+                                    if (t != null) {
                                         allTracks.add(t);
                                     }
                                     break;
@@ -214,7 +210,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                     }
 
                     String[] tagsArray = tags.split("@");
-                    if (tagsArray==null || tagsArray.length<=4) {
+                    if (tagsArray == null || tagsArray.length <= 4) {
                         //это говно какое-то типа музыки из игры скорее всего
                         continue;
                     }
@@ -222,9 +218,9 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                     tagsArray = tags.split("@");
                     int duration = 0;
                     int albumId = 0;
-                    if (tempAllTracksMediaStore !=null && tempAllTracksMediaStore.size()>0) {
+                    if (tempAllTracksMediaStore != null && tempAllTracksMediaStore.size() > 0) {
                         ClsTrack track = null;
-                        for (ClsTrack t: tempAllTracksMediaStore) {
+                        for (ClsTrack t : tempAllTracksMediaStore) {
                             if (t.getPath().equals(path)) {
                                 duration = t.getDuration();
                                 albumId = t.getAlbumId();
@@ -232,11 +228,11 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
                             }
                         }
                     }
-                    if (duration==0) {
-                        duration = (int) (0.5d+BASS.BASS_ChannelBytes2Seconds(chan, BASS.BASS_ChannelGetLength(chan, BASS.BASS_POS_BYTE)));
+                    if (duration == 0) {
+                        duration = (int) (0.5d + BASS.BASS_ChannelBytes2Seconds(chan, BASS.BASS_ChannelGetLength(chan, BASS.BASS_POS_BYTE)));
                     }
 
-                    if (pathArray.length>0) {
+                    if (pathArray.length > 0) {
                         add2list(tagsArray[0], tagsArray[1], tagsArray[2], tagsArray[3], tagsArray[4], tagsArray[5].trim(),
                                 path, folder, lastModified, pathArray[pathArray.length - 1], duration, albumId);
                     }
@@ -245,26 +241,28 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
         }
     }
 
-    public void add2list(String artist,String yearS,String trackS,String title,String album,String composer,
-                         String path,String folder, long lastModified,String filename,int duration,int albumId){
+    public void add2list(String artist, String yearS, String trackS, String title, String album, String composer,
+                         String path, String folder, long lastModified, String filename, int duration, int albumId) {
         int year = 0;
         int track = 0;
 
         try {
             if (!yearS.equals("")) {
-                if (yearS.length()>3) {
-                    yearS = yearS.substring(0,4);
+                if (yearS.length() > 3) {
+                    yearS = yearS.substring(0, 4);
                 }
-                year  = Integer.parseInt(yearS.replaceAll("[^\\d.]", ""));
+                year = Integer.parseInt(yearS.replaceAll("[^\\d.]", ""));
             }
 
             if (!trackS.equals(""))
                 track = Integer.parseInt(trackS.replaceAll("[^\\d.]", ""));
-        } catch (Exception e) {AQUtility.debug(e.toString());}
+        } catch (Exception e) {
+            AQUtility.debug(e.toString());
+        }
 
         allTracks.add(new ClsTrack(
-                artist.equals("") ?"unknown": StringUtils.capitalizeFully(artist),
-                title.equals("") ?filename:StringUtils.capitalizeFully(title),
+                artist.equals("") ? "unknown" : StringUtils.capitalizeFully(artist),
+                title.equals("") ? filename : StringUtils.capitalizeFully(title),
                 album,
                 composer,
                 year,

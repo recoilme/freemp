@@ -2,6 +2,7 @@ package org.freemp.droid.playlist;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+
 import org.freemp.droid.Constants;
 
 import java.lang.ref.WeakReference;
@@ -16,11 +17,7 @@ public class TaskGetPlaylist extends AsyncTask {
     private int type;
     private boolean refresh;
 
-    public static interface OnTaskGetPlaylist {
-        public void OnTaskResult(Object result);
-    }
-
-    public TaskGetPlaylist(Activity activity, int type, boolean refresh, OnTaskGetPlaylist onTaskGetPlaylist )  {
+    public TaskGetPlaylist(Activity activity, int type, boolean refresh, OnTaskGetPlaylist onTaskGetPlaylist) {
         mActivity = new WeakReference<Activity>(activity);
         mOnTaskGetPlaylist = new WeakReference<OnTaskGetPlaylist>(onTaskGetPlaylist);
         this.type = type;
@@ -33,14 +30,14 @@ public class TaskGetPlaylist extends AsyncTask {
         if (null == activity) {
             return null;
         }
-        switch (this.type){
+        switch (this.type) {
             case Constants.TYPE_MS:
 
-                return (new MakePlaylistMS(activity,refresh)).getArrTracks();
+                return (new MakePlaylistMS(activity, refresh)).getArrTracks();
             case Constants.TYPE_FS:
-                return new MakePlaylistFS(activity,refresh).getArrTracks();
+                return new MakePlaylistFS(activity, refresh).getArrTracks();
             default:
-                return new MakePlaylistMS(activity,refresh).getArrTracks();
+                return new MakePlaylistMS(activity, refresh).getArrTracks();
         }
     }
 
@@ -54,5 +51,9 @@ public class TaskGetPlaylist extends AsyncTask {
             ((ActPlaylist) activity).setRefreshing(false);
             ((ActPlaylist) activity).setRefreshActionButtonState();
         }
+    }
+
+    public static interface OnTaskGetPlaylist {
+        public void OnTaskResult(Object result);
     }
 }

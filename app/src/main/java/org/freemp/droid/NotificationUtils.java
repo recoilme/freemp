@@ -10,7 +10,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
-import org.freemp.droid.R;
+
 import org.freemp.droid.player.ServicePlayer;
 
 /**
@@ -23,10 +23,9 @@ public class NotificationUtils {
     public static Notification getNotification(Context context, PendingIntent pendingIntent, ClsTrack track, boolean isPlaying) {
 
         Notification notification = new Notification();
-        if (track!=null) {
+        if (track != null) {
             notification.contentView = getNotificationViews(track, context, isPlaying, R.layout.notification);
-        }
-        else {
+        } else {
             //notification.setLatestEventInfo(context, "", "", pendingIntent);
         }
         notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
@@ -36,20 +35,19 @@ public class NotificationUtils {
     }
 
 
-
-    private static RemoteViews getNotificationViews(final ClsTrack track, final Context context,  boolean isPlaying, int layoutId) {
+    private static RemoteViews getNotificationViews(final ClsTrack track, final Context context, boolean isPlaying, int layoutId) {
         final RemoteViews views = new RemoteViews(context.getPackageName(), layoutId);
 
         views.setTextViewText(R.id.notifTitle, track.getTitle());
         views.setTextViewText(R.id.notifArtist, track.getArtist());
         //views.setImageViewResource(R.id.notifAlbum,  R.drawable.empty_artwork);
-        Bitmap cover =  MediaUtils.getArtworkQuick(context, track, 180, 180);
-        if (cover != null){
+        Bitmap cover = MediaUtils.getArtworkQuick(context, track, 180, 180);
+        if (cover != null) {
             views.setImageViewBitmap(R.id.notifAlbum, cover);
-        }else {
-            views.setImageViewResource(R.id.notifAlbum,  R.drawable.empty_artwork);
+        } else {
+            views.setImageViewResource(R.id.notifAlbum, R.drawable.empty_artwork);
         }
-        if (Build.VERSION.SDK_INT<11) {
+        if (Build.VERSION.SDK_INT < 11) {
             views.setViewVisibility(R.id.action_prev, View.GONE);
             views.setViewVisibility(R.id.action_play, View.GONE);
             views.setViewVisibility(R.id.action_next, View.GONE);
@@ -75,7 +73,7 @@ public class NotificationUtils {
         return views;
     }
 
-    public static void alert(Context context,String message) {
+    public static void alert(Context context, String message) {
         AlertDialog.Builder bld = new AlertDialog.Builder(context);
         bld.setMessage(message);
         bld.setNeutralButton("OK", null);

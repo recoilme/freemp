@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import org.freemp.droid.ClsTrack;
 import org.freemp.droid.MediaUtils;
 import org.freemp.droid.R;
@@ -35,35 +36,27 @@ public class AdpPlayer extends BaseAdapter {
     List<ClsTrack> mItems = new ArrayList<>();
     float scale;
     LayoutInflater mInflater;
-    int mSelectedTrackColor,mDefaultTrackColor;
+    int mSelectedTrackColor, mDefaultTrackColor;
 
-    static class CellViewHolder {
-        public TextView index;
-        public TextView artist;
-        public TextView title;
-        public TextView duration;
-        public ImageView menu;
-    }
-
-    public void replaceTrackList(List<ClsTrack> data){
-        if(data == mItems){
-            return;
-        }
-        if(data != null){
-            mItems = data;
-        }else{
-            mItems = new ArrayList<ClsTrack>();
-        }
-        notifyDataSetChanged();
-    }
-
-    public AdpPlayer(Activity activity, List<ClsTrack> data){
+    public AdpPlayer(Activity activity, List<ClsTrack> data) {
         //super(data, false);
         this.activity = activity;
         mItems = data;
         scale = activity.getResources().getDisplayMetrics().density;
         mSelectedTrackColor = activity.getResources().getColor(R.color.text_header);
         mDefaultTrackColor = activity.getResources().getColor(R.color.text_rowslave);
+    }
+
+    public void replaceTrackList(List<ClsTrack> data) {
+        if (data == mItems) {
+            return;
+        }
+        if (data != null) {
+            mItems = data;
+        } else {
+            mItems = new ArrayList<ClsTrack>();
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -86,8 +79,8 @@ public class AdpPlayer extends BaseAdapter {
 
         CellViewHolder holder;
 
-        if(convertView == null){
-            if(mInflater == null){
+        if (convertView == null) {
+            if (mInflater == null) {
                 mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
             convertView = mInflater.inflate(R.layout.player_cell, null);
@@ -100,23 +93,23 @@ public class AdpPlayer extends BaseAdapter {
             holder.menu = (ImageView) convertView.findViewById(R.id.cell_menu);
 
             convertView.setTag(holder);
-        }else{
+        } else {
             holder = (CellViewHolder) convertView.getTag();
         }
 
-        final ClsTrack currentTrack = (ClsTrack)getItem(position);
+        final ClsTrack currentTrack = (ClsTrack) getItem(position);
         int sec = currentTrack.getDuration();
         int min = sec / 60;
         sec %= 60;
 
-        holder.index.setText((position + 1)+".");
+        holder.index.setText((position + 1) + ".");
         holder.artist.setText(currentTrack.getArtist());
         holder.title.setText(currentTrack.getTitle());
         holder.duration.setText(String.format("%2d:%02d", min, sec));
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContextMenu(v,currentTrack);
+                showContextMenu(v, currentTrack);
             }
         });
 
@@ -128,20 +121,20 @@ public class AdpPlayer extends BaseAdapter {
     }
 
     @Override
-    public boolean hasStableIds(){
+    public boolean hasStableIds() {
         return true;
     }
 
-    private void showContextMenu(View anchorView,final ClsTrack o) {
+    private void showContextMenu(View anchorView, final ClsTrack o) {
 
         List<String> menuMusic = new ArrayList<String>();
-        menuMusic.add(activity.getString(R.string.search)+": "+o.getArtist());
+        menuMusic.add(activity.getString(R.string.search) + ": " + o.getArtist());
         menuMusic.add(activity.getString(R.string.contextmenu_setasringtone));
 
 
         final ListPopupWindow
                 popup = new ListPopupWindow(activity);
-        popup.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1,menuMusic.toArray(new String[menuMusic.size()]) ));
+        popup.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, menuMusic.toArray(new String[menuMusic.size()])));
         popup.setAnchorView(anchorView);
         popup.setModal(true);
         popup.setWidth(Math.max(600, anchorView.getWidth()));
@@ -152,11 +145,11 @@ public class AdpPlayer extends BaseAdapter {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 popup.dismiss();
-                switch (position){
+                switch (position) {
                     case 0:
-                        Intent intent = new Intent(activity,ActFreemporg.class);
+                        Intent intent = new Intent(activity, ActFreemporg.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("q",o.getArtist());
+                        intent.putExtra("q", o.getArtist());
                         activity.startActivity(intent);
                         break;
                     case 1:
@@ -176,5 +169,13 @@ public class AdpPlayer extends BaseAdapter {
             }
         });
         popup.show();
+    }
+
+    static class CellViewHolder {
+        public TextView index;
+        public TextView artist;
+        public TextView title;
+        public TextView duration;
+        public ImageView menu;
     }
 }

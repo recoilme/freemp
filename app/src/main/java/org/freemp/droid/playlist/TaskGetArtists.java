@@ -3,9 +3,11 @@ package org.freemp.droid.playlist;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
+
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+
 import org.freemp.droid.ClsTrack;
 import org.freemp.droid.FileUtils;
 import org.freemp.droid.MediaUtils;
@@ -29,14 +31,7 @@ public class TaskGetArtists extends AsyncTask {
     private int newArtworksCounter;
     private AQuery aq;
 
-    public static interface OnTaskGetArtists {
-        public void OnTaskResult(Object result);
-    }
-    public static interface OnProgressUpdateMy {
-        public void OnArtistsProgress(int progress);
-    }
-
-    public TaskGetArtists(Activity activity, int type, boolean refresh, OnTaskGetArtists onTaskGetArtists, OnProgressUpdateMy onProgressUpdateMy)  {
+    public TaskGetArtists(Activity activity, int type, boolean refresh, OnTaskGetArtists onTaskGetArtists, OnProgressUpdateMy onProgressUpdateMy) {
         mActivity = new WeakReference<Activity>(activity);
         mOnTaskGetArtists = new WeakReference<OnTaskGetArtists>(onTaskGetArtists);
         mOnProgressUpdate = new WeakReference<OnProgressUpdateMy>(onProgressUpdateMy);
@@ -51,8 +46,8 @@ public class TaskGetArtists extends AsyncTask {
         }
         ArrayList<ClsTrack> artistsTracks = new ArrayList<ClsTrack>();
         if (!refresh) {
-            artistsTracks = (ArrayList<ClsTrack>) FileUtils.readObject("artistsTracks",activity);
-            if (artistsTracks!=null && artistsTracks.size()>0) {
+            artistsTracks = (ArrayList<ClsTrack>) FileUtils.readObject("artistsTracks", activity);
+            if (artistsTracks != null && artistsTracks.size() > 0) {
                 return artistsTracks;
             }
             artistsTracks = new ArrayList<ClsTrack>();
@@ -63,7 +58,7 @@ public class TaskGetArtists extends AsyncTask {
         //выкидываем все дубликаты альбомов
         //сортируем по альбому
         aq = new AQuery(activity);
-        for (ClsArrTrack t:arrTracks) {
+        for (ClsArrTrack t : arrTracks) {
             ArrayList<ClsTrack> allTracks = t.getPlaylists();
 
             //Создаем итератор и выкидываем дубли
@@ -79,14 +74,13 @@ public class TaskGetArtists extends AsyncTask {
                 step++;
 
                 ClsTrack track = iterator.next();
-                final String currentArtist = ""+track.getArtist().toLowerCase();
+                final String currentArtist = "" + track.getArtist().toLowerCase();
                 if (currentArtist.equals(artist) || currentArtist.equals("")) {
                     continue;
-                }
-                else {
+                } else {
                     artist = currentArtist;
                     boolean stop = false;
-                    for (ClsTrack clsTrack:artistsTracks) {
+                    for (ClsTrack clsTrack : artistsTracks) {
                         if (clsTrack.getArtist().toLowerCase().equals(artist)) {
                             stop = true;
                             break;
@@ -95,11 +89,10 @@ public class TaskGetArtists extends AsyncTask {
                     if (stop) {
                         continue;
                     }
-                    if (MediaUtils.getArtistQuick(activity, track, 300, 300)!=null) {
+                    if (MediaUtils.getArtistQuick(activity, track, 300, 300) != null) {
                         artistsTracks.add(track);
                         continue;
-                    }
-                    else {
+                    } else {
                         //noartwork (refresh or first start)
                         String url = String.format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=0cb75104931acd7f44f571ed12cff105&artist=%s&format=json", Uri.encode(track.getArtist()));
                         AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
@@ -107,13 +100,13 @@ public class TaskGetArtists extends AsyncTask {
                         aq.sync(cb);
                         JSONObject result = cb.getResult();
 
-                        if (result!=null) {
+                        if (result != null) {
                             JSONObject jsonObject = null;
                             String albumArtImageLink = null;
                             try {
                                 jsonObject = result.getJSONObject("artist");
                                 JSONArray image = jsonObject.getJSONArray("image");
-                                for (int i=0;i<image.length();i++) {
+                                for (int i = 0; i < image.length(); i++) {
                                     jsonObject = image.getJSONObject(i);
                                     if (jsonObject.getString("size").equals("extralarge")) {
                                         albumArtImageLink = Uri.decode(jsonObject.getString("#text"));
@@ -134,23 +127,19 @@ public class TaskGetArtists extends AsyncTask {
                                     if (status.getCode() == 200) {
                                         artistsTracks.add(track);
                                         newArtworksCounter++;
-                                    }
-                                    else {
+                                    } else {
                                         file.delete();
                                         continue;
                                     }
-                                }
-                                else {
+                                } else {
                                     //art not found
                                     continue;
                                 }
-                            }
-                            catch (Exception e) {
+                            } catch (Exception e) {
                                 iterator.remove();
                                 e.printStackTrace();
                             }
-                        }
-                        else {
+                        } else {
                             iterator.remove();
                         }
                     }
@@ -158,13 +147,13 @@ public class TaskGetArtists extends AsyncTask {
                 }
             }
         }
-        FileUtils.writeObject("artistsTracks",activity,artistsTracks);
+        FileUtils.writeObject("artistsTracks", activity, artistsTracks);
         return artistsTracks;
     }
 
     protected void onUpdate(Integer... progress) {
         OnProgressUpdateMy onProgressUpdateMy = mOnProgressUpdate.get();
-        if (onProgressUpdateMy!=null){
+        if (onProgressUpdateMy != null) {
             onProgressUpdateMy.OnArtistsProgress(progress[0]);
         }
     }
@@ -179,5 +168,13 @@ public class TaskGetArtists extends AsyncTask {
             ((ActPlaylist) activity).setRefreshing(false);
             ((ActPlaylist) activity).setRefreshActionButtonState();
         }
+    }
+
+    public static interface OnTaskGetArtists {
+        public void OnTaskResult(Object result);
+    }
+
+    public static interface OnProgressUpdateMy {
+        public void OnArtistsProgress(int progress);
     }
 }

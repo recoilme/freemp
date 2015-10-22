@@ -8,7 +8,6 @@ import java.io.Serializable;
  * Date: 25/11/13
  * Time: 13:47
  * To change this template use File | Settings | File Templates.
- *
  */
 public class ClsTrack implements Serializable {
 
@@ -42,13 +41,15 @@ public class ClsTrack implements Serializable {
         this.group = "";
         this.albumId = albumId;
     }
+
+    public static ClsTrack newInstance(ClsTrack o) {
+        return new ClsTrack(o.getArtist(), o.getTitle(), o.getAlbum(), o.getComposer(), o.getYear(), o.getTrack(), o.getDuration(),
+                o.getPath(), o.getFolder(), o.getLastModified(), o.getAlbumId());
+    }
+
     @Override
     public String toString() {
-        return "["+getGroup()+","+getFolder()+","+getTrack()+","+getArtist()+","+getTitle()+"]";
-    }
-    public static ClsTrack newInstance(ClsTrack o) {
-        return new ClsTrack(o.getArtist(), o.getTitle(),o.getAlbum(),o.getComposer(),o.getYear(),o.getTrack(),o.getDuration(),
-                o.getPath(),o.getFolder(),o.getLastModified(),o.getAlbumId());
+        return "[" + getGroup() + "," + getFolder() + "," + getTrack() + "," + getArtist() + "," + getTitle() + "]";
     }
 
     public String getArtist() {

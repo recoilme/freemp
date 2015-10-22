@@ -1,10 +1,11 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:FreeAmp="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_refresh"
-          android:icon="@drawable/icon_action_refresh"
-          android:title=""
-          android:alphabeticShortcut="r"
-          android:orderInCategory="1"
-          FreeAmp:showAsAction="always" />
+<menu xmlns:FreeAmp="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_refresh"
+        android:alphabeticShortcut="r"
+        android:icon="@drawable/icon_action_refresh"
+        android:orderInCategory="1"
+        android:title=""
+        FreeAmp:showAsAction="always"/>
 
 </menu>

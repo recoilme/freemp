@@ -10,7 +10,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.androidquery.AQuery;
+
 import org.freemp.droid.ClsTrack;
 import org.freemp.droid.R;
 import org.freemp.droid.StringUtils;
@@ -29,12 +31,12 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
     ArrayList<ClsArrTrack> data;
     Activity activity;
     float scale;
-    int med=18,sml=14;
+    int med = 18, sml = 14;
 
-    public AdpPlaylist(Activity activity, ArrayList<ClsArrTrack> data){
+    public AdpPlaylist(Activity activity, ArrayList<ClsArrTrack> data) {
         this.data = data;
-        med = (int)activity.getResources().getDimension(R.dimen.medium_text);
-        sml = (int)activity.getResources().getDimension(R.dimen.small_text);
+        med = (int) activity.getResources().getDimension(R.dimen.medium_text);
+        sml = (int) activity.getResources().getDimension(R.dimen.small_text);
 
         this.activity = activity;
         scale = activity.getResources().getDisplayMetrics().density;
@@ -77,11 +79,11 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
 
     public ArrayList<ClsTrack> getSelected() {
         ArrayList<ClsTrack> tracks = new ArrayList<ClsTrack>();
-        for (ClsArrTrack arrTrack: data) {
-            if (arrTrack.getPlaylists()==null) {
+        for (ClsArrTrack arrTrack : data) {
+            if (arrTrack.getPlaylists() == null) {
                 continue;
             }
-            for (ClsTrack track:arrTrack.getPlaylists()) {
+            for (ClsTrack track : arrTrack.getPlaylists()) {
                 if (track.isSelected()) {
                     tracks.add(track);
                 }
@@ -94,7 +96,7 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = activity.getLayoutInflater().inflate(R.layout.playlist_group_row,null);
+            convertView = activity.getLayoutInflater().inflate(R.layout.playlist_group_row, null);
         }
         AQuery listAq = new AQuery(convertView);
 
@@ -102,73 +104,71 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
 
         final String section = o.getArtists();
         listAq.id(R.id.section).gone();
-        if (groupPosition==0 && !TextUtils.equals(section,"")) {
+        if (groupPosition == 0 && !TextUtils.equals(section, "")) {
             //recently added
             listAq.id(R.id.section).visible();
             listAq.id(R.id.section).text(StringUtils.capitalizeFully(section));
-        }
-        else {
-            if (!TextUtils.equals(section,"") && (groupPosition>0)) {
-                if (!TextUtils.equals(section,data.get(groupPosition-1).getArtists()))  {
+        } else {
+            if (!TextUtils.equals(section, "") && (groupPosition > 0)) {
+                if (!TextUtils.equals(section, data.get(groupPosition - 1).getArtists())) {
                     listAq.id(R.id.section).visible();
                     listAq.id(R.id.section).text(StringUtils.capitalizeFully(section));
                 }
             }
         }
-        listAq.id(R.id.section).text(StringUtils.capitalizeFully(o.getArtists())) ;
-        listAq.id(R.id.textView).text(StringUtils.capitalizeFully(o.getDescription())) ;
+        listAq.id(R.id.section).text(StringUtils.capitalizeFully(o.getArtists()));
+        listAq.id(R.id.textView).text(StringUtils.capitalizeFully(o.getDescription()));
 
         final CheckBox checkBox = listAq.id(R.id.checkBox).getCheckBox();
 
 
         final int checkSelection = o.checkSelection();
 
-        checkBox.setChecked((checkSelection>=0));
-        if (checkSelection==1) {
+        checkBox.setChecked((checkSelection >= 0));
+        if (checkSelection == 1) {
             listAq.id(R.id.textView).textColor(Color.parseColor("#FDC332"));
-        }
-        else if (checkSelection==0){
+        } else if (checkSelection == 0) {
             listAq.id(R.id.textView).textColor(Color.parseColor("#CC681F"));
-        }
-        else {
+        } else {
             listAq.id(R.id.textView).textColor(Color.parseColor("#F6FFFF"));
         }
 
-        final int pos=groupPosition;
+        final int pos = groupPosition;
         listAq.id(R.id.relativeLayout).clicked(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkBox.setChecked(!(checkSelection>=0));
+                checkBox.setChecked(!(checkSelection >= 0));
                 ArrayList<ClsTrack> tracks = o.getPlaylists();
-                for (int i=0;i<tracks.size();i++) {
+                for (int i = 0; i < tracks.size(); i++) {
                     ClsTrack t = tracks.get(i);
-                    t.setSelected(!(checkSelection>=0));
-                    tracks.set(i,t);
+                    t.setSelected(!(checkSelection >= 0));
+                    tracks.set(i, t);
                 }
-                data.set(pos,o);
+                data.set(pos, o);
                 invalidate();
             }
         });
         return convertView;
     }
 
-    public void invalidate(){
-        ((ActPlaylist)activity).updateColor();
+    public void invalidate() {
+        ((ActPlaylist) activity).updateColor();
         this.notifyDataSetChanged();
     }
+
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final LinearLayout linearLayout = new LinearLayout(activity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        int dpAsPixels = (int) (10*scale + 0.5f);
-        linearLayout.setPadding(dpAsPixels,dpAsPixels,dpAsPixels,dpAsPixels);
+        int dpAsPixels = (int) (10 * scale + 0.5f);
+        linearLayout.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
 
         final ClsTrack o = data.get(groupPosition).getPlaylists().get(childPosition);
 
         final TextView artist = new TextView(activity);
         //artist.setTextAppearance(activity,android.R.attr.textAppearanceMedium);
-        artist.setTextSize(TypedValue.COMPLEX_UNIT_PX,med);
+        artist.setTextSize(TypedValue.COMPLEX_UNIT_PX, med);
         artist.setText(o.getArtist());
 
         final TextView title = new TextView(activity);
@@ -181,8 +181,7 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
         //selected
         if (o.isSelected()) {
             title.setTextColor(Color.parseColor("#FDC332"));
-        }
-        else {
+        } else {
             title.setTextColor(Color.GRAY);
         }
 
@@ -195,8 +194,7 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 if (!o.isSelected()) {
                     title.setTextColor(Color.parseColor("#FDC332"));
-                }
-                else {
+                } else {
                     title.setTextColor(Color.GRAY);
                 }
                 o.setSelected(!o.isSelected());
@@ -207,9 +205,9 @@ public class AdpPlaylist extends BaseExpandableListAdapter {
                 ClsTrack t = tracks.get(posChild);
                 t.setSelected(o.isSelected());
 
-                tracks.set(posChild,t);
+                tracks.set(posChild, t);
 
-                data.set(posGroup,group);
+                data.set(posGroup, group);
                 invalidate();
             }
         });

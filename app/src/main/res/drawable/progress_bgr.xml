@@ -3,19 +3,19 @@
     <item>
         <shape>
             <corners android:radius="0dp"/>
-            <solid android:color="#20262b" />
+            <solid android:color="#20262b"/>
         </shape>
     </item>
     <item android:top="1dip">
         <shape>
             <corners android:radius="0dp"/>
-            <solid android:color="#21242A" />
+            <solid android:color="#21242A"/>
         </shape>
     </item>
     <item android:bottom="1dip">
         <shape>
             <corners android:radius="0dp"/>
-            <solid android:color="#21242A" />
+            <solid android:color="#21242A"/>
         </shape>
     </item>
 </layer-list>

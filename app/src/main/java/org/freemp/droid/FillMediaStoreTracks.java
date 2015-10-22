@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+
 import com.flurry.android.FlurryAgent;
 
 import java.io.File;
@@ -12,11 +13,11 @@ import java.util.ArrayList;
 /**
  * Created by recoil on 26.01.14.
  */
-public class FillMediaStoreTracks  {
+public class FillMediaStoreTracks {
 
     private ArrayList<ClsTrack> tempAllTracksMediaStore;
 
-    public  FillMediaStoreTracks(Context context) {
+    public FillMediaStoreTracks(Context context) {
         tempAllTracksMediaStore = new ArrayList<ClsTrack>();
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
@@ -40,7 +41,7 @@ public class FillMediaStoreTracks  {
                     null,
                     null);
 
-            while (cursor!=null && cursor.moveToNext()) {
+            while (cursor != null && cursor.moveToNext()) {
 
                 String folder = "";
                 String path = cursor.getString(7);
@@ -65,16 +66,15 @@ public class FillMediaStoreTracks  {
                         cursor.getInt(8)
                 ));
             }
-            if (cursor!=null) {
+            if (cursor != null) {
                 cursor.close();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             FlurryAgent.onError("1", "1", e.toString());
             try {
                 cursor.close();
+            } catch (Exception ee) {
             }
-            catch (Exception ee) {}
             //e.printStackTrace();
         }
 

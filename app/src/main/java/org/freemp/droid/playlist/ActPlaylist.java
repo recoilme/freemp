@@ -11,10 +11,16 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.ViewConfiguration;
+import android.view.WindowManager;
 import android.widget.Toast;
+
 import com.androidquery.AQuery;
 import com.flurry.android.FlurryAgent;
+
 import org.freemp.droid.ClsTrack;
 import org.freemp.droid.Constants;
 import org.freemp.droid.FileUtils;
@@ -36,22 +42,20 @@ import java.util.ArrayList;
  */
 public class ActPlaylist extends ActionBarActivity {
 
+    public int type;
     private Activity activity;
     private AQuery aq;
     private Menu optionsMenu;
     private boolean refreshing = true;
     private AdpPagerAdapter adpPagerAdapter;
-
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
-
-    public int type;
     private String scanDir;
     private DlgChooseDirectory.Result dialogResult;
 
     private FragmentFolders playlistFragment = new FragmentFolders();
-    private FragmentAlbums  albumsFragment   = new FragmentAlbums();
-    private FragmentArtists artistsFragment   = new FragmentArtists();
+    private FragmentAlbums albumsFragment = new FragmentAlbums();
+    private FragmentArtists artistsFragment = new FragmentArtists();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +74,7 @@ public class ActPlaylist extends ActionBarActivity {
         try {
             ViewConfiguration config = ViewConfiguration.get(activity);
             Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-            if(menuKeyField != null) {
+            if (menuKeyField != null) {
                 menuKeyField.setAccessible(true);
                 menuKeyField.setBoolean(config, false);
             }
@@ -79,21 +83,20 @@ public class ActPlaylist extends ActionBarActivity {
         }
 
         Bundle extras = getIntent().getExtras();
-        if (extras==null) {
+        if (extras == null) {
             return;
-        }
-        else {
+        } else {
             type = extras.getInt("type");
         }
         dialogResult = new DlgChooseDirectory.Result() {
-                    @Override
-                    public void onChooseDirectory(String dir) {
+            @Override
+            public void onChooseDirectory(String dir) {
 
-                        scanDir = dir;
-                        PreferenceManager.getDefaultSharedPreferences(activity).edit().putString("scanDir", dir).commit();
-                        update(true);
-                    }
-                };
+                scanDir = dir;
+                PreferenceManager.getDefaultSharedPreferences(activity).edit().putString("scanDir", dir).commit();
+                update(true);
+            }
+        };
 
         mViewPager = (ViewPager) aq.id(R.id.viewpager).getView();
         mViewPager.setOffscreenPageLimit(2);
@@ -128,7 +131,7 @@ public class ActPlaylist extends ActionBarActivity {
         refreshing = true;
         setRefreshActionButtonState();
         Fragment fragment = adpPagerAdapter.getItem(mViewPager.getCurrentItem());
-        if (fragment!=null) {
+        if (fragment != null) {
             if (fragment instanceof FragmentFolders) {
                 playlistFragment.update(activity, Constants.TYPE_FS, refresh);
             }
@@ -159,12 +162,12 @@ public class ActPlaylist extends ActionBarActivity {
         this.optionsMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_playlist, menu);
-        if (type==Constants.TYPE_FS) {
-            MenuItem item = this.optionsMenu.add (R.string.setup_scandir);
+        if (type == Constants.TYPE_FS) {
+            MenuItem item = this.optionsMenu.add(R.string.setup_scandir);
             item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity,dialogResult,
+                    DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity, dialogResult,
                             scanDir);
                     return true;
                 }
@@ -173,12 +176,11 @@ public class ActPlaylist extends ActionBarActivity {
 
         }
 
-        scanDir = PreferenceManager.getDefaultSharedPreferences(activity).getString("scanDir","");
+        scanDir = PreferenceManager.getDefaultSharedPreferences(activity).getString("scanDir", "");
         if (scanDir.equals("")) {
-            DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity,dialogResult,
+            DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity, dialogResult,
                     "/");
-        }
-        else {
+        } else {
             update(false);
         }
 
@@ -215,9 +217,9 @@ public class ActPlaylist extends ActionBarActivity {
                     .findItem(R.id.menu_refresh);
             if (refreshItem != null) {
                 if (refreshing) {
-                    MenuItemCompat.setActionView(refreshItem,R.layout.actionbar_progress);
+                    MenuItemCompat.setActionView(refreshItem, R.layout.actionbar_progress);
                 } else {
-                    MenuItemCompat.setActionView(refreshItem,null);
+                    MenuItemCompat.setActionView(refreshItem, null);
                 }
             }
         }
@@ -225,12 +227,12 @@ public class ActPlaylist extends ActionBarActivity {
 
     public void save() {
         ArrayList<ClsTrack> tracks = null;
-        if (getAdapter()!=null) {
+        if (getAdapter() != null) {
             tracks = getAdapter().getSelected();
         }
         String fileName = "tracks";
-        if (tracks==null || tracks.size()==0) {
-            Toast.makeText(activity,getString(R.string.select_pls),Toast.LENGTH_LONG).show();
+        if (tracks == null || tracks.size() == 0) {
+            Toast.makeText(activity, getString(R.string.select_pls), Toast.LENGTH_LONG).show();
             return;
         }
         close(tracks);
@@ -244,46 +246,44 @@ public class ActPlaylist extends ActionBarActivity {
     }
 
     public void select_all() {
-        if (getAdapter()==null) {
+        if (getAdapter() == null) {
             return;
         }
         ArrayList<ClsTrack> tracks = getAdapter().getSelected();
-        if (tracks.size()>0) {
+        if (tracks.size() > 0) {
             setSelection(false);
-        }
-        else {
+        } else {
             setSelection(true);
         }
     }
 
     public void setSelection(boolean isSelected) {
-        if (getAdapter()==null) {
+        if (getAdapter() == null) {
             return;
         }
         getAdapter().notifyDataSetInvalidated();
-        for (int j=0;j<getAdapter().data.size();j++) {
+        for (int j = 0; j < getAdapter().data.size(); j++) {
             ClsArrTrack o = getAdapter().data.get(j);
             ArrayList<ClsTrack> tracks = o.getPlaylists();
-            for (int i=0;i<tracks.size();i++) {
+            for (int i = 0; i < tracks.size(); i++) {
                 ClsTrack t = tracks.get(i);
                 t.setSelected(isSelected);
-                tracks.set(i,t);
+                tracks.set(i, t);
             }
             o.setPlaylists(tracks);
-            getAdapter().data.set(j,o);
+            getAdapter().data.set(j, o);
         }
         getAdapter().invalidate();
     }
 
-    public void updateColor(){
-        if (getAdapter()==null) {
+    public void updateColor() {
+        if (getAdapter() == null) {
             return;
         }
         ArrayList<ClsTrack> tmp = getAdapter().getSelected();
-        if (tmp==null || tmp.size()==0) {
+        if (tmp == null || tmp.size() == 0) {
             aq.id(R.id.textViewSave).textColor(Color.GRAY);
-        }
-        else {
+        } else {
             aq.id(R.id.textViewSave).textColor(getResources().getColor(R.color.yellow));
         }
 
@@ -318,7 +318,7 @@ public class ActPlaylist extends ActionBarActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return playlistFragment ;
+                    return playlistFragment;
                 case 1:
                     return albumsFragment;
                 case 2:

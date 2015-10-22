@@ -1,9 +1,14 @@
 package org.freemp.droid.playlist;
 
 import android.content.Context;
+
 import org.freemp.droid.ClsTrack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,24 +16,20 @@ import java.util.*;
  * Date: 25/11/13
  * Time: 13:51
  * To change this template use File | Settings | File Templates.
- *
  */
 public abstract class MakePlaylistAbstract {
 
-    public ArrayList<ClsTrack> allTracks;
-    private ArrayList<ClsTrack> tmpTracks = new ArrayList<ClsTrack>();
-    private ArrayList<ClsArrTrack> arrTracks = new ArrayList<ClsArrTrack>();
     private static final String RECENTLY_ADDED = "RECENTLY_ADDED";
     private static final String OTHERS = "OTHERS";
+    public ArrayList<ClsTrack> allTracks;
     long t = System.currentTimeMillis();
+    private ArrayList<ClsTrack> tmpTracks = new ArrayList<ClsTrack>();
+    private ArrayList<ClsArrTrack> arrTracks = new ArrayList<ClsArrTrack>();
 
-    public abstract void getAllTracks(Context context, boolean refresh);
-
-    public MakePlaylistAbstract(Context context, boolean refresh)
-    {
+    public MakePlaylistAbstract(Context context, boolean refresh) {
 
         allTracks = new ArrayList<ClsTrack>();
-        getAllTracks(context,refresh);
+        getAllTracks(context, refresh);
         //save all tracks
         //раскомментируй это в тяжелый день
 
@@ -44,18 +45,18 @@ public abstract class MakePlaylistAbstract {
         logTime();//1ms,2,2
 
         tmpTracks.clear();
-        HashMap<String,Integer> foldersMap = new HashMap<String, Integer>();
-        HashMap<String,String> artistsMap = new HashMap<String, String>();
+        HashMap<String, Integer> foldersMap = new HashMap<String, Integer>();
+        HashMap<String, String> artistsMap = new HashMap<String, String>();
         //get recently added
         long firstRecentlyAddedTrack = 0;
         Iterator<ClsTrack> iterator = allTracks.iterator();
         String artistInRecenlyAddedFolder = "";
         while (iterator.hasNext()) {
             ClsTrack playlist = iterator.next();
-            if (firstRecentlyAddedTrack==0) firstRecentlyAddedTrack = playlist.getLastModified();
+            if (firstRecentlyAddedTrack == 0) firstRecentlyAddedTrack = playlist.getLastModified();
 
             //если трек был добавлен недавно по сравнению с последним добавленным
-            if (firstRecentlyAddedTrack - playlist.getLastModified() <= 1*60*1000) {
+            if (firstRecentlyAddedTrack - playlist.getLastModified() <= 1 * 60 * 1000) {
                 //треки добавленные в течение n минут от 1 трека (на реальных данных интервал при копировании порядка 7 секунд)
                 ClsTrack clsTrack = ClsTrack.newInstance(playlist);
                 clsTrack.setGroup(RECENTLY_ADDED);
@@ -63,24 +64,22 @@ public abstract class MakePlaylistAbstract {
 
                 if (!artistInRecenlyAddedFolder.contains(playlist.getArtist())) {
                     if (!artistInRecenlyAddedFolder.equals("")) {
-                        artistInRecenlyAddedFolder+=", ";
+                        artistInRecenlyAddedFolder += ", ";
                     }
-                    artistInRecenlyAddedFolder+=playlist.getArtist();
+                    artistInRecenlyAddedFolder += playlist.getArtist();
                 }
                 //delete old
                 iterator.remove();
-            }
-            else {
+            } else {
                 String currFolder = playlist.getFolder();
                 if (foldersMap.containsKey(currFolder)) {
-                    foldersMap.put(currFolder,foldersMap.get(currFolder)+1);
+                    foldersMap.put(currFolder, foldersMap.get(currFolder) + 1);
                     if (!artistsMap.get(currFolder).contains(playlist.getArtist())) {
-                        artistsMap.put(currFolder,artistsMap.get(currFolder)+","+playlist.getArtist());
+                        artistsMap.put(currFolder, artistsMap.get(currFolder) + "," + playlist.getArtist());
                     }
-                }
-                else {
-                    foldersMap.put(currFolder,1);
-                    artistsMap.put(currFolder,""+playlist.getArtist());
+                } else {
+                    foldersMap.put(currFolder, 1);
+                    artistsMap.put(currFolder, "" + playlist.getArtist());
                 }
             }
             //Log.w(menu_playlist.getTitle()," :: "+(menu_playlist.getLastModified() - firstRecentlyAddedTrack));
@@ -88,7 +87,7 @@ public abstract class MakePlaylistAbstract {
         //Log.w("allTracks:",""+allTracks.size());
         logTime();//2,2
         arrTracks.clear();
-        addToTracks(RECENTLY_ADDED,artistInRecenlyAddedFolder);
+        addToTracks(RECENTLY_ADDED, artistInRecenlyAddedFolder);
 
         //bigFolders finder
         //sort by folder name and track number
@@ -97,7 +96,7 @@ public abstract class MakePlaylistAbstract {
             @Override
             public int compare(ClsTrack lhs, ClsTrack rhs) {
 
-                return (lhs.getFolder()+(lhs.getArtist())).compareTo(rhs.getFolder()+(rhs.getArtist()));
+                return (lhs.getFolder() + (lhs.getArtist())).compareTo(rhs.getFolder() + (rhs.getArtist()));
             }
         });
 
@@ -106,13 +105,12 @@ public abstract class MakePlaylistAbstract {
         while (iterator.hasNext()) {
             ClsTrack playlist = iterator.next();
 
-            String currFolder  = playlist.getFolder();
-            if (prevFolder==null) {
+            String currFolder = playlist.getFolder();
+            if (prevFolder == null) {
                 prevFolder = currFolder;
 
-            }
-            else if (!prevFolder.equals(currFolder)) {
-                addToTracks(prevFolder,artistsMap.get(prevFolder));
+            } else if (!prevFolder.equals(currFolder)) {
+                addToTracks(prevFolder, artistsMap.get(prevFolder));
             }
             playlist.setGroup(artistsMap.get(currFolder));
             /*
@@ -131,7 +129,7 @@ public abstract class MakePlaylistAbstract {
             */
         }
         logTime(); //40,39,70,44
-        addToTracks(prevFolder,artistsMap.get(prevFolder));
+        addToTracks(prevFolder, artistsMap.get(prevFolder));
 
 
         Collections.sort(allTracks, new Comparator<ClsTrack>() {
@@ -147,14 +145,13 @@ public abstract class MakePlaylistAbstract {
         prevFolder = null;
         while (iterator.hasNext()) {
             ClsTrack playlist = iterator.next();
-            String currFolder  = playlist.getFolder();
-            if (prevFolder==null) {
+            String currFolder = playlist.getFolder();
+            if (prevFolder == null) {
                 prevFolder = currFolder;
+            } else if (!prevFolder.equals(currFolder)) {
+                addToTracks(prevFolder, artistsMap.get(prevFolder));
             }
-            else if (!prevFolder.equals(currFolder)) {
-                addToTracks(prevFolder,artistsMap.get(prevFolder));
-            }
-            if (foldersMap.get(currFolder)>3) {
+            if (foldersMap.get(currFolder) > 3) {
                 ClsTrack clsTrack = ClsTrack.newInstance(playlist);
                 clsTrack.setGroup(artistsMap.get(currFolder));
                 tmpTracks.add(clsTrack);
@@ -163,7 +160,7 @@ public abstract class MakePlaylistAbstract {
                 iterator.remove();
             }
         }
-        addToTracks(prevFolder,artistsMap.get(prevFolder));
+        addToTracks(prevFolder, artistsMap.get(prevFolder));
         // Others
         String artistInOthersFolder = "";
         iterator = allTracks.iterator();
@@ -175,17 +172,19 @@ public abstract class MakePlaylistAbstract {
             tmpTracks.add(clsTrack);
             if (!artistInOthersFolder.contains(playlist.getArtist())) {
                 if (!artistInOthersFolder.equals("")) {
-                    artistInOthersFolder+=", ";
+                    artistInOthersFolder += ", ";
                 }
-                artistInOthersFolder+=playlist.getArtist();
+                artistInOthersFolder += playlist.getArtist();
             }
         }
-        addToTracks(OTHERS,artistInOthersFolder);
+        addToTracks(OTHERS, artistInOthersFolder);
 
     }
 
+    public abstract void getAllTracks(Context context, boolean refresh);
+
     void addToTracks(String desc, String artists) {
-        if (tmpTracks.size()>0) {
+        if (tmpTracks.size() > 0) {
             ClsArrTrack clsArrTrack = new ClsArrTrack();
             clsArrTrack.setDescription(desc);
             clsArrTrack.setArtists(artists);
@@ -195,15 +194,14 @@ public abstract class MakePlaylistAbstract {
         }
     }
 
-    void logTime(){
+    void logTime() {
         //Log.w("time","(ms):"+(System.currentTimeMillis()-t)/1);
         t = System.currentTimeMillis();
     }
 
-    public ArrayList<ClsArrTrack> getArrTracks (){
+    public ArrayList<ClsArrTrack> getArrTracks() {
         return arrTracks;
     }
-
 
 
 }
