@@ -8,7 +8,7 @@
 
     <!-- Player -->
     <string name="open_fs">Открыть</string>
-    <string name="createNewPlaylist">Могу я просканировать файловую систему сейчас?\nЭто может занять несколько минут.</string>
+    <string name="createNewPlaylist">Могу я просканировать файловую систему сейчас?\n</string>
     <string name="shuffle_is">Случайный режим:</string>
     <string name="dlg_choosedir_title">Выберите папку с музыкой или нажмите OK</string>
     <string name="setup_scandir">Установить директорию сканирования</string>
