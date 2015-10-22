@@ -7,6 +7,7 @@ package org.freemp.droid.player;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -49,6 +50,7 @@ import java.util.Random;
 public class ServicePlayer extends Service implements AudioManager.OnAudioFocusChangeListener {
 
 
+    private static final int NOTIFICATION_ID = 101;
     // Bass Service Binder
     private final IBinder mBinder = new BassServiceBinder();
     public long startVolumeUpFlag;
@@ -449,8 +451,10 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
     private void fireNotification() {
         notification = NotificationUtils.getNotification(this, pendIntent, (tracks != null && tracks.size() > position) ? tracks.get(position) : null, isPlaying());
         if (notification != null) {
-            startForeground(1, notification);
+            startForeground(NOTIFICATION_ID, notification);
         } else {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(NOTIFICATION_ID);
             stopForeground(true);
         }
     }

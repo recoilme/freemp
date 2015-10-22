@@ -35,8 +35,9 @@ public class NotificationUtils {
         if (track != null) {
             notification.contentView = getNotificationViews(track, context, isPlaying, R.layout.notification);
         } else {
-            notification.contentView = null;
+            //notification.contentView = null;
             //notification.setLatestEventInfo(context, "", "", pendingIntent);
+            notification = null;
         }
 
         return notification;
