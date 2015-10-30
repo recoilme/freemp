@@ -20,7 +20,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.AQUtility;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -123,11 +122,11 @@ public class UpdateUtils {
 
         @Override
         protected void onPostExecute(String result) {
-            if (!TextUtils.equals("", result)) {
+            if (result != null && !TextUtils.equals("", result)) {
                 JSONObject jsonResult = null;
                 try {
                     jsonResult = new JSONObject(result);
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return;
                 }
