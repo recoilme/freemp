@@ -24,5 +24,11 @@
     <string name="tab_artists">АРТИСТЫ</string>
     <string name="dir_reset">Некорректная директория. Сброшено</string>
     <string name="areyousure">Уверен?</string>
+    <string name="open_ms">Open Media Store</string>
+    <string name="flurry">TT2CP65VTX9TN8S5D7ZV</string>
+    <string name="open_gm">Open Google Music</string>
+    <string name="info_google_music">Gooogle Play Music - it is service for uploading and listening music anywhere. You must
+        have Active account on google play music for listening tracks via FreeAmp. FreAmp support only playing tracks -  uploaded by You.
+    </string>
 
 </resources>

@@ -1,5 +1,6 @@
 package org.freemp.droid.player;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -7,11 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.format.Time;
@@ -69,6 +73,8 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     private ImageView albumImage;
     private ImageView artworkBgr;
     private int screenHeight, screenWidth;
+    private int READ_STORAGE_PERMISSION_REQUEST_CODE;
+    private int WRITE_STORAGE_PERMISSION_REQUEST_CODE;
 
     // Bass Service
     private ServicePlayer mBoundService = null;
@@ -99,6 +105,9 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         setContentView(R.layout.player);
 
         activity = this;
+        checkPermissionForReadExtertalStorage(activity);
+        checkPermissionForWriteExtertalStorage(activity);
+
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
         screenHeight = display.getHeight();
@@ -137,6 +146,34 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         bindService(new Intent(this, ServicePlayer.class), mConnection, Context.BIND_AUTO_CREATE);
         new UpdateUtils(activity);
 
+    }
+
+    public  void checkPermissionForReadExtertalStorage(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                try {
+                    ActivityCompat.requestPermissions((Activity) activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            READ_STORAGE_PERMISSION_REQUEST_CODE);
+                } catch (Exception e) {
+                    System.exit(0);
+                }
+            }
+        }
+    }
+
+    public  void checkPermissionForWriteExtertalStorage(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                try {
+                    ActivityCompat.requestPermissions((Activity) activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            WRITE_STORAGE_PERMISSION_REQUEST_CODE);
+                } catch (Exception e) {
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     // onBassServiceConnected: Put some activity stuff here
