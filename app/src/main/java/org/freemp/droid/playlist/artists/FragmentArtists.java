@@ -56,7 +56,7 @@ public class FragmentArtists extends Fragment implements TaskGetArtists.OnTaskGe
                 if (adapter == null) return;
                 ClsTrack track = (ClsTrack) adapter.getItem(position);
                 final String artist = track.getArtist();
-                ArrayList<ClsTrack> tracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", activity);
+                ArrayList<ClsTrack> tracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksms", activity);
 
 
                 ArrayList<ClsTrack> tracksFiltered = new ArrayList<ClsTrack>();

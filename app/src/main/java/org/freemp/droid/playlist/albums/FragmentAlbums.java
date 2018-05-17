@@ -57,7 +57,7 @@ public class FragmentAlbums extends Fragment implements TaskGetAlbums.OnTaskGetA
                 ClsTrack track = (ClsTrack) adapter.getItem(position);
                 final String album = track.getAlbum();
                 final String artist = track.getArtist();
-                ArrayList<ClsTrack> tracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksfs", activity);
+                ArrayList<ClsTrack> tracks = (ArrayList<ClsTrack>) FileUtils.readObject("alltracksms", activity);
 
 
                 ArrayList<ClsTrack> tracksFiltered = new ArrayList<ClsTrack>();

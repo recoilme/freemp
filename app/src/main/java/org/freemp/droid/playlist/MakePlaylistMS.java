@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.flurry.android.FlurryAgent;
 
 import org.freemp.droid.ClsTrack;
+import org.freemp.droid.FileUtils;
 
 import java.io.File;
 
@@ -63,7 +64,7 @@ public class MakePlaylistMS extends MakePlaylistAbstract {
                         cursor.getString(3),
                         cursor.getInt(4),
                         cursor.getInt(5),
-                        cursor.getInt(6),
+                        (cursor.getInt(6)/1000),
                         cursor.getString(7),
                         folder,
                         new File(path).lastModified(),
@@ -77,6 +78,7 @@ public class MakePlaylistMS extends MakePlaylistAbstract {
         }
         cursor.close();
         logTime();//149ms,89,121  Arrrgh!...
+        FileUtils.writeObject("alltracksms", context, allTracks);
 
     }
 }

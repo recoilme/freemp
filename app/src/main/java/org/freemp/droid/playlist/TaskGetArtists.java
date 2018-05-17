@@ -53,7 +53,7 @@ public class TaskGetArtists extends AsyncTask {
             artistsTracks = new ArrayList<ClsTrack>();
         }
 
-        ArrayList<ClsArrTrack> arrTracks = new MakePlaylistFS(activity, refresh).getArrTracks();
+        ArrayList<ClsArrTrack> arrTracks = new MakePlaylistMS(activity, refresh).getArrTracks();
 
         //выкидываем все дубликаты альбомов
         //сортируем по альбому

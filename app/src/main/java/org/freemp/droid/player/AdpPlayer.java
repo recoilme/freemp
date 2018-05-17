@@ -1,10 +1,16 @@
 package org.freemp.droid.player;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.ListPopupWindow;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +43,7 @@ public class AdpPlayer extends BaseAdapter {
     float scale;
     LayoutInflater mInflater;
     int mSelectedTrackColor, mDefaultTrackColor;
+    private int WRITE_SETTINGS_PERMISSION_REQUEST_CODE;
 
     public AdpPlayer(Activity activity, List<ClsTrack> data) {
         //super(data, false);
@@ -153,16 +160,39 @@ public class AdpPlayer extends BaseAdapter {
                         activity.startActivity(intent);
                         break;
                     case 1:
-                        AlertDialog.Builder bld = new AlertDialog.Builder(activity);
-                        bld.setMessage(R.string.areyousure);
-                        bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                MediaUtils.setRingtone(activity, o);
-                            }
-                        });
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (Settings.System.canWrite(activity)) {
+                                AlertDialog.Builder bld = new AlertDialog.Builder(activity);
+                                bld.setMessage(R.string.areyousure);
+                                bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        MediaUtils.setRingtone(activity, o);
+                                    }
+                                });
 
-                        bld.create().show();
+                                bld.create().show();
+                            }
+                            else {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Intent inten = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                    inten.setData(Uri.parse("package:" + activity.getPackageName()));
+                                    activity.startActivity(inten);
+                                }
+                            }
+                        } else {
+                            AlertDialog.Builder bld = new AlertDialog.Builder(activity);
+                            bld.setMessage(R.string.areyousure);
+                            bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    MediaUtils.setRingtone(activity, o);
+                                }
+                            });
+
+                            bld.create().show();
+                        }
+
 
                         break;
                 }
@@ -178,4 +208,6 @@ public class AdpPlayer extends BaseAdapter {
         public TextView duration;
         public ImageView menu;
     }
+
+
 }

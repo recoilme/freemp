@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.format.Time;
@@ -48,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import static android.Manifest.permission.WRITE_SETTINGS;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -73,8 +76,11 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     private ImageView albumImage;
     private ImageView artworkBgr;
     private int screenHeight, screenWidth;
-    private int READ_STORAGE_PERMISSION_REQUEST_CODE;
-    private int WRITE_STORAGE_PERMISSION_REQUEST_CODE;
+    private String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+    //private int READ_STORAGE_PERMISSION_REQUEST_CODE;
+    private static final int PERMISSION_REQUEST_CODE=200;
+    //private int WRITE_SETTINGS_PERMISSION_REQUEST_CODE;
+
 
     // Bass Service
     private ServicePlayer mBoundService = null;
@@ -105,8 +111,13 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         setContentView(R.layout.player);
 
         activity = this;
-        checkPermissionForReadExtertalStorage(activity);
-        checkPermissionForWriteExtertalStorage(activity);
+        if (!checkPermission()) {
+
+            requestPermission();
+
+        }
+
+
 
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
@@ -148,32 +159,67 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
 
     }
 
-    public  void checkPermissionForReadExtertalStorage(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int result = getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                try {
-                    ActivityCompat.requestPermissions((Activity) activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            READ_STORAGE_PERMISSION_REQUEST_CODE);
-                } catch (Exception e) {
-                    System.exit(0);
-                }
-            }
-        }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), "android.permission.WRITE_EXTERNAL_STORAGE");
+
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
-    public  void checkPermissionForWriteExtertalStorage(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int result = getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                try {
-                    ActivityCompat.requestPermissions((Activity) activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            WRITE_STORAGE_PERMISSION_REQUEST_CODE);
-                } catch (Exception e) {
-                    System.exit(0);
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this,perms, PERMISSION_REQUEST_CODE);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+
+                   final boolean ws = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+
+                    if (ws) {
+                        return;
+                    }
+                        //Snackbar.make(view, "Permission Granted, Now you can access location data and camera.", Snackbar.LENGTH_LONG).show();
+                    else {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            Toast.makeText(this, "Permission Denied, You cannot access sdcard data and set ringtone.", Toast.LENGTH_LONG).show();
+
+                            // if (shouldShowRequestPermissionRationale(WRITE_SETTINGS)) {
+                                showMessageOKCancel("You need to allow access to both the permissions",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    if (ws == false) {
+                                                        requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"},
+                                                                PERMISSION_REQUEST_CODE);
+                                                    }
+                                                }
+
+                                            }
+                                        });
+                                return;
+                            //}
+                        }
+
+                    }
                 }
-            }
+
+
+                break;
         }
+    }
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(ActPlayer.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     // onBassServiceConnected: Put some activity stuff here

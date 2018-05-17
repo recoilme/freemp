@@ -110,7 +110,7 @@ public class ActFreemporg extends ActionBarActivity {
         refreshing = true;
         //раскручиваем колесеко
         setRefreshActionButtonState();
-        webView.loadUrl("http://freemp.org/artist/s?q=" + Uri.encode(q) + "&l=" + (Locale.getDefault().getLanguage().contains("ru") ? "ru" : "en"));
+        webView.loadUrl("https://www.last.fm/music/" + Uri.encode(q)); //+ "&l=" + (Locale.getDefault().getLanguage().contains("ru") ? "ru" : "en"));
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
 

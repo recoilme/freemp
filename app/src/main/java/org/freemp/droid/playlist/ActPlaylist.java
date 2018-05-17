@@ -136,10 +136,10 @@ public class ActPlaylist extends ActionBarActivity {
                 playlistFragment.update(activity, Constants.TYPE_FS, refresh);
             }
             if (fragment instanceof FragmentAlbums) {
-                albumsFragment.update(activity, 1, refresh);
+                albumsFragment.update(activity, Constants.TYPE_MS, refresh);
             }
             if (fragment instanceof FragmentArtists) {
-                artistsFragment.update(activity, 1, refresh);
+                artistsFragment.update(activity, Constants.TYPE_MS, refresh);
             }
         }
     }

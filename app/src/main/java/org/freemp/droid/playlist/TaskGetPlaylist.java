@@ -2,6 +2,9 @@ package org.freemp.droid.playlist;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import org.freemp.droid.Constants;
 
@@ -20,6 +23,11 @@ public class TaskGetPlaylist extends AsyncTask {
     public TaskGetPlaylist(Activity activity, int type, boolean refresh, OnTaskGetPlaylist onTaskGetPlaylist) {
         mActivity = new WeakReference<Activity>(activity);
         mOnTaskGetPlaylist = new WeakReference<OnTaskGetPlaylist>(onTaskGetPlaylist);
+        String scanDir = PreferenceManager.getDefaultSharedPreferences(mActivity.get()).getString("scanDir", Environment.getExternalStorageDirectory().getAbsolutePath().toString());
+        Log.w("ScanDir is:",scanDir);
+        if (scanDir==null || scanDir.equals("/") || scanDir.equals("/sdcard")) {
+            type = 0;
+        }
         this.type = type;
         this.refresh = refresh;
     }
