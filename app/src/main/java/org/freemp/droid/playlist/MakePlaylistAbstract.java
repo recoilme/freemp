@@ -74,7 +74,7 @@ public abstract class MakePlaylistAbstract {
                 String currFolder = playlist.getFolder();
                 if (foldersMap.containsKey(currFolder)) {
                     foldersMap.put(currFolder, foldersMap.get(currFolder) + 1);
-                    if (!artistsMap.get(currFolder).contains(playlist.getArtist())) {
+                    if (!(artistsMap.get(currFolder) + "").contains("" + playlist.getArtist())) {
                         artistsMap.put(currFolder, artistsMap.get(currFolder) + "," + playlist.getArtist());
                     }
                 } else {

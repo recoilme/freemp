@@ -1,6 +1,5 @@
 package org.freemp.droid.player;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -18,7 +17,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.view.Display;
 import android.view.Menu;
@@ -49,8 +48,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import static android.Manifest.permission.WRITE_SETTINGS;
-
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,10 +56,12 @@ import static android.Manifest.permission.WRITE_SETTINGS;
  * Time: 15:10
  * To change this template use File | Settings | File Templates.
  */
-public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
+public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
 
     public static final int LOGIN_RESULT = 101;
     private static final int PLAYLIST_CODE = 100;
+    //private int READ_STORAGE_PERMISSION_REQUEST_CODE;
+    private static final int PERMISSION_REQUEST_CODE = 200;
     public static int selected = -1;
     private static Random randomGenerator;
     private AQuery aq;
@@ -76,12 +75,8 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
     private ImageView albumImage;
     private ImageView artworkBgr;
     private int screenHeight, screenWidth;
-    private String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
-    //private int READ_STORAGE_PERMISSION_REQUEST_CODE;
-    private static final int PERMISSION_REQUEST_CODE=200;
+    private String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"};
     //private int WRITE_SETTINGS_PERMISSION_REQUEST_CODE;
-
-
     // Bass Service
     private ServicePlayer mBoundService = null;
 
@@ -101,7 +96,7 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
 
     };
 
-
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_DITHER, WindowManager.LayoutParams.FLAG_DITHER);
@@ -176,30 +171,24 @@ public class ActPlayer extends ActionBarActivity implements InterfacePlayer {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0) {
-
-                   final boolean ws = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-
-                    if (ws) {
-                        return;
+                    boolean ws = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean rs = false;
+                    if (grantResults.length > 1) {
+                        rs = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     }
-                        //Snackbar.make(view, "Permission Granted, Now you can access location data and camera.", Snackbar.LENGTH_LONG).show();
-                    else {
+
+                    if (ws && rs) {
+                        return;
+                    } else {
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            Toast.makeText(this, "Permission Denied, You cannot access sdcard data and set ringtone.", Toast.LENGTH_LONG).show();
-
-                            // if (shouldShowRequestPermissionRationale(WRITE_SETTINGS)) {
                                 showMessageOKCancel("You need to allow access to both the permissions",
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    if (ws == false) {
-                                                        requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"},
-                                                                PERMISSION_REQUEST_CODE);
-                                                    }
+                                                    requestPermissions(perms, PERMISSION_REQUEST_CODE);
                                                 }
-
                                             }
                                         });
                                 return;

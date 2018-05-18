@@ -11,11 +11,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
 
 /**
  * Created by recoil on 08.12.13.
@@ -203,22 +203,27 @@ public class FileUtils {
         }
     }
 
-    public static File getExternalSdCardPath() {
+    public static File getExternalSdCardPath(Context ctx) {
+        File sdCardFile = null;
+        sdCardFile = ctx.getExternalFilesDir(null);
+        if (sdCardFile != null) {
+            int andr = sdCardFile.getAbsolutePath().indexOf("Android");
+            if (andr == -1) {
+                andr = sdCardFile.getAbsolutePath().indexOf("android");
+            }
+            if (andr > 0) {
+                String path = sdCardFile.getAbsolutePath().substring(0, andr);
+                sdCardFile = new File(path);
+            }
+        }
+        return sdCardFile;
+        /*
         String path = null;
         File sdCardFile = null;
         List<String> sdCardPossiblePath = Arrays.asList("external_sd", "ext_sd", "external", "extSdCard", "sdcard2", "sdcard1", "external1");
         for (String sdPath : sdCardPossiblePath) {
             File file = new File("/mnt/", sdPath);
-            if (file.isDirectory()) {/* && file.canWrite()) {
-                path = file.getAbsolutePath();
-                String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
-                File testWritable = new File(path, "test_" + timeStamp);
-                if (testWritable.mkdirs()) {
-                    testWritable.delete();
-                }
-                else {
-                    path = null;
-                }  */
+            if (file.isDirectory()) {
                 path = file.getAbsolutePath();
             }
         }
@@ -226,6 +231,7 @@ public class FileUtils {
             sdCardFile = new File(path);
         }
         return sdCardFile;
+        */
     }
 
     public static <T> T[] concatenate(T[] A, T[] B) {

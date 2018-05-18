@@ -65,7 +65,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
             }
             detector = new UniversalDetector(null);
 
-            walk(currentDir);
+            walk(context, currentDir);
 
             FileUtils.writeObject("alltracksfs", context, allTracks);
 
@@ -73,14 +73,14 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
         }
     }
 
-    public void walk(File root) {
+    public void walk(Context context, File root) {
 
         File[] list = null;
 
         if (root.getAbsolutePath().toString().equals("/")) {
             list = new File[1];
             list[0] = Environment.getExternalStorageDirectory();
-            File extSd = FileUtils.getExternalSdCardPath();
+            File extSd = FileUtils.getExternalSdCardPath(context);
             boolean needAdd = true;
             if (extSd != null) {
                 for (File file : list) {
@@ -108,7 +108,7 @@ public class MakePlaylistFS extends MakePlaylistAbstract {
         for (File f : list) {
 
             if (f.isDirectory()) {
-                walk(f);
+                walk(context, f);
             } else {
                 String path = f.getAbsolutePath().toString();
                 if (path.contains("Richter")) {

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,12 +24,11 @@ import org.freemp.droid.R;
 import org.freemp.droid.playlist.albums.AdpArtworks;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * Created by recoil on 26.01.14.
  */
-public class ActFreemporg extends ActionBarActivity {
+public class ActFreemporg extends AppCompatActivity {
 
     private AQuery aq;
     private Menu optionsMenu;

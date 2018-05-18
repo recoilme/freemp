@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 26
 
     //buildToolsVersion '25.0.0'
 
@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId "org.freemp.droid"
-        minSdkVersion 11
-        targetSdkVersion 23
+        minSdkVersion 16
+        targetSdkVersion 26
     }
 
     buildTypes {
@@ -25,7 +25,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile files('libs/FlurryAnalytics_3.3.1.jar')
     compile files('libs/android-query.0.26.7.jar')
     compile files('libs/juniversalchardet-1.0.3.jar')

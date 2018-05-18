@@ -51,7 +51,7 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
         else
             m_currentDir = Environment.getExternalStorageDirectory();
 
-        listDirs();
+        listDirs(ctx);
         final Dialog dialog = new Dialog(ctx, R.style.FullHeightDialog);
 
         View view = ((Activity) ctx).getLayoutInflater().inflate(R.layout.dlg_dirlist, null);
@@ -106,7 +106,7 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
         */
     }
 
-    private void listDirs() {
+    private void listDirs(Context ctx) {
         m_entries.clear();
 
         // Get files
@@ -125,9 +125,9 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
             }
         }
         if (m_currentDir.getAbsolutePath().equals("/")) {
-            File extSd = FileUtils.getExternalSdCardPath();
+            File extSd = FileUtils.getExternalSdCardPath(ctx);
             boolean needAdd = true;
-            if (extSd != null) {
+            if (extSd != null && files != null) {
                 for (File file : files) {
                     if (file.getAbsolutePath().equals(extSd.getAbsolutePath())) {
                         needAdd = false;
@@ -160,7 +160,7 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
             m_currentDir = m_entries.get(pos);
 
         editText.setText(m_currentDir.toString());
-        listDirs();
+        listDirs(this.m_context);
         DirAdapter adapter = new DirAdapter(android.R.layout.simple_list_item_1);
         m_list.setAdapter(adapter);
     }
