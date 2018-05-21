@@ -16,7 +16,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -122,7 +121,7 @@ public class MediaUtils {
                     b = tmp;
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             return null;
         } finally {
             try {

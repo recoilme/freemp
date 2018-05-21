@@ -131,13 +131,14 @@ public class FragmentArtists extends Fragment implements TaskGetArtists.OnTaskGe
 
     @Override
     public void OnArtistsProgress(final int progress) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setProgress(progress);
-            }
-        });
-
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setProgress(progress);
+                }
+            });
+        }
     }
 
     @Override

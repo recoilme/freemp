@@ -25,7 +25,7 @@ public class TaskGetPlaylist extends AsyncTask {
         mOnTaskGetPlaylist = new WeakReference<OnTaskGetPlaylist>(onTaskGetPlaylist);
         String scanDir = PreferenceManager.getDefaultSharedPreferences(mActivity.get()).getString("scanDir", Environment.getExternalStorageDirectory().getAbsolutePath().toString());
         Log.w("ScanDir is:",scanDir);
-        if (scanDir==null || scanDir.equals("/") || scanDir.equals("/sdcard")) {
+        if (scanDir == null || scanDir.equals("/") || scanDir.equals("/sdcard") || scanDir.equals("/storage/emulated/0")) {
             type = 0;
         }
         this.type = type;

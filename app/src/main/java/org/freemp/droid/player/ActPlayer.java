@@ -156,8 +156,8 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), "android.permission.WRITE_EXTERNAL_STORAGE");
-
-        return result == PackageManager.PERMISSION_GRANTED;
+        int result2 = ContextCompat.checkSelfPermission(getApplicationContext(), "android.permission.READ_EXTERNAL_STORAGE");
+        return result == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
@@ -642,7 +642,10 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
                         }
                     });
                     dlg.setNegativeButton(android.R.string.cancel, null);
-                    dlg.show();
+                    if (checkPermission()) {
+                        dlg.show();
+                    }
+
                 }
             }
         }
