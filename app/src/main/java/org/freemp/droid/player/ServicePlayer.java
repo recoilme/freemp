@@ -691,7 +691,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
             }
             if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
                 //on power disconnect scan for new files
-                new UpdateAllFiles().execute(new ArrayList<String>());
+                //new UpdateAllFiles().execute(new ArrayList<String>());
             }
             if (intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {
 
