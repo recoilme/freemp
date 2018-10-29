@@ -1,5 +1,6 @@
 package org.freemp.droid.playlist.folders;
 
+import android.Manifest;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,14 @@ import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.util.AQUtility;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.freemp.droid.Constants;
 import org.freemp.droid.R;
@@ -20,6 +29,7 @@ import org.freemp.droid.playlist.ClsArrTrack;
 import org.freemp.droid.playlist.TaskGetPlaylist;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by recoil on 29.05.14.
@@ -83,8 +93,10 @@ public class FragmentFolders extends Fragment implements TaskGetPlaylist.OnTaskG
             items.clear();
             adapter.invalidate();
         }
-        TaskGetPlaylist taskGetPlaylist = new TaskGetPlaylist(activity, type, refresh, this);
-        taskGetPlaylist.execute();
+
+        new TaskGetPlaylist(activity, type, refresh, FragmentFolders.this);
+
+
     }
 
     @Override

@@ -1,11 +1,13 @@
 package org.freemp.droid.playlist;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,6 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.freemp.droid.FileUtils;
 import org.freemp.droid.R;
@@ -42,7 +50,7 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
     EditText editText;
     Result m_result = null;
 
-    public DlgChooseDirectory(Context ctx, Result res, String startDir) {
+    public DlgChooseDirectory(Activity ctx, Result res, String startDir) {
         m_context = ctx;
         m_result = res;
 
@@ -77,7 +85,23 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
         });
         dialog.setContentView(view);
 
-        dialog.show();
+
+        Dexter.withActivity(ctx)
+                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        dialog.show();
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+
+
         /*
         DirAdapter adapter = new DirAdapter( android.R.layout.simple_list_item_1 );
 
