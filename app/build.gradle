@@ -22,11 +22,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile files('libs/FlurryAnalytics_3.3.1.jar')
-    compile files('libs/android-query.0.26.7.jar')
-    compile files('libs/juniversalchardet-1.0.3.jar')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation files('libs/FlurryAnalytics_3.3.1.jar')
+    implementation files('libs/android-query.0.26.7.jar')
+    implementation files('libs/juniversalchardet-1.0.3.jar')
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    // (see https://github.com/ReactiveX/RxJava/releases for latest 2.x.x version)
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
+    implementation 'com.karumi:dexter:5.0.0'
 }
