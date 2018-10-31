@@ -2,7 +2,10 @@ package org.freemp.droid.playlist;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -15,6 +18,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.freemp.droid.Constants;
+import org.freemp.droid.player.ActPlayer;
 import org.freemp.droid.playlist.albums.FragmentAlbums;
 import org.freemp.droid.playlist.artists.FragmentArtists;
 import org.freemp.droid.playlist.folders.FragmentFolders;
@@ -56,20 +60,26 @@ public class TaskGetPlaylist {
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        getPlayList(activity, finalType, refresh, onTaskGetPlaylist)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(object -> {
-                                    OnTaskGetPlaylist onTaskGetPlaylist1 = mOnTaskGetPlaylist.get();
-                                    Activity activityResult = mActivity.get();
-                                    if (null != onTaskGetPlaylist1) {
-                                        onTaskGetPlaylist1.OnTaskResult(object);
-                                    }
-                                    if (null != activityResult) {
-                                        ((ActPlaylist) activityResult).setRefreshing(false);
-                                        ((ActPlaylist) activityResult).setRefreshActionButtonState();
-                                    }
-                                });
+                        if (!report.isAnyPermissionPermanentlyDenied()) {
+                            getPlayList(activity, finalType, refresh, onTaskGetPlaylist)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(object -> {
+                                        OnTaskGetPlaylist onTaskGetPlaylist1 = mOnTaskGetPlaylist.get();
+                                        Activity activityResult = mActivity.get();
+                                        if (null != onTaskGetPlaylist1) {
+                                            onTaskGetPlaylist1.OnTaskResult(object);
+                                        }
+                                        if (null != activityResult) {
+                                            ((ActPlaylist) activityResult).setRefreshing(false);
+                                            ((ActPlaylist) activityResult).setRefreshActionButtonState();
+                                        }
+                                    });
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                showMessageOKCancel("You need to allow access to both the permissions");
+                            }
+                        }
                     }
 
                     @Override
@@ -79,6 +89,14 @@ public class TaskGetPlaylist {
                 }).check();
 
 
+    }
+
+    private void showMessageOKCancel(String message) {
+        new AlertDialog.Builder(mActivity.get())
+                .setMessage(message)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     private Single<Object> getPlayList(Activity activity, final int type, final boolean refresh, OnTaskGetPlaylist onTaskGetPlaylist){
