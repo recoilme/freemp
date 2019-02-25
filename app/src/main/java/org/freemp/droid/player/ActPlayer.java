@@ -1,5 +1,6 @@
 package org.freemp.droid.player;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -56,12 +57,10 @@ import java.util.Random;
  * Time: 15:10
  * To change this template use File | Settings | File Templates.
  */
-public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
+public class ActPlayer extends AppCompatActivity implements InterfacePlayer, ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static final int LOGIN_RESULT = 101;
     private static final int PLAYLIST_CODE = 100;
-    //private int READ_STORAGE_PERMISSION_REQUEST_CODE;
-    private static final int PERMISSION_REQUEST_CODE = 200;
     public static int selected = -1;
     private static Random randomGenerator;
     private AQuery aq;
@@ -75,8 +74,7 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
     private ImageView albumImage;
     private ImageView artworkBgr;
     private int screenHeight, screenWidth;
-    private String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"};
-    //private int WRITE_SETTINGS_PERMISSION_REQUEST_CODE;
+    private int READ_SETTINGS_PERMISSION_REQUEST_CODE = 0;
     // Bass Service
     private ServicePlayer mBoundService = null;
 
@@ -106,13 +104,6 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
         setContentView(R.layout.player);
 
         activity = this;
-        if (!checkPermission()) {
-
-            requestPermission();
-
-        }
-
-
 
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
@@ -154,54 +145,7 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
 
     }
 
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getApplicationContext(), "android.permission.WRITE_EXTERNAL_STORAGE");
-        int result2 = ContextCompat.checkSelfPermission(getApplicationContext(), "android.permission.READ_EXTERNAL_STORAGE");
-        return result == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED;
-    }
 
-    private void requestPermission() {
-
-        ActivityCompat.requestPermissions(this,perms, PERMISSION_REQUEST_CODE);
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0) {
-                    boolean ws = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean rs = false;
-                    if (grantResults.length > 1) {
-                        rs = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    }
-
-                    if (ws && rs) {
-                        return;
-                    } else {
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                showMessageOKCancel("You need to allow access to both the permissions",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    requestPermissions(perms, PERMISSION_REQUEST_CODE);
-                                                }
-                                            }
-                                        });
-                                return;
-                            //}
-                        }
-
-                    }
-                }
-
-
-                break;
-        }
-    }
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(ActPlayer.this)
                 .setMessage(message)
@@ -444,24 +388,56 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
         inflater.inflate(R.menu.menu_player, menu);
         return super.onCreateOptionsMenu(menu);
     }
-    /*
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem item= menu.findItem(action_settings);
-        item.setVisible(false);
-        return true;
-    }
-    */
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_open_fs:
-                startPlaylist(1);
+                //startPlaylist(1);
+                requestPermission();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void requestPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // No explanation needed; request the permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    READ_SETTINGS_PERMISSION_REQUEST_CODE);
+            // result of the request.
+        } else {
+            // Permission has already been granted
+            startPlaylist(1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == READ_SETTINGS_PERMISSION_REQUEST_CODE) {
+            // Request for permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted.
+                startPlaylist(1);
+                return;
+            }
+            showMessageOKCancel("You need to allow access to read permission",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermission();
+                            }
+                        }
+                    });
+            return;
+        }
     }
 
     @Override
@@ -499,20 +475,6 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
                 listView.smoothScrollToPosition(position);
                 listView.invalidate();
                 Bitmap artwork = null;
-                /*
-                Drawable drawable = ((ImageView)view).getDrawable();
-                if(drawable instanceof BitmapDrawable)
-                {
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable)drawable;
-                    bitmapDrawable.getBitmap().recycle();
-                }
-
-                final BitmapDrawable aid = ((BitmapDrawable) albumImage.getDrawable());
-                if (aid!=null && aid.getBitmap()!=null) aid.getBitmap().recycle();
-
-                final BitmapDrawable ari = ((BitmapDrawable) artworkBgr.getDrawable());
-                if (ari!=null && ari.getBitmap()!=null) ari.getBitmap().recycle();
-                */
                 if (activity != null && !activity.isFinishing()) {
                     artwork = MediaUtils.getArtworkQuick(activity, track, 180, 180);
                 }
@@ -550,10 +512,6 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
                     txtDur.setText(String.format("%2d:%02d", min, sec));
                 }
 
-                //txtDur.setText(new SimpleDateFormat(f) {{
-                //    setTimeZone(TimeZone.getTimeZone("UTC"));
-                //    }}.format(new Date((int)progress*1000)));
-
             }
         });
 
@@ -568,7 +526,9 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
     public void onResume() {
         super.onResume();
         updatePlayPause();
+
     }
+
 
     public void updatePlayPause() {
 
@@ -631,6 +591,7 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
                 shuffleItemsList();
             } else {
                 if (PreferenceManager.getDefaultSharedPreferences(activity).getString("scanDir", "").equals("")) {
+
                     AlertDialog.Builder dlg = new AlertDialog.Builder(activity);
                     dlg.setMessage(R.string.createNewPlaylist);
                     dlg.setCancelable(true);
@@ -642,9 +603,6 @@ public class ActPlayer extends AppCompatActivity implements InterfacePlayer {
                         }
                     });
                     dlg.setNegativeButton(android.R.string.cancel, null);
-                    if (checkPermission()) {
-                        dlg.show();
-                    }
 
                 }
             }

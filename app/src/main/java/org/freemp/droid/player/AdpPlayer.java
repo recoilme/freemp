@@ -1,16 +1,14 @@
 package org.freemp.droid.player;
 
-import android.Manifest;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.ListPopupWindow;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +41,7 @@ public class AdpPlayer extends BaseAdapter {
     float scale;
     LayoutInflater mInflater;
     int mSelectedTrackColor, mDefaultTrackColor;
-    private int WRITE_SETTINGS_PERMISSION_REQUEST_CODE;
+
 
     public AdpPlayer(Activity activity, List<ClsTrack> data) {
         //super(data, false);

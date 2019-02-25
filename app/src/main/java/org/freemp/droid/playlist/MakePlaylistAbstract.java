@@ -56,7 +56,7 @@ public abstract class MakePlaylistAbstract {
             if (firstRecentlyAddedTrack == 0) firstRecentlyAddedTrack = playlist.getLastModified();
 
             //если трек был добавлен недавно по сравнению с последним добавленным
-            if (firstRecentlyAddedTrack - playlist.getLastModified() <= 1 * 60 * 1000) {
+            if (false) {//(firstRecentlyAddedTrack - playlist.getLastModified() <= 1 * 60 * 1000) {
                 //треки добавленные в течение n минут от 1 трека (на реальных данных интервал при копировании порядка 7 секунд)
                 ClsTrack clsTrack = ClsTrack.newInstance(playlist);
                 clsTrack.setGroup(RECENTLY_ADDED);
@@ -200,6 +200,7 @@ public abstract class MakePlaylistAbstract {
     }
 
     public ArrayList<ClsArrTrack> getArrTracks() {
+        System.out.print(arrTracks.size());
         return arrTracks;
     }
 

@@ -1,13 +1,12 @@
 package org.freemp.droid.playlist;
 
-import android.Manifest;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,12 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.freemp.droid.FileUtils;
 import org.freemp.droid.R;
@@ -86,48 +79,8 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
         dialog.setContentView(view);
 
 
-        Dexter.withActivity(ctx)
-                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        dialog.show();
-                    }
+        dialog.show();
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
-
-
-        /*
-        DirAdapter adapter = new DirAdapter( android.R.layout.simple_list_item_1 );
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder( ctx );
-        builder.setTitle( R.string.dlg_choosedir_title );
-        builder.setAdapter( adapter, this );
-
-        builder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                if ( m_result != null )
-                    m_result.onChooseDirectory( m_currentDir.getAbsolutePath() );
-                dialog.dismiss();
-            }
-        });
-
-
-
-        AlertDialog m_alertDialog = builder.create();
-        m_alertDialog.setContentView(view);
-        m_list = m_alertDialog.getListView();
-        m_list.setOnItemClickListener( this );
-        if (m_context!= null && !((Activity)m_context).isFinishing()) {
-            m_alertDialog.show();
-        }
-        */
     }
 
     private void listDirs(Context ctx) {
@@ -142,12 +95,13 @@ public class DlgChooseDirectory implements AdapterView.OnItemClickListener, Dial
 
         if (files != null) {
             for (File file : files) {
-                if (!file.isDirectory() || !file.canWrite())
+                if (!file.isDirectory() || file.isHidden())
                     continue;
 
                 m_entries.add(file);
             }
         }
+        // m_currentDir
         if (m_currentDir.getAbsolutePath().equals("/")) {
             File extSd = FileUtils.getExternalSdCardPath(ctx);
             boolean needAdd = true;

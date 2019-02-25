@@ -115,7 +115,7 @@ public class TaskGetArtists extends AsyncTask {
                                 if (!albumArtImageLink.equals("")) {
                                     //download image
 
-                                    String path = MediaUtils.getArtistPath(track);
+                                    String path = MediaUtils.getArtistPath(activity.getApplicationContext().getFilesDir().getAbsolutePath(), track);
                                     if (path == null) {
                                         continue;
                                     }

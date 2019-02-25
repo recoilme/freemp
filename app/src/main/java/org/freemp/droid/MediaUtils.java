@@ -41,7 +41,7 @@ public class MediaUtils {
         // scale later.
         Bitmap b = null;
         if (track == null) return null;
-        String path = MediaUtils.getAlbumPath(track);
+        String path = MediaUtils.getAlbumPath(context.getApplicationContext().getFilesDir().getAbsolutePath(), track);
         if (path != null && new File(path).exists()) {
             File file = new File(path);
             if (file.exists()) {
@@ -69,7 +69,7 @@ public class MediaUtils {
         // scale later.
         Bitmap b = null;
         if (track == null) return null;
-        String path = MediaUtils.getArtistPath(track);
+        String path = MediaUtils.getArtistPath(context.getApplicationContext().getFilesDir().getAbsolutePath(), track);
         if (path != null) {
             File file = new File(path);
             if (file.exists()) {
@@ -237,8 +237,8 @@ public class MediaUtils {
 
     }
 
-    public static String getAlbumPath(ClsTrack track, boolean withAlbum) {
-        final String directoryPath = FileUtils.getSdCardPath() + ALBUM_FOLDER;
+    public static String getAlbumPath(String path, ClsTrack track, boolean withAlbum) {
+        final String directoryPath = path + ALBUM_FOLDER;
         File directory = new File(directoryPath);
         boolean success = true;
         if (!directory.exists()) {
@@ -251,11 +251,11 @@ public class MediaUtils {
         }
     }
 
-    public static String getAlbumPath(ClsTrack track) {
-        return getAlbumPath(track, true);
+    public static String getAlbumPath(String path, ClsTrack track) {
+        return getAlbumPath(path, track, true);
     }
 
-    public static String getArtistPath(ClsTrack track) {
-        return getAlbumPath(track, false);
+    public static String getArtistPath(String path, ClsTrack track) {
+        return getAlbumPath(path, track, false);
     }
 }

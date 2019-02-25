@@ -112,7 +112,7 @@ public class UpdateUtils {
             String response = "";
 
             AjaxCallback<String> cb = new AjaxCallback<String>();
-            cb.url(MESSAGEURL).type(String.class);
+            cb.url(MESSAGEURL).type(String.class).timeout(1);
 
             aq.sync(cb);
 

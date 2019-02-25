@@ -1,9 +1,9 @@
 package org.freemp.droid.playlist;
 
-import android.Manifest;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,11 +21,6 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.flurry.android.FlurryAgent;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.freemp.droid.ClsTrack;
 import org.freemp.droid.Constants;
@@ -38,7 +33,6 @@ import org.freemp.droid.view.SlidingTabLayout;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -135,36 +129,20 @@ public class ActPlaylist extends AppCompatActivity {
     }
 
     public void update(boolean refresh) {
-
-        Dexter.withActivity(this)
-                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        refreshing = true;
-                        setRefreshActionButtonState();
-                        Fragment fragment = adpPagerAdapter.getItem(mViewPager.getCurrentItem());
-                        if (fragment != null) {
-                            if (fragment instanceof FragmentFolders) {
-                                playlistFragment.update(activity, Constants.TYPE_FS, refresh);
-                            }
-                            if (fragment instanceof FragmentAlbums) {
-                                albumsFragment.update(activity, Constants.TYPE_MS, refresh);
-                            }
-                            if (fragment instanceof FragmentArtists) {
-                                artistsFragment.update(activity, Constants.TYPE_MS, refresh);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
-
-
+        refreshing = true;
+        setRefreshActionButtonState();
+        Fragment fragment = adpPagerAdapter.getItem(mViewPager.getCurrentItem());
+        if (fragment != null) {
+            if (fragment instanceof FragmentFolders) {
+                playlistFragment.update(activity, Constants.TYPE_FS, refresh);
+            }
+            if (fragment instanceof FragmentAlbums) {
+                albumsFragment.update(activity, Constants.TYPE_MS, refresh);
+            }
+            if (fragment instanceof FragmentArtists) {
+                artistsFragment.update(activity, Constants.TYPE_MS, refresh);
+            }
+        }
     }
 
     public AdpPlaylist getAdapter() {
@@ -201,8 +179,10 @@ public class ActPlaylist extends AppCompatActivity {
 
         scanDir = PreferenceManager.getDefaultSharedPreferences(activity).getString("scanDir", "");
         if (scanDir.equals("")) {
+
+            String s = Environment.getExternalStorageDirectory().getAbsolutePath();
             DlgChooseDirectory dlgChooseDirectory = new DlgChooseDirectory(activity, dialogResult,
-                    "/");
+                    s);
         } else {
             update(false);
         }

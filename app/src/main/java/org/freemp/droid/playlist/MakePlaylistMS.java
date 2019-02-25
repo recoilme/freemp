@@ -36,18 +36,22 @@ public class MakePlaylistMS extends MakePlaylistAbstract {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.ALBUM_ID
         };
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    selection,
+                    null,
+                    null);
+        } catch (Exception e) {
+        }
 
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                null,
-                null);
 
 
         t = System.currentTimeMillis();
 
-        while (cursor.moveToNext()) {
+        while (cursor != null && cursor.moveToNext()) {
             try {
                 String folder = "";
                 String path = cursor.getString(7);
@@ -76,7 +80,10 @@ public class MakePlaylistMS extends MakePlaylistAbstract {
                 e.printStackTrace();
             }
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
+
         logTime();//149ms,89,121  Arrrgh!...
         FileUtils.writeObject("alltracksms", context, allTracks);
 
