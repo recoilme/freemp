@@ -538,7 +538,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
         this.progress = 0.0;
 
         // Notify activity
-        if (activity != null) {
+        if (activity != null && tracks != null && tracks.size() > position) {
             activity.onFileLoaded(tracks.get(position), this.duration, "", "", 0, 0);
             activity.onProgressChanged(progress);
             activity.onUpdatePlayPause();
@@ -705,7 +705,7 @@ public class ServicePlayer extends Service implements AudioManager.OnAudioFocusC
                         firstVolumeUpFlag = false;
                         if (isPlaying()) {
                             startVolumeUpFlag = System.currentTimeMillis();
-                            playNext();
+                            //playNext();
                         }
                     } else {
                         firstVolumeUpFlag = true;

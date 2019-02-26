@@ -170,6 +170,15 @@ public class MediaUtils {
             Toast.makeText(context, context.getString(R.string.error), Toast.LENGTH_SHORT).show();
             return;
         }
+
+
+        /*String ringTonePath = uri.toString();
+        try {
+            RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, uri);
+        } catch (Exception e) {
+            Toast.makeText(context, context.getString(R.string.error)+e.toString(), Toast.LENGTH_SHORT).show();
+        }*/
+
         //TODO check this may be better copy file in ringtone dir before?
         context.getContentResolver().delete(uri, MediaStore.MediaColumns.DATA + "=\"" + track.getPath() + "\"", null);
         Uri newUri = context.getContentResolver().insert(uri, values);
@@ -180,6 +189,7 @@ public class MediaUtils {
             RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
             Toast.makeText(context, context.getString(R.string.set_as_ringtone), Toast.LENGTH_SHORT).show();
         }
+
     }
 
     //i steal it from http://www.netmite.com/android/mydroid/packages/apps/Music/src/com/android/music/MusicUtils.java
